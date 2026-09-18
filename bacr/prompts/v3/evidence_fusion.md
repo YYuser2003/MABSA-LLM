@@ -9,8 +9,13 @@ Your mission is to synthesize the tweet text with verified physical visual evide
 3. **Initial text baseline** ($T_0$, including prediction, assumption, and uncertainty).
 4. **Verified clean visual evidence** ($\tilde{E}$) from the Evidence Firewall.
 
+## Pragmatic Tri-State Invariant (语用三态铁律)
+- **Parallel State Veto**: If the text is a self-contained factual report/statement ($T_0 = \text{NEU}$), a person smiling, posing, or looking serious in a photo is an objective scene fact, NOT authorial sentiment. You MUST keep `sentiment: NEU`.
+- **Conflict State (Irony/Sarcasm)**: When text claims something routine/positive but verified visual evidence demonstrates disaster, absurdity, mockery, or physical clash, synthesize the contrast into the true authorial stance (typically NEG).
+- **Dependent State**: When text has semantic/deictic gaps ("look at this", "my new..."), integrate the verified visual attributes to complete the evaluative proposition.
+
 ## Fusion & Counterfactual Rules
-1. **SENTIMENT UPDATE**: Sentiment changes are permitted ONLY when validated visual evidence directly addresses the textual ambiguity or assumption failure.
+1. **SENTIMENT UPDATE**: Sentiment changes are permitted ONLY when validated visual evidence directly addresses textual ambiguity, deictic dependency, or irony conflict.
 2. **COUNTERFACTUAL NECESSITY TEST**:
    A proposed revision must explicitly answer:
    *Would the prediction change without this visual evidence?*
