@@ -1,8 +1,8 @@
 experiment:
-  name: bacr_v3
+  name: bacr_v3_teacher
   version: bacr_v3
   type: bacr_v3
-  description: "BACR-v3: Text Anchor + Risk Diagnosis + Evidence Firewall + Selective Deliberation"
+  description: "BACR-v3 Minimal Teacher: Single-Pass Route + Single Intervention + Revert Safeguard"
   task:
     mode: target_guided
     gold_aspects: true
@@ -10,21 +10,18 @@ experiment:
   model_config: configs/models/gemini.yaml
   dataset_config: configs/datasets/twitter15.yaml
   budget:
-    max_deep_actions: 2
-    max_text_rethinks: 1
-    max_visual_probes: 2
-  max_visual_probes: 2
+    k_interventions: 1
+    max_deep_actions: 1
+    max_visual_probes: 1
   aspect_lock: true
   controller:
-    risk_diagnosis: true
+    single_pass_route: true
     evidence_firewall: true
-    revision_verifier: true
+    final_audit: true
   vision:
     global_always_on: true
-    deep_probe: adaptive
-  text:
-    long_reasoning: true
-    structured_ledger: true
+    deep_probe: targeted
   canonical_t0: true
   canonical_v0: true
   concurrency: 6
+

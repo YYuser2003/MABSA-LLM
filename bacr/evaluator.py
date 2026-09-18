@@ -669,6 +669,203 @@ def print_v3_evaluation_report(r: Dict[str, Any]):
     print("=" * 78 + "\n")
 
 
+def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
+    """Strict evaluation of the BACR-v3 Minimal Teacher Verification Hypothesis:
+    Does Final > T0? (Recover - Harm > 0)
+    """
+    gold_aspect_map = {}
+    gold_pair_map = {}
+    with open(gold_file, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                d = json.loads(line)
+                sid = d["sample_id"]
+                gold_pair_map[sid] = {tuple(p) for p in d.get("pairs", [])}
+                gold_aspect_map[sid] = {p[0].strip().lower(): p[1] for p in d.get("pairs", [])}
+
+    trajs = []
+    with open(traj_file, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                trajs.append(json.loads(line))
+
+    total_samples = len(trajs)
+    if total_samples == 0:
+        return {"error": "Empty trajectory file"}
+
+    # Sample-level tracking
+    sample_t0_correct = 0
+    sample_final_correct = 0
+
+    # Aspect-level tracking
+    total_aspects = 0
+    t0_correct_aspects = 0
+    final_correct_aspects = 0
+    total_recover = 0
+    total_harm = 0
+
+    route_stats = {
+        "KEEP": {"count": 0, "correct": 0},
+        "TEXT": {"count": 0, "recover": 0, "harm": 0, "net": 0, "accept": 0, "revert": 0},
+        "VISION": {"count": 0, "recover": 0, "harm": 0, "net": 0, "firewall_valid": 0, "firewall_invalid": 0, "accept": 0, "revert": 0}
+    }
+
+    for tr in trajs:
+        sid = tr.get("sample_id", "")
+        gold_pairs = gold_pair_map.get(sid, set())
+        gold_asps = gold_aspect_map.get(sid, {})
+
+        y_t0 = {tuple(p) for p in tr.get("t0_pairs", tr.get("text_anchor", {}).get("pairs", []))}
+        y_final = {tuple(p) for p in tr.get("final_pairs", [])}
+
+        if y_t0 and y_t0 == gold_pairs:
+            sample_t0_correct += 1
+        if y_final and y_final == gold_pairs:
+            sample_final_correct += 1
+
+        # Aspect trajectories
+        asp_trajs = tr.get("aspect_trajectories", [])
+        if asp_trajs:
+            for at in asp_trajs:
+                total_aspects += 1
+                asp_text = at.get("aspect", "")
+                t0_s = at.get("t0_sentiment", "NEU")
+                fin_s = at.get("final_sentiment", "NEU")
+                route = at.get("route", "KEEP")
+                audit_dec = at.get("audit_decision", "N/A")
+
+                gold_s = gold_asps.get(asp_text.strip().lower())
+                if gold_s is None:
+                    for gk, gv in gold_asps.items():
+                        if gk in asp_text.strip().lower() or asp_text.strip().lower() in gk:
+                            gold_s = gv
+                            break
+
+                was_correct = (gold_s is not None and t0_s == gold_s)
+                now_correct = (gold_s is not None and fin_s == gold_s)
+
+                if was_correct:
+                    t0_correct_aspects += 1
+                if now_correct:
+                    final_correct_aspects += 1
+
+                is_recover = (not was_correct and now_correct)
+                is_harm = (was_correct and not now_correct)
+
+                if is_recover:
+                    total_recover += 1
+                if is_harm:
+                    total_harm += 1
+
+                # Route breakdown
+                if route in route_stats:
+                    route_stats[route]["count"] += 1
+                    if route == "KEEP":
+                        if now_correct:
+                            route_stats["KEEP"]["correct"] += 1
+                    elif route == "TEXT":
+                        if is_recover:
+                            route_stats["TEXT"]["recover"] += 1
+                        if is_harm:
+                            route_stats["TEXT"]["harm"] += 1
+                        route_stats["TEXT"]["net"] = route_stats["TEXT"]["recover"] - route_stats["TEXT"]["harm"]
+                        if audit_dec == "ACCEPT":
+                            route_stats["TEXT"]["accept"] += 1
+                        else:
+                            route_stats["TEXT"]["revert"] += 1
+                    elif route == "VISION":
+                        if is_recover:
+                            route_stats["VISION"]["recover"] += 1
+                        if is_harm:
+                            route_stats["VISION"]["harm"] += 1
+                        route_stats["VISION"]["net"] = route_stats["VISION"]["recover"] - route_stats["VISION"]["harm"]
+                        ev = at.get("evidence")
+                        if ev and ev.get("status") == "VALID":
+                            route_stats["VISION"]["firewall_valid"] += 1
+                        else:
+                            route_stats["VISION"]["firewall_invalid"] += 1
+                        if audit_dec == "ACCEPT":
+                            route_stats["VISION"]["accept"] += 1
+                        else:
+                            route_stats["VISION"]["revert"] += 1
+        else:
+            # Fallback if trajectory format lacks aspect_trajectories
+            for p in tr.get("final_pairs", []):
+                total_aspects += 1
+                asp_text = p[0]
+                fin_s = p[1]
+                gold_s = gold_asps.get(asp_text.strip().lower())
+                if gold_s and fin_s == gold_s:
+                    final_correct_aspects += 1
+            for p in tr.get("t0_pairs", []):
+                asp_text = p[0]
+                t0_s = p[1]
+                gold_s = gold_asps.get(asp_text.strip().lower())
+                if gold_s and t0_s == gold_s:
+                    t0_correct_aspects += 1
+
+    sample_t0_acc = round(sample_t0_correct / total_samples * 100, 2)
+    sample_final_acc = round(sample_final_correct / total_samples * 100, 2)
+    delta_sample_acc = round(sample_final_acc - sample_t0_acc, 2)
+
+    aspect_t0_acc = round(t0_correct_aspects / total_aspects * 100, 2) if total_aspects > 0 else 0.0
+    aspect_final_acc = round(final_correct_aspects / total_aspects * 100, 2) if total_aspects > 0 else 0.0
+    delta_aspect_acc = round(aspect_final_acc - aspect_t0_acc, 2)
+
+    net_gain = total_recover - total_harm
+    hypothesis_satisfied = (net_gain > 0)
+
+    return {
+        "total_samples": total_samples,
+        "total_aspects": total_aspects,
+        "sample_t0_acc": sample_t0_acc,
+        "sample_final_acc": sample_final_acc,
+        "delta_sample_acc": delta_sample_acc,
+        "aspect_t0_acc": aspect_t0_acc,
+        "aspect_final_acc": aspect_final_acc,
+        "delta_aspect_acc": delta_aspect_acc,
+        "total_recover": total_recover,
+        "total_harm": total_harm,
+        "net_gain": net_gain,
+        "net_gain_percent": round(net_gain / total_aspects * 100, 2) if total_aspects > 0 else 0.0,
+        "hypothesis_satisfied": hypothesis_satisfied,
+        "route_stats": route_stats
+    }
+
+
+def print_v3_teacher_report(r: Dict[str, Any]):
+    print("\n" + "=" * 78)
+    print("           BACR-v3 TEACHER VERIFICATION EXPERIMENT REPORT")
+    print("=" * 78)
+    print(f"Total Evaluated Samples : {r.get('total_samples')} | Total Target Aspects: {r.get('total_aspects')}")
+    print("-" * 78)
+    print("1. PRIMARY HYPOTHESIS VERIFICATION (Teacher Final > T0):")
+    status_str = "CONFIRMED (Final > T0, Positive Net Gain)" if r.get("hypothesis_satisfied") else "NOT CONFIRMED"
+    print(f"  Status                  : {status_str}")
+    print(f"  T0 Baseline Aspect Acc  : {r.get('aspect_t0_acc')}%")
+    print(f"  Teacher Final Aspect Acc: {r.get('aspect_final_acc')}%")
+    print(f"  Net Aspect Accuracy Gain: {r.get('delta_aspect_acc'):+0.2f}%")
+    print(f"  Aspects Recovered (WC)  : +{r.get('total_recover')}")
+    print(f"  Aspects Harmed (CW)     : -{r.get('total_harm')}")
+    print(f"  Net Aspect Gain (R - H) : {r.get('net_gain'):+d} ({r.get('net_gain_percent'):+0.2f}% of all aspects)")
+    print("-" * 78)
+    print("2. SAMPLE-LEVEL EXACT MATCH METRICS:")
+    print(f"  T0 Sample Accuracy      : {r.get('sample_t0_acc')}%")
+    print(f"  Teacher Final Sample Acc: {r.get('sample_final_acc')}%")
+    print(f"  Sample Accuracy Gain (Δ): {r.get('delta_sample_acc'):+0.2f}%")
+    print("-" * 78)
+    print("3. ROUTE COMPUTATION & INTERVENTION BREAKDOWN:")
+    routes = r.get("route_stats", {})
+    keep = routes.get("KEEP", {})
+    keep_acc = round(keep.get('correct', 0) / max(keep.get('count', 1), 1) * 100, 1)
+    print(f"  - KEEP Route            : {keep.get('count', 0)} aspects | Accuracy: {keep_acc}%")
+    txt = routes.get("TEXT", {})
+    print(f"  - TEXT Route            : {txt.get('count', 0)} aspects | Net: {txt.get('net', 0):+d} (Recover: {txt.get('recover', 0)}, Harm: {txt.get('harm', 0)}) | Audit Accept: {txt.get('accept', 0)}, Revert: {txt.get('revert', 0)}")
+    vis = routes.get("VISION", {})
+    print(f"  - VISION Route          : {vis.get('count', 0)} aspects | Net: {vis.get('net', 0):+d} (Recover: {vis.get('recover', 0)}, Harm: {vis.get('harm', 0)}) | Firewall Valid: {vis.get('firewall_valid', 0)}, Invalid: {vis.get('firewall_invalid', 0)} | Audit Accept: {vis.get('accept', 0)}, Revert: {vis.get('revert', 0)}")
+    print("=" * 78 + "\n")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate G3 / BACR predictions.")
     parser.add_argument("--pred-file", required=True, help="Path to predictions JSONL file.")
@@ -681,6 +878,7 @@ if __name__ == "__main__":
     print_evaluation_report(res)
 
     if args.traj_file and os.path.exists(args.traj_file):
-        v3_res = evaluate_v3_trajectories(args.traj_file, args.gold_file)
-        print_v3_evaluation_report(v3_res)
+        teacher_res = evaluate_v3_teacher(args.traj_file, args.gold_file)
+        print_v3_teacher_report(teacher_res)
+
 

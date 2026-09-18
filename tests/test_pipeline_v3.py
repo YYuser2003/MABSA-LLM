@@ -1,14 +1,16 @@
-"""Comprehensive Unit Tests for BACR-v3 Architecture and Pipeline.
+"""Comprehensive Unit Tests for BACR-v3 Minimal Teacher Architecture.
 
-Validates:
-1. Pydantic v2 schemas and strictly fail-closed Evidence Firewall (CE).
-2. Physical and semantic critique firewall (V0 never enters C_Q^T).
-3. Invariant: QUERY_AGAIN preserves H_B, accumulates evidence, and dispatches next_question.
-4. CT ESCALATE_TO_VISION triggers targeted visual probe.
-5. Multi-Aspect Isolation (non-target aspects never perturbed).
-6. Dual Baseline Preservation (Revert-to-HB safeguards valid text revisions).
-7. Transition-level Marginal Utility & Governance evaluation (MU_T, MU_V).
-8. BACREnv gym-like interface & transition logging.
+Validates the 6 Core Execution Paths and Invariants:
+1. Pydantic v2 schemas and fail-closed contracts (EvidenceResult, RouteDecision, FinalAudit).
+2. Route KEEP -> Final = T0 (no intervention).
+3. Route TEXT + Audit ACCEPT -> Final = Candidate.
+4. Route TEXT + Audit REVERT -> Safeguard fallback to T0.
+5. Route VISION + Firewall INVALID -> Fail-closed fallback to T0 (TF bypassed).
+6. Route VISION + Firewall VALID + Audit ACCEPT -> Final = Candidate.
+7. Route VISION + Firewall VALID + Audit REVERT -> Safeguard fallback to T0.
+8. Semantic firewall sanitization (V0 never leaks into text critique).
+9. Multi-aspect factoring and independent aggregation (K=1 invariant).
+10. Teacher verification diagnostic evaluator (Recover - Harm > 0).
 """
 
 import os
@@ -22,256 +24,127 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from bacr.schemas_v3 import (
-    ControllerAction,
-    RiskType,
-    CTDecision,
-    CVDecision,
+    RouteAction,
     EvidenceStatus,
     TargetBinding,
-    RevisionSupport,
-    RiskDecision,
-    EvidenceFirewallOutput,
-    TextRevisionAuditOutput,
-    RevisionVerifierOutput,
-    AspectState,
-    TransitionRecord,
-    TaskMode,
-    BudgetState,
-    TargetAspect,
-    AspectEpisodeState
+    AuditDecision,
+    RouteDecision,
+    EvidenceResult,
+    CandidatePrediction,
+    FinalAudit
 )
 from bacr.text_reasoner import TextReasoner
 from bacr.meta_controller import MetaController
 from bacr.vision_sensor import VisionSensor
 from bacr.pipeline_v3 import BACRPipelineV3
-from bacr.evaluator import evaluate_v3_trajectories
-from bacr.env import BACREnv
-from bacr.policies.base import (
-    GeminiTeacherPolicy,
-    DecoupledTeacherPolicy,
-    RulePolicy,
-    RandomPolicy
-)
+from bacr.evaluator import evaluate_v3_teacher, print_v3_teacher_report
 
 
-class MockClient:
-    """Mock client returning controlled responses for each BACR-v3 prompt type."""
+class MockTeacherClient:
+    """Mock client returning deterministic responses for BACR-v3 Minimal Teacher."""
     def __init__(
         self,
-        override_action="VISION_PROBE",
-        override_firewall_status="VALID",
-        override_cv_decision="ACCEPT_REVISION",
+        route_action="KEEP",
+        route_critique=None,
+        route_question=None,
         rethink_sentiment="NEU",
+        firewall_status="VALID",
+        firewall_binding="DIRECT",
+        fusion_sentiment="POS",
+        audit_decision="ACCEPT",
         leak_visual_in_critique=False
     ):
-        self.call_history = []
-        self.override_action = override_action
-        self.override_firewall_status = override_firewall_status
-        self.override_cv_decision = override_cv_decision
+        self.route_action = route_action
+        self.route_critique = route_critique
+        self.route_question = route_question
         self.rethink_sentiment = rethink_sentiment
+        self.firewall_status = firewall_status
+        self.firewall_binding = firewall_binding
+        self.fusion_sentiment = fusion_sentiment
+        self.audit_decision = audit_decision
         self.leak_visual_in_critique = leak_visual_in_critique
-        self.step_action_sequence = []
-        self.cv_decision_sequence = []
+        self.call_history = []
 
     def call_text(self, system_prompt: str, user_prompt: str = "", **kwargs):
-        self.call_history.append((system_prompt, user_prompt))
+        self.call_history.append(("call_text", system_prompt, user_prompt))
 
-        # 1. TA Text Anchor Reasoner
-        if "(TA) Prompt" in system_prompt or "Structured Text Anchor Ledger" in user_prompt:
-            return {
-                "aspects": [
-                    {
-                        "aspect_id": "a_01",
-                        "text": "Obama",
-                        "span": [0, 5],
-                        "sentiment": "POS",
-                        "text_evidence": ["Obama gives speech"],
-                        "rationale": "Enthusiastic speech.",
-                        "assumptions": ["Enthusiasm scopes to entity."],
-                        "uncertainties": ["Tone may be journalistic report."],
-                        "risks": []
-                    }
-                ],
-                "pairs": [["Obama", "POS"]]
-            }, {"total_tokens": 20}, 0.05
-
-        # 2. CD Risk-Aware Diagnosis Controller
-        elif "(CD) Prompt" in system_prompt or "Diagnose error risk" in user_prompt:
-            action = self.step_action_sequence.pop(0) if self.step_action_sequence else self.override_action
-            critique = "Examine if reporting verb indicates speaker neutrality."
+        # C_R: Route Decision
+        if "controller_route.md" in system_prompt or "Meta-Cognitive Routing Controller" in system_prompt:
+            crit = self.route_critique
             if self.leak_visual_in_critique:
-                critique = "The image photo shows a smiling person in the background, check sentiment."
-
-            if action == "FINALIZE":
-                return {
-                    "risk_diagnosis": {
-                        "risk_type": "NO_RISK",
-                        "risk_description": "Text baseline is well grounded."
-                    },
-                    "action": "FINALIZE",
-                    "target_aspect_id": None,
-                    "critique_for_text": None,
-                    "question_for_vision": None,
-                    "decision_reason": "No further verification needed."
-                }, {"total_tokens": 20}, 0.05
-            elif action == "TEXT_RETHINK":
-                return {
-                    "risk_diagnosis": {
-                        "risk_type": "AFFECT_SPILLOVER",
-                        "risk_description": "Affect spillover from hashtag."
-                    },
-                    "action": "TEXT_RETHINK",
-                    "target_aspect_id": "a_01",
-                    "critique_for_text": critique,
-                    "question_for_vision": None,
-                    "decision_reason": "Syntactic ambiguity detected."
-                }, {"total_tokens": 20}, 0.05
-            else:
-                return {
-                    "risk_diagnosis": {
-                        "risk_type": "MISSING_AFFECT",
-                        "risk_description": "Minimalist factual tweet requires visual affect inspection."
-                    },
-                    "action": "VISION_PROBE",
-                    "target_aspect_id": "a_01",
-                    "critique_for_text": None,
-                    "question_for_vision": "Is Obama smiling or showing celebration in the photo?",
-                    "decision_reason": "Visual inspection allocated."
-                }, {"total_tokens": 20}, 0.05
-
-        # 2B. Decoupled C_T^risk Text Risk Auditor
-        elif "Textual Risk Auditor" in system_prompt or "Diagnose linguistic and syntactic error risks" in user_prompt:
+                crit = "The photo image shows a smiling face, please re-evaluate tone."
             return {
-                "risk_type": "AFFECT_SPILLOVER",
-                "risk_level": "MEDIUM",
-                "basis": "Sentence excitement may not attach to target aspect."
-            }, {"total_tokens": 15}, 0.05
-
-        # 2C. Decoupled C_V^opp Visual Opportunity Assessor
-        elif "Visual Opportunity Assessor" in system_prompt or "Assess physical visual opportunity" in user_prompt:
-            return {
-                "opportunity_type": "FACIAL_EXPRESSION",
-                "target_visible": True,
-                "basis_code": "FACE_SMILING"
-            }, {"total_tokens": 15}, 0.05
-
-        # 2D. Decoupled C_R Discrete Router
-        elif "Discrete Routing Controller" in system_prompt or "Select discrete action" in user_prompt:
-            action = self.step_action_sequence.pop(0) if self.step_action_sequence else self.override_action
-            return {
-                "action": action,
-                "rationale": "Selected based on decoupled risk and visual opportunity.",
-                "query_type": "FACIAL_EXPRESSION"
-            }, {"total_tokens": 15}, 0.05
-
-        # 3. C_Q^T Critique Generator (Physically Decoupled)
-        elif "Linguistic Auditor" in system_prompt:
-            return {
-                "critique": "Re-examine syntax and reporting verbs without external cues."
-            }, {"total_tokens": 15}, 0.05
-
-        # 4. TR Text Re-deliberation
-        elif "(TR) Prompt" in system_prompt or "Text Re-deliberation" in user_prompt:
-            return {
-                "aspects": [
-                    {
-                        "aspect_id": "a_01",
-                        "text": "Obama",
-                        "span": [0, 5],
-                        "sentiment": self.rethink_sentiment,
-                        "text_evidence": ["speech"],
-                        "rationale": "Purely informational speech report; neutral tone.",
-                        "assumptions": ["Neutral journalistic context."],
-                        "uncertainties": []
-                    }
-                ],
-                "pairs": [["Obama", self.rethink_sentiment]]
+                "risk_type": "AFFECT_SPILLOVER" if self.route_action == "TEXT" else "MISSING_AFFECT",
+                "action": self.route_action,
+                "reason": f"Selected {self.route_action} route based on audit.",
+                "critique": crit,
+                "question": self.route_question or "What expression is visible?"
             }, {"total_tokens": 20}, 0.05
 
-        # 5. CT Text Revision Verifier
-        elif "(CT) Prompt" in system_prompt or "Audit whether the linguistic revision" in user_prompt:
+        # TR: Text Rethink
+        elif "text_rethink.md" in system_prompt or "Text Deliberative Reasoner" in system_prompt:
             return {
-                "decision": "ACCEPT_TEXT_REVISION",
-                "text_evidence_verified": True,
-                "modifier_scope_changed": True,
-                "reporting_frame_decoupled": True,
-                "audit_rationale": "Linguistic revision is firmly grounded in syntax."
-            }, {"total_tokens": 15}, 0.05
-
-        # 6. CE Evidence Firewall
-        elif "(CE) Prompt" in system_prompt or "Filter speculative inferences" in user_prompt:
-            if self.override_firewall_status == "INVALID":
-                return {
-                    "status": "INVALID",
-                    "target_binding": "UNBOUND",
-                    "relevance": "LOW",
-                    "usable_evidence": [],
-                    "rejected_inferences": ["Smiling crowd (unrelated to target)."],
-                    "revision_support": "NON_DECISIVE",
-                    "verification_notes": "Crowd is unbound to target entity."
-                }, {"total_tokens": 20}, 0.05
-            else:
-                return {
-                    "status": "VALID",
-                    "target_binding": "DIRECT",
-                    "relevance": "HIGH",
-                    "usable_evidence": ["Target person in center shows broad smile with raised cheeks."],
-                    "rejected_inferences": [],
-                    "revision_support": "SUPPORTS_REVISION",
-                    "verification_notes": "Physical expression confirms positive affect."
-                }, {"total_tokens": 20}, 0.05
-
-        # 7. TF Evidence Fusion Reasoner
-        elif "(TF) Prompt" in system_prompt or "Evidence Fusion" in user_prompt:
-            return {
-                "aspects": [
-                    {
-                        "aspect_id": "a_01",
-                        "text": "Obama",
-                        "span": [0, 5],
-                        "sentiment": "POS",
-                        "text_evidence": ["speech"],
-                        "visual_evidence": [{"ref": "vision_probe_1", "content": "Broad smile with raised cheeks."}],
-                        "rationale": "Verified visual cues confirm genuine joy.",
-                        "assumptions": ["Visual expression reflects genuine affect."],
-                        "uncertainties": []
-                    }
-                ],
-                "pairs": [["Obama", "POS"]]
+                "aspect": "target",
+                "sentiment": self.rethink_sentiment,
+                "reason": "Re-evaluated text syntax addressing critique.",
+                "evidence": ["purely linguistic clause"]
             }, {"total_tokens": 25}, 0.05
 
-        # 8. CV Revision Verifier
-        elif "(CV) Prompt" in system_prompt or "Evaluate whether the candidate revision" in user_prompt:
-            dec = self.cv_decision_sequence.pop(0) if self.cv_decision_sequence else self.override_cv_decision
+        # C_E: Evidence Firewall
+        elif "controller_evidence_firewall.md" in system_prompt or "Evidence Firewall Controller" in system_prompt:
+            if self.firewall_status == "VALID":
+                return {
+                    "status": "VALID",
+                    "target_binding": self.firewall_binding,
+                    "usable_evidence": ["Target entity displays broad smile and raised arms."],
+                    "rejected_inferences": [],
+                    "verification_notes": "Physical verifiable facts bound to target."
+                }, {"total_tokens": 20}, 0.05
+            else:
+                return {
+                    "status": self.firewall_status,
+                    "target_binding": self.firewall_binding,
+                    "usable_evidence": [],
+                    "rejected_inferences": ["Subjective claim about mood."],
+                    "verification_notes": "Evidence is unobservable or unbound."
+                }, {"total_tokens": 20}, 0.05
+
+        # TF: Evidence Fusion Reasoner
+        elif "text_evidence_fusion.md" in system_prompt or "Deliberative Cross-Modal Reasoner" in system_prompt:
             return {
-                "decision": dec,
-                "audit_rationale": "Evidence thoroughly evaluated.",
-                "target_aspect_id": "a_01",
-                "next_question": "Does the background banner confirm celebratory occasion?" if dec == "QUERY_AGAIN" else None
-            }, {"total_tokens": 20}, 0.05
+                "aspect": "target",
+                "sentiment": self.fusion_sentiment,
+                "reason": "Synthesized text with verified physical visual proof.",
+                "evidence": ["Target entity displays broad smile and raised arms."]
+            }, {"total_tokens": 30}, 0.05
+
+        # C_F: Final Audit Verifier
+        elif "controller_final_audit.md" in system_prompt or "Final Audit Verifier" in system_prompt:
+            return {
+                "decision": self.audit_decision,
+                "reason": f"Revision was evaluated as {self.audit_decision}."
+            }, {"total_tokens": 15}, 0.05
 
         return {}, {"total_tokens": 0}, 0.0
 
     def call_vision(self, system_prompt: str, user_prompt: str = "", image_path: str = "", user_text: str = "", **kwargs):
-        self.call_history.append((system_prompt, user_prompt, image_path))
+        self.call_history.append(("call_vision", system_prompt, user_text or user_prompt))
 
-        # IG Global Visual Sensor
-        if "(IG) Prompt" in system_prompt or "Global Visual Sensor" in system_prompt:
+        # IG: Global Visual Sketch
+        if "vision_global.md" in system_prompt or "Global Visual Perception" in system_prompt:
             return {
-                "scene": "Podium speech press conference",
-                "description": "A man speaking at a lectern with microphones.",
-                "possible_entities": [{"entity": "Obama", "bounding_box": "center", "confidence": "high"}],
+                "scene": "Press conference hall",
+                "description": "Speaker giving presentation at podium.",
+                "possible_entities": ["Obama", "Biden"],
                 "ocr": ["WHITE HOUSE"],
-                "salient_visual_cues": ["lectern", "flags", "suit"],
-                "target_presence_hints": [{"target": "Obama", "visible": True, "location": "center"}],
-                "visual_affect_cues": ["neutral expression", "open posture"]
+                "salient_visual_cues": ["podium", "microphones"]
             }, {"total_tokens": 30}, 0.08
 
-        # IP Targeted Deep Visual Probe
-        elif "(IP) Prompt" in system_prompt or "Targeted Deep Visual Probe" in system_prompt:
+        # IP: Deep Probe
+        elif "vision_probe.md" in system_prompt or "Targeted Deep Visual Sensor" in system_prompt:
             return {
                 "answer": "Target person is smiling warmly at podium.",
-                "observable_evidence": ["Smiling expression", "raised cheeks"],
+                "observable_evidence": ["Raised mouth corners", "smiling cheeks"],
                 "certainty": "high",
                 "insufficient_visual_evidence": False
             }, {"total_tokens": 25}, 0.08
@@ -281,241 +154,325 @@ class MockClient:
 
 def test_v3_schemas_and_fail_closed_contract():
     print("--- Running test_v3_schemas_and_fail_closed_contract ---")
-    # 1. EvidenceFirewallOutput must be strictly fail-closed
-    empty_res = EvidenceFirewallOutput.validate_fail_closed({})
-    assert empty_res.status == EvidenceStatus.INVALID
-    assert empty_res.usable_evidence == []
-    assert empty_res.revision_support == RevisionSupport.NON_DECISIVE
+    # 1. RouteDecision validation & fallback
+    r_empty = RouteDecision.validate_or_fallback({})
+    assert r_empty.action == RouteAction.KEEP
 
-    malformed_res = EvidenceFirewallOutput.validate_fail_closed({"usable_evidence": "not a list", "status": "VALID"})
-    assert malformed_res.status == EvidenceStatus.INVALID
-    assert malformed_res.usable_evidence == []
+    r_malformed = RouteDecision.validate_or_fallback("not a dict")
+    assert r_malformed.action == RouteAction.KEEP
 
-    insufficient_res = EvidenceFirewallOutput.validate_fail_closed({
+    r_valid = RouteDecision.validate_or_fallback({"action": "TEXT", "critique": "check scope"})
+    assert r_valid.action == RouteAction.TEXT
+    assert r_valid.critique == "check scope"
+
+    # 2. EvidenceResult fail-closed contracts
+    ev_empty = EvidenceResult.validate_fail_closed({})
+    assert ev_empty.status == EvidenceStatus.INVALID
+    assert ev_empty.usable_evidence == []
+
+    # Invariant: INSUFFICIENT must clear usable_evidence
+    ev_insufficient = EvidenceResult.validate_fail_closed({
         "status": "INSUFFICIENT",
-        "usable_evidence": ["Some spurious fact"],
-        "revision_support": "SUPPORTS_REVISION"
+        "usable_evidence": ["Spurious visual note"]
     })
-    assert insufficient_res.status == EvidenceStatus.INSUFFICIENT
-    assert insufficient_res.usable_evidence == []  # Must clear usable evidence
-    assert insufficient_res.revision_support == RevisionSupport.NON_DECISIVE
+    assert ev_insufficient.status == EvidenceStatus.INSUFFICIENT
+    assert ev_insufficient.usable_evidence == []
 
-    # 2. TextRevisionAuditOutput fallback
-    ct_fallback = TextRevisionAuditOutput.validate_or_fallback({})
-    assert ct_fallback.decision == CTDecision.REVERT_TEXT_BASELINE
+    # Invariant: UNBOUND must clear usable_evidence
+    ev_unbound = EvidenceResult.validate_fail_closed({
+        "status": "VALID",
+        "target_binding": "UNBOUND",
+        "usable_evidence": ["Smiling crowd"]
+    })
+    assert ev_unbound.usable_evidence == []
 
-    # 3. RevisionVerifierOutput fallback
-    cv_fallback = RevisionVerifierOutput.validate_or_fallback({})
-    assert cv_fallback.decision == CVDecision.REVERT_TEXT_BASELINE
+    # 3. FinalAudit fallback
+    fa_fallback = FinalAudit.validate_or_fallback({})
+    assert fa_fallback.decision == AuditDecision.REVERT
+
+    fa_accept = FinalAudit.validate_or_fallback({"decision": "ACCEPT", "reason": "Well grounded"})
+    assert fa_accept.decision == AuditDecision.ACCEPT
     print("Passed test_v3_schemas_and_fail_closed_contract!")
 
 
-def test_physical_and_semantic_critique_firewall():
-    print("--- Running test_physical_and_semantic_critique_firewall ---")
-    client = MockClient()
-    controller = MetaController(client)
+def test_route_keep():
+    print("--- Running test_route_keep ---")
+    client = MockTeacherClient(route_action="KEEP")
+    pipeline = BACRPipelineV3(client=client)
 
-    # Test physical firewall: generate_text_critique does NOT accept or contain any image references
-    critique, _, _ = controller.generate_text_critique(
-        h_b={"aspects": [{"aspect_id": "a_01", "text": "Apple", "sentiment": "NEG"}]},
-        risk_diagnosis={"risk_type": "REPORTING_FRAME"},
-        target_aspect_id="a_01",
-        target_aspect_text="Apple"
-    )
-    assert isinstance(critique, str)
-    assert len(critique) > 0
-
-    # Ensure C_Q^T prompt did not contain visual tokens
-    cq_calls = [prompt for (sys_p, prompt) in client.call_history if "Linguistic Auditor" in sys_p]
-    assert len(cq_calls) > 0
-    assert "Global Visual Sketch" not in cq_calls[0]
-
-    # Test programmatic sanitizer in diagnose_risk
-    client_leak = MockClient(override_action="TEXT_RETHINK", leak_visual_in_critique=True)
-    ctrl_leak = MetaController(client_leak)
-    cd_res, _, _ = ctrl_leak.diagnose_risk(
-        h_a={"pairs": [["X", "POS"]]},
-        v0={"scene": "photo"},
-        h_b={"pairs": [["X", "POS"]]}
-    )
-    assert cd_res.get("critique_sanitized") is True
-    assert "smiling" not in cd_res["critique_for_text"]
-    print("Passed test_physical_and_semantic_critique_firewall!")
-
-
-def test_query_again_preserves_hb_and_accumulates_evidence():
-    print("--- Running test_query_again_preserves_hb_and_accumulates_evidence ---")
-    client = MockClient()
-    # CD allocates VISION_PROBE -> Probe 1 returns QUERY_AGAIN -> Probe 2 returns ACCEPT_REVISION
-    client.step_action_sequence = ["VISION_PROBE"]
-    client.cv_decision_sequence = ["QUERY_AGAIN", "ACCEPT_REVISION"]
-
-    pipeline = BACRPipelineV3(client=client, max_visual_probes=2)
     sample = {
-        "sample_id": "test_query_again",
-        "text": "Obama speech today",
+        "sample_id": "test_keep_01",
+        "text": "Regular news announcement regarding Apple",
         "image": "dummy.jpg",
-        "pairs": [["Obama", "POS"]]
+        "pairs": [["Apple", "NEU"]],
+        "text_initial_cached": {"pairs": [["Apple", "NEU"]]}
     }
     record = pipeline.run_sample(sample)
 
-    # Invariant check: In round 1 QUERY_AGAIN did not corrupt baseline
-    # Both probes were executed (budget=2 consumed)
-    assert record["num_visual_probes"] == 2
-    assert record["final_pairs"] == [["Obama", "POS"]]
-    print("Passed test_query_again_preserves_hb_and_accumulates_evidence!")
+    assert record["final_pairs"] == [["Apple", "NEU"]]
+    assert len(record["aspect_trajectories"]) == 1
+    assert record["aspect_trajectories"][0]["route"] == "KEEP"
+    assert record["aspect_trajectories"][0]["final_sentiment"] == "NEU"
+    # Neither TR nor TF was called
+    tr_calls = [c for c in client.call_history if "text_rethink.md" in c[1]]
+    tf_calls = [c for c in client.call_history if "text_evidence_fusion.md" in c[1]]
+    assert len(tr_calls) == 0
+    assert len(tf_calls) == 0
+    print("Passed test_route_keep!")
 
 
-def test_ct_escalate_to_vision():
-    print("--- Running test_ct_escalate_to_vision ---")
-    client = MockClient()
-    # CD allocates TEXT_RETHINK
-    client.step_action_sequence = ["TEXT_RETHINK"]
+def test_route_text_accept():
+    print("--- Running test_route_text_accept ---")
+    client = MockTeacherClient(
+        route_action="TEXT",
+        rethink_sentiment="NEG",
+        audit_decision="ACCEPT"
+    )
+    pipeline = BACRPipelineV3(client=client)
 
-    # Mock CT returning ESCALATE_TO_VISION
-    orig_call_text = client.call_text
-    def custom_call_text(system_prompt: str = "", user_prompt: str = "", **kwargs):
-        if "(CT) Prompt" in system_prompt or "Audit whether the linguistic revision" in user_prompt:
-            return {
-                "decision": "ESCALATE_TO_VISION",
-                "visual_gap": "Check physical facial cues for Obama",
-                "target_aspect_id": "a_01"
-            }, {"total_tokens": 15}, 0.05
-        return orig_call_text(system_prompt=system_prompt, user_prompt=user_prompt, **kwargs)
-    client.call_text = custom_call_text
-
-    pipeline = BACRPipelineV3(client=client, max_visual_probes=2)
     sample = {
-        "sample_id": "test_escalate",
-        "text": "Obama farewell event",
+        "sample_id": "test_text_accept_01",
+        "text": "Terrible tragedy struck Microsoft campus # sad",
         "image": "dummy.jpg",
-        "pairs": [["Obama", "POS"]]
+        "pairs": [["Microsoft", "NEG"]],
+        "text_initial_cached": {"pairs": [["Microsoft", "NEU"]]}  # T0 was NEU
     }
     record = pipeline.run_sample(sample)
 
-    # Verify that visual probe was indeed triggered via ESCALATE_TO_VISION
-    vision_transitions = [t for t in record["transitions"] if "ESCALATE_TO_VISION" in str(t.get("verifier_decision")) or t.get("action") == "VISION_PROBE"]
-    assert len(vision_transitions) >= 1 or record["num_visual_probes"] >= 1
-    print("Passed test_ct_escalate_to_vision!")
+    assert record["final_pairs"] == [["Microsoft", "NEG"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "TEXT"
+    assert asp_tr["candidate_sentiment"] == "NEG"
+    assert asp_tr["audit_decision"] == "ACCEPT"
+    assert asp_tr["final_sentiment"] == "NEG"
+    print("Passed test_route_text_accept!")
 
 
-def test_text_reasoner_aspect_isolation():
-    print("--- Running test_text_reasoner_aspect_isolation ---")
-    client = MockClient(rethink_sentiment="NEU")
-    reasoner = TextReasoner(client)
-
-    multi_h_baseline = {
-        "aspects": [
-            {"aspect_id": "a_01", "text": "iPhone", "sentiment": "NEG"},
-            {"aspect_id": "a_02", "text": "Camera", "sentiment": "POS"}
-        ],
-        "pairs": [["iPhone", "NEG"], ["Camera", "POS"]]
-    }
-
-    # Deliberate ONLY on a_01
-    h_rethink, _, _ = reasoner.rethink_text(
-        text="iPhone is okay but Camera is fantastic!",
-        h_baseline=multi_h_baseline,
-        critique="Re-evaluate iPhone tone.",
-        target_aspect_id="a_01"
+def test_route_text_revert():
+    print("--- Running test_route_text_revert ---")
+    # Controller routes TEXT, candidate is proposed as POS, but CF REVERTS
+    client = MockTeacherClient(
+        route_action="TEXT",
+        rethink_sentiment="POS",
+        audit_decision="REVERT"
     )
+    pipeline = BACRPipelineV3(client=client)
 
-    pairs_dict = {p[0]: p[1] for p in h_rethink["pairs"]}
-    assert pairs_dict["iPhone"] == "NEU"
-    assert pairs_dict["Camera"] == "POS"  # a_02 preserved perfectly!
-    print("Passed test_text_reasoner_aspect_isolation!")
-
-
-def test_dual_baseline_and_revert_to_hb():
-    print("--- Running test_dual_baseline_and_revert_to_hb ---")
-    # Step 1: TEXT_RETHINK revises H_A (POS) -> H_B (NEU) [Certified by CT]
-    # Step 2: VISION_PROBE fails firewall (INVALID) -> reverts to H_B (NEU), NOT H_A (POS)!
-    client = MockClient(
-        override_firewall_status="INVALID",
-        override_cv_decision="REVERT_TEXT_BASELINE",
-        rethink_sentiment="NEU"
-    )
-    client.step_action_sequence = ["TEXT_RETHINK", "VISION_PROBE"]
-
-    pipeline = BACRPipelineV3(client=client, max_visual_probes=2)
     sample = {
-        "sample_id": "test_dual_baseline",
-        "text": "Obama attends summit # party",
+        "sample_id": "test_text_revert_01",
+        "text": "Neutral financial earnings for Google",
         "image": "dummy.jpg",
-        "pairs": [["Obama", "NEU"]]
+        "pairs": [["Google", "NEU"]],
+        "text_initial_cached": {"pairs": [["Google", "NEU"]]}  # T0 was NEU
     }
-
     record = pipeline.run_sample(sample)
-    assert record["text_anchor"]["pairs"] == [["Obama", "POS"]]     # H_A stays POS
-    assert record["text_baseline"]["pairs"] == [["Obama", "NEU"]]   # H_B preserved as NEU
-    assert record["final_pairs"] == [["Obama", "NEU"]]              # Final is NEU (reverted to H_B!)
-    print("Passed test_dual_baseline_and_revert_to_hb!")
+
+    # Invariant: CF REVERT forces fallback to T0 (NEU)
+    assert record["final_pairs"] == [["Google", "NEU"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "TEXT"
+    assert asp_tr["candidate_sentiment"] == "POS"
+    assert asp_tr["audit_decision"] == "REVERT"
+    assert asp_tr["final_sentiment"] == "NEU"
+    print("Passed test_route_text_revert!")
 
 
-def test_v3_transition_diagnostics_calculation(tmp_path: pathlib.Path):
-    print("--- Running test_v3_transition_diagnostics_calculation ---")
+def test_route_vision_firewall_fail_closed():
+    print("--- Running test_route_vision_firewall_fail_closed ---")
+    # Controller routes VISION, but Firewall declares INVALID
+    client = MockTeacherClient(
+        route_action="VISION",
+        firewall_status="INVALID",
+        firewall_binding="UNBOUND"
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_vision_fail_closed_01",
+        "text": "Tesla announces event",
+        "image": "dummy.jpg",
+        "pairs": [["Tesla", "NEU"]],
+        "text_initial_cached": {"pairs": [["Tesla", "NEU"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    # Invariant: EvidenceInvalid => T0 directly, and TF is NEVER called!
+    assert record["final_pairs"] == [["Tesla", "NEU"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "VISION"
+    assert asp_tr["evidence"]["status"] == "INVALID"
+    assert asp_tr["audit_decision"] == "REVERT"
+    assert asp_tr["final_sentiment"] == "NEU"
+
+    tf_calls = [c for c in client.call_history if "text_evidence_fusion.md" in c[1]]
+    assert len(tf_calls) == 0, "TF should NOT have been invoked when firewall was INVALID!"
+    print("Passed test_route_vision_firewall_fail_closed!")
+
+
+def test_route_vision_valid_accept():
+    print("--- Running test_route_vision_valid_accept ---")
+    client = MockTeacherClient(
+        route_action="VISION",
+        firewall_status="VALID",
+        firewall_binding="DIRECT",
+        fusion_sentiment="POS",
+        audit_decision="ACCEPT"
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_vision_valid_accept_01",
+        "text": "Ambiguous caption on photo with Elon Musk",
+        "image": "dummy.jpg",
+        "pairs": [["Elon Musk", "POS"]],
+        "text_initial_cached": {"pairs": [["Elon Musk", "NEU"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    assert record["final_pairs"] == [["Elon Musk", "POS"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "VISION"
+    assert asp_tr["evidence"]["status"] == "VALID"
+    assert asp_tr["candidate_sentiment"] == "POS"
+    assert asp_tr["audit_decision"] == "ACCEPT"
+    assert asp_tr["final_sentiment"] == "POS"
+    print("Passed test_route_vision_valid_accept!")
+
+
+def test_route_vision_valid_revert():
+    print("--- Running test_route_vision_valid_revert ---")
+    # Valid physical evidence, TF suggests NEG, but CF audits as speculative/REVERT
+    client = MockTeacherClient(
+        route_action="VISION",
+        firewall_status="VALID",
+        firewall_binding="DIRECT",
+        fusion_sentiment="NEG",
+        audit_decision="REVERT"
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_vision_valid_revert_01",
+        "text": "Photo of team celebration",
+        "image": "dummy.jpg",
+        "pairs": [["Team", "POS"]],
+        "text_initial_cached": {"pairs": [["Team", "POS"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    # Invariant: Audit REVERT safeguards T0 (POS)
+    assert record["final_pairs"] == [["Team", "POS"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "VISION"
+    assert asp_tr["candidate_sentiment"] == "NEG"
+    assert asp_tr["audit_decision"] == "REVERT"
+    assert asp_tr["final_sentiment"] == "POS"
+    print("Passed test_route_vision_valid_revert!")
+
+
+def test_semantic_firewall_leak_sanitization():
+    print("--- Running test_semantic_firewall_leak_sanitization ---")
+    client = MockTeacherClient(
+        route_action="TEXT",
+        leak_visual_in_critique=True
+    )
+    controller = MetaController(client=client)
+
+    route_dec, _, _ = controller.decide_route(
+        aspect="Obama",
+        anchor={"sentiment": "POS"},
+        visual_sketch={"scene": "photo"}
+    )
+    # The accidental visual leakage must be intercepted and sanitized
+    assert "smiling" not in route_dec.critique
+    assert "photo" not in route_dec.critique
+    assert "Re-examine the tweet's linguistic syntax" in route_dec.critique
+    print("Passed test_semantic_firewall_leak_sanitization!")
+
+
+def test_multi_aspect_sample_factoring():
+    print("--- Running test_multi_aspect_sample_factoring ---")
+    client = MockTeacherClient(route_action="KEEP")
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_multi_01",
+        "text": "Obama and Biden both spoke at the ceremony",
+        "image": "dummy.jpg",
+        "pairs": [["Obama", "POS"], ["Biden", "NEU"]],
+        "text_initial_cached": {
+            "pairs": [["Obama", "POS"], ["Biden", "NEU"]]
+        }
+    }
+    record = pipeline.run_sample(sample)
+
+    # Invariant K=1: Multi-aspect samples must factor cleanly into 2 aspect trajectories
+    assert len(record["aspect_trajectories"]) == 2
+    assert record["final_pairs"] == [["Obama", "POS"], ["Biden", "NEU"]]
+    asps_evaluated = [at["aspect"] for at in record["aspect_trajectories"]]
+    assert "Obama" in asps_evaluated
+    assert "Biden" in asps_evaluated
+    print("Passed test_multi_aspect_sample_factoring!")
+
+
+def test_evaluator_v3_teacher(tmp_path: pathlib.Path):
+    print("--- Running test_evaluator_v3_teacher ---")
     gold_file = str(tmp_path / "gold.jsonl")
     traj_file = str(tmp_path / "traj.jsonl")
 
-    # Realistic aspect names: Trump, Obama, Biden
     gold_data = [
-        {"sample_id": "s1", "pairs": [["Trump", "POS"]]},
-        {"sample_id": "s2", "pairs": [["Obama", "NEU"]]},
+        {"sample_id": "s1", "pairs": [["Obama", "POS"]]},
+        {"sample_id": "s2", "pairs": [["Trump", "NEG"]]},
         {"sample_id": "s3", "pairs": [["Biden", "NEU"]]}
     ]
     with open(gold_file, "w", encoding="utf-8") as f:
         for g in gold_data:
             f.write(json.dumps(g) + "\n")
 
+    # s1: T0=NEU (wrong), Final=POS (correct) -> Recover!
+    # s2: T0=NEG (correct), Final=NEG (correct) -> Maintained!
+    # s3: T0=NEU (correct), Final=NEU (correct) -> Maintained!
+    # Recover = 1, Harm = 0 => Net Gain = +1 (Hypothesis Satisfied!)
     trajs = [
         {
             "sample_id": "s1",
-            "action": "FINALIZE",
-            "contrast_type": "NO_RISK",
-            "text_anchor": {"pairs": [["Trump", "POS"]]},
-            "text_baseline": {"pairs": [["Trump", "POS"]]},
-            "final_pairs": [["Trump", "POS"]],
-            "transitions": []
+            "t0_pairs": [["Obama", "NEU"]],
+            "final_pairs": [["Obama", "POS"]],
+            "aspect_trajectories": [
+                {
+                    "aspect": "Obama",
+                    "t0_sentiment": "NEU",
+                    "route": "TEXT",
+                    "audit_decision": "ACCEPT",
+                    "final_sentiment": "POS"
+                }
+            ]
         },
         {
             "sample_id": "s2",
-            "action": "TEXT_RETHINK",
-            "contrast_type": "AFFECT_SPILLOVER",
-            "text_anchor": {"pairs": [["Obama", "POS"]]},  # H_A wrong
-            "text_baseline": {"pairs": [["Obama", "NEU"]]}, # H_B corrected
-            "final_pairs": [["Obama", "NEU"]],
-            "transitions": [
+            "t0_pairs": [["Trump", "NEG"]],
+            "final_pairs": [["Trump", "NEG"]],
+            "aspect_trajectories": [
                 {
-                    "step": 1,
-                    "action": "TEXT_RETHINK",
-                    "aspect_id": "a_01",
-                    "aspect_text": "Obama",
-                    "aspect_span": [0, 5],
-                    "pre_sentiment": "POS",
-                    "candidate_sentiment": "NEU",
-                    "verifier_decision": "ACCEPT_TEXT_REVISION",
-                    "post_sentiment": "NEU"
+                    "aspect": "Trump",
+                    "t0_sentiment": "NEG",
+                    "route": "KEEP",
+                    "audit_decision": "N/A",
+                    "final_sentiment": "NEG"
                 }
             ]
         },
         {
             "sample_id": "s3",
-            "action": "VISION_PROBE",
-            "contrast_type": "MISSING_AFFECT",
-            "text_anchor": {"pairs": [["Biden", "NEU"]]},
-            "text_baseline": {"pairs": [["Biden", "NEU"]]},
+            "t0_pairs": [["Biden", "NEU"]],
             "final_pairs": [["Biden", "NEU"]],
-            "transitions": [
+            "aspect_trajectories": [
                 {
-                    "step": 1,
-                    "action": "VISION_PROBE",
-                    "aspect_id": "a_02",
-                    "aspect_text": "Biden",
-                    "aspect_span": [0, 5],
-                    "pre_sentiment": "NEU",
-                    "candidate_sentiment": "POS",
-                    "verifier_decision": "REVERT_TEXT_BASELINE",
-                    "post_sentiment": "NEU"
+                    "aspect": "Biden",
+                    "t0_sentiment": "NEU",
+                    "route": "VISION",
+                    "audit_decision": "REVERT",
+                    "final_sentiment": "NEU"
                 }
             ]
         }
@@ -524,339 +481,34 @@ def test_v3_transition_diagnostics_calculation(tmp_path: pathlib.Path):
         for t in trajs:
             f.write(json.dumps(t) + "\n")
 
-    diag = evaluate_v3_trajectories(traj_file, gold_file)
-    assert diag["total_samples"] == 3
-    assert diag["acc_ha"] == 66.67
-    assert diag["acc_final"] == 100.0
-    assert diag["anchor_corrections"] == 1
-    assert diag["anchor_corruptions"] == 0
-    assert diag["anchor_net_gain"] == 1
-    assert diag["revert_count"] == 1
-    # Verify MU_T recovered 1 Obama aspect despite aspect_id='a_01'
-    assert diag["marginal_utility_text"]["recover"] == 1
-    assert diag["marginal_utility_text"]["harm"] == 0
-    assert diag["marginal_utility_text"]["mu_t"] == 1
-    print("Passed test_v3_transition_diagnostics_calculation!")
+    res = evaluate_v3_teacher(traj_file=traj_file, gold_file=gold_file)
+    assert res["total_samples"] == 3
+    assert res["total_aspects"] == 3
+    assert res["total_recover"] == 1
+    assert res["total_harm"] == 0
+    assert res["net_gain"] == 1
+    assert res["hypothesis_satisfied"] is True
+    assert res["aspect_t0_acc"] == 66.67
+    assert res["aspect_final_acc"] == 100.0
 
-
-def test_bacr_env_gym_interface():
-    print("--- Running test_bacr_env_gym_interface ---")
-    client = MockClient(rethink_sentiment="NEU")
-    env = BACREnv(client=client, budget_config={"max_deep_actions": 2, "max_text_rethinks": 1, "max_visual_probes": 2})
-
-    sample = {
-        "sample_id": "env_test_01",
-        "text": "Obama gives great speech # report",
-        "image": "dummy.jpg",
-        "pairs": [["Obama", "NEU"]]
-    }
-    state = env.reset(sample)
-    assert state["budget"] == 2
-    assert state["done"] is False
-    assert "a_01" in state["aspect_states"]
-    assert "Obama" == state["aspect_states"]["a_01"]["text"]
-
-    # Step 1: TEXT_RETHINK
-    action_1 = {
-        "action": ControllerAction.TEXT_RETHINK.value,
-        "target_aspect_id": "a_01"
-    }
-    next_state, reward, done, info = env.step(action_1)
-    assert next_state["budget"] == 1
-    # Transitioned from POS (wrong) to NEU (correct) with TEXT cost = +1.0 - 0.05 = 0.95!
-    assert reward == 0.95
-    assert len(next_state["policy_history"]) == 1
-
-    # Step 2: FINALIZE
-    action_2 = {"action": ControllerAction.FINALIZE.value}
-    final_state, final_r, done, info = env.step(action_2)
-    assert done is True
-    assert final_r == 1.0  # Final task exact match reward!
-    print("Passed test_bacr_env_gym_interface!")
-
-
-def test_open_joint_sequestration():
-    print("--- Running test_open_joint_sequestration ---")
-    client = MockClient()
-    env = BACREnv(client=client, task_mode=TaskMode.OPEN_JOINT)
-    sample = {
-        "sample_id": "test_oj_01",
-        "text": "Obama gives speech",
-        "image": "dummy.jpg",
-        "pairs": [["Obama", "NEU"]]  # Gold pairs must not be visible to agent
-    }
-    state = env.reset(sample)
-    # Observable state S_t MUST NOT contain 'pairs' or 'gold_pairs'!
-    assert "pairs" not in state
-    assert "gold_pairs" not in state
-    assert "Obama" in state["aspect_states"]["a_01"]["text"]
-
-    # Ensure TA prompt did not receive gold aspects hint
-    ta_calls = [item[1] for item in client.call_history if len(item) >= 2 and "Structured Text Anchor Ledger" in item[1]]
-    assert len(ta_calls) > 0
-    assert "Focus specifically on extracting and evaluating these target aspects" not in ta_calls[-1]
-    print("Passed test_open_joint_sequestration!")
-
-
-def test_monotonic_step_counter():
-    print("--- Running test_monotonic_step_counter ---")
-    client = MockClient()
-    client.step_action_sequence = ["TEXT_RETHINK"]
-
-    orig_call_text = client.call_text
-    def custom_call_text(system_prompt: str = "", user_prompt: str = "", **kwargs):
-        if "(CT) Prompt" in system_prompt or "Audit whether the linguistic revision" in user_prompt:
-            return {
-                "decision": "ESCALATE_TO_VISION",
-                "visual_gap": "Check physical facial cues for Obama",
-                "target_aspect_id": "a_01"
-            }, {"total_tokens": 15}, 0.05
-        return orig_call_text(system_prompt=system_prompt, user_prompt=user_prompt, **kwargs)
-    client.call_text = custom_call_text
-
-    pipeline = BACRPipelineV3(client=client, max_visual_probes=2)
-    sample = {
-        "sample_id": "test_mono_step",
-        "text": "Obama farewell event",
-        "image": "dummy.jpg",
-        "pairs": [["Obama", "POS"]]
-    }
-    record = pipeline.run_sample(sample)
-    transitions = record["transitions"]
-    assert len(transitions) >= 2, f"Expected >=2 transitions, got {len(transitions)}"
-    steps = [t["step"] for t in transitions]
-    assert steps == sorted(steps), f"Steps not monotonically increasing: {steps}"
-    assert len(steps) == len(set(steps)), f"Steps not strictly unique: {steps}"
-    assert transitions[0]["action"] == "TEXT_RETHINK"
-    assert transitions[0]["step"] == 1
-    assert transitions[1]["action"] == "VISION_PROBE"
-    assert transitions[1]["step"] == 2
-    print("Passed test_monotonic_step_counter!")
-
-
-def test_budget_state_action_mask():
-    print("--- Running test_budget_state_action_mask ---")
-    b = BudgetState(
-        max_deep_actions=2,
-        max_text_rethinks=1,
-        max_visual_probes=2,
-        deep_remaining=2,
-        text_remaining=1,
-        vision_remaining=2
-    )
-    assert set(b.get_valid_actions()) == {"FINALIZE", "TEXT_RETHINK", "VISION_PROBE"}
-
-    # Consume text
-    b.consume_text()
-    assert b.text_remaining == 0
-    assert b.deep_remaining == 1
-    assert "TEXT_RETHINK" not in b.get_valid_actions()
-    assert set(b.get_valid_actions()) == {"FINALIZE", "VISION_PROBE"}
-
-    # Consume vision
-    b.consume_vision()
-    assert b.deep_remaining == 0
-    assert b.get_valid_actions() == ["FINALIZE"]
-    print("Passed test_budget_state_action_mask!")
-
-
-def test_isomorphic_pipeline_and_env():
-    print("--- Running test_isomorphic_pipeline_and_env ---")
-    client_pipe = MockClient(rethink_sentiment="NEU")
-    client_env = MockClient(rethink_sentiment="NEU")
-
-    sample = {
-        "sample_id": "test_iso_01",
-        "text": "Obama delivers speech",
-        "image": "dummy.jpg",
-        "pairs": [["Obama", "NEU"]]
-    }
-
-    # Pipeline run
-    pipe = BACRPipelineV3(client=client_pipe, max_visual_probes=2)
-    pipe_record = pipe.run_sample(sample)
-
-    # Manual Env run
-    env = BACREnv(client=client_env, budget_config={"max_deep_actions": 2, "max_text_rethinks": 1, "max_visual_probes": 2})
-    state = env.reset(sample)
-    policy = GeminiTeacherPolicy(client=client_env)
-    while not env.done:
-        act = policy.act(state)
-        state, r, done, info = env.step(act)
-    env_record = env.export_trajectory()
-
-    assert pipe_record["final_pairs"] == env_record["final_pairs"]
-    assert len(pipe_record["transitions"]) == len(env_record["transitions"])
-    assert pipe_record["contrast_type"] == env_record["contrast_type"]
-    print("Passed test_isomorphic_pipeline_and_env!")
-
-
-def test_single_aspect_factoring_and_aggregation():
-    print("--- Running test_single_aspect_factoring_and_aggregation ---")
-    client = MockClient()
-    pipeline = BACRPipelineV3(client=client)
-
-    sample = {
-        "sample_id": "test_multi_01",
-        "text": "Obama and Biden attend the celebration event",
-        "image": "dummy.jpg",
-        "pairs": [["Obama", "POS"], ["Biden", "NEU"]]
-    }
-    traj = pipeline.run_sample(sample)
-
-    assert "aspect_trajectories" in traj
-    assert len(traj["aspect_trajectories"]) == 2
-    assert len(traj["final_pairs"]) == 2
-    pred_map = {p[0]: p[1] for p in traj["final_pairs"]}
-    assert "Obama" in pred_map
-    assert "Biden" in pred_map
-    print("Passed test_single_aspect_factoring_and_aggregation!")
-
-
-def test_controller_physical_decoupling():
-    print("--- Running test_controller_physical_decoupling ---")
-    client = MockClient()
-    mc = MetaController(client)
-
-    # 1. diagnose_text_risk MUST NOT contain visual cues
-    h_a = {"aspects": [{"text": "Obama", "sentiment": "POS"}]}
-    h_b = {"aspects": [{"text": "Obama", "sentiment": "POS"}]}
-    t_risk, _, _ = mc.diagnose_text_risk(h_a=h_a, h_b=h_b, target_aspect_text="Obama")
-    assert "risk_type" in t_risk
-
-    t_risk_calls = [p[1] for p in client.call_history if "Textual Risk Auditor" in p[0]]
-    assert len(t_risk_calls) > 0
-    assert "Global Visual Sketch" not in t_risk_calls[0]
-    assert "V_0" not in t_risk_calls[0]
-
-    # 2. assess_visual_opportunity MUST NOT contain text sentiment hypotheses
-    v_0 = {"scene": "press conference", "objects": ["podium", "flag"]}
-    v_opp, _, _ = mc.assess_visual_opportunity(target_aspect_text="Obama", v_0=v_0)
-    assert "opportunity_type" in v_opp
-
-    v_opp_calls = [p[1] for p in client.call_history if "Visual Opportunity Assessor" in p[0]]
-    assert len(v_opp_calls) > 0
-    assert "Text Anchor" not in v_opp_calls[0]
-    assert "Text Baseline" not in v_opp_calls[0]
-    assert "H_A" not in v_opp_calls[0]
-    assert "H_B" not in v_opp_calls[0]
-
-    # 3. route_action operates on discrete decoupled inputs
-    route, _, _ = mc.route_action(
-        text_risk=t_risk,
-        visual_opportunity=v_opp,
-        budget=2,
-        action_mask=["FINALIZE", "TEXT_RETHINK", "VISION_PROBE"]
-    )
-    assert route["action"] in ["FINALIZE", "TEXT_RETHINK", "VISION_PROBE"]
-    print("Passed test_controller_physical_decoupling!")
-
-
-def test_non_cascading_transition_invariant():
-    print("--- Running test_non_cascading_transition_invariant ---")
-    client = MockClient()
-    client.call_history = []
-    env = BACREnv(client=client, budget_config={"max_deep_actions": 2, "max_text_rethinks": 1, "max_visual_probes": 2})
-
-    sample = {
-        "sample_id": "test_no_cascade",
-        "text": "Obama gave remarks at memorial",
-        "image": "dummy.jpg",
-        "pairs": [["Obama", "NEU"]]
-    }
-    state = env.reset(sample)
-
-    orig_call_text = client.call_text
-    def ct_escalate_call(system_prompt="", user_prompt="", **kwargs):
-        if "(CT) Prompt" in system_prompt or "Audit whether the linguistic revision" in user_prompt:
-            return {
-                "decision": "ESCALATE_TO_VISION",
-                "visual_gap": "Check Obama facial expressions at podium",
-                "target_aspect_id": "a_01"
-            }, {"total_tokens": 15}, 0.05
-        return orig_call_text(system_prompt=system_prompt, user_prompt=user_prompt, **kwargs)
-
-    client.call_text = ct_escalate_call
-
-    # Step 1: TEXT_RETHINK
-    vision_calls_before = env.compute["api_calls_vision"]
-    s1, r1, done1, info1 = env.step("TEXT_RETHINK")
-
-    # Invariant: Must NOT auto-cascade! env.step() returns immediately with pending_visual_gap
-    assert s1["pending_visual_gap"] == "Check Obama facial expressions at podium"
-    assert s1["recommended_next_action"] == "VISION_PROBE"
-    assert env.compute["api_calls_vision"] == vision_calls_before  # Zero vision invocations during text rethink!
-    assert len(env.transitions) == 1
-    assert env.transitions[0]["action"] == "TEXT_RETHINK"
-
-    # Step 2: Policy takes recommended VISION_PROBE
-    s2, r2, done2, info2 = env.step("VISION_PROBE")
-    assert env.compute["api_calls_vision"] > vision_calls_before  # Now vision was called
-    assert len(env.transitions) == 2
-    assert env.transitions[1]["action"] == "VISION_PROBE"
-    assert s2["pending_visual_gap"] is None  # Gap was consumed
-    print("Passed test_non_cascading_transition_invariant!")
-
-
-def test_anchor_relative_asymmetric_reward():
-    print("--- Running test_anchor_relative_asymmetric_reward ---")
-    client = MockClient()
-    env = BACREnv(client=client)
-
-    sample = {
-        "sample_id": "test_rew_01",
-        "text": "Great event # news",
-        "image": "dummy.jpg",
-        "pairs": [["Obama", "NEU"]]
-    }
-    env.reset(sample)
-
-    # 1. Rescued: anchor was POS (wrong), final is NEU (correct) -> +1.0
-    env.aspect_episode_state.anchor_sentiment = "POS"
-    env.aspect_episode_state.baseline_sentiment = "NEU"
-    r_rescue = env._calculate_final_reward()
-    assert r_rescue == 1.0, f"Expected 1.0 for rescue, got {r_rescue}"
-
-    # 2. Harmed: anchor was NEU (correct), final is POS (wrong) -> -1.5
-    env.aspect_episode_state.anchor_sentiment = "NEU"
-    env.aspect_episode_state.baseline_sentiment = "POS"
-    r_harm = env._calculate_final_reward()
-    assert r_harm == -1.5, f"Expected -1.5 for harm, got {r_harm}"
-
-    # 3. Maintained correct: anchor was NEU (correct), final is NEU (correct) -> 1.0
-    env.aspect_episode_state.anchor_sentiment = "NEU"
-    env.aspect_episode_state.baseline_sentiment = "NEU"
-    r_correct = env._calculate_final_reward()
-    assert r_correct == 1.0, f"Expected 1.0 for maintained correct, got {r_correct}"
-
-    # 4. Remained incorrect: anchor was POS (wrong), final is NEG (wrong) -> -0.5
-    env.aspect_episode_state.anchor_sentiment = "POS"
-    env.aspect_episode_state.baseline_sentiment = "NEG"
-    r_wrong = env._calculate_final_reward()
-    assert r_wrong == -0.5, f"Expected -0.5 for remained incorrect, got {r_wrong}"
-    print("Passed test_anchor_relative_asymmetric_reward!")
+    print_v3_teacher_report(res)
+    print("Passed test_evaluator_v3_teacher!")
 
 
 if __name__ == "__main__":
     test_v3_schemas_and_fail_closed_contract()
-    test_physical_and_semantic_critique_firewall()
-    test_query_again_preserves_hb_and_accumulates_evidence()
-    test_ct_escalate_to_vision()
-    test_text_reasoner_aspect_isolation()
-    test_dual_baseline_and_revert_to_hb()
+    test_route_keep()
+    test_route_text_accept()
+    test_route_text_revert()
+    test_route_vision_firewall_fail_closed()
+    test_route_vision_valid_accept()
+    test_route_vision_valid_revert()
+    test_semantic_firewall_leak_sanitization()
+    test_multi_aspect_sample_factoring()
     with tempfile.TemporaryDirectory() as td:
-        test_v3_transition_diagnostics_calculation(pathlib.Path(td))
-    test_bacr_env_gym_interface()
-    test_open_joint_sequestration()
-    test_monotonic_step_counter()
-    test_budget_state_action_mask()
-    test_isomorphic_pipeline_and_env()
-    # New Stage 3 Invariant Tests
-    test_single_aspect_factoring_and_aggregation()
-    test_controller_physical_decoupling()
-    test_non_cascading_transition_invariant()
-    test_anchor_relative_asymmetric_reward()
-    print("\n==========================================================================")
-    print("  ALL 16 COMPREHENSIVE BACR-v3 HARDENING & STAGE 3 TESTS PASSED 100%!")
-    print("==========================================================================")
+        test_evaluator_v3_teacher(pathlib.Path(td))
+
+    print("\n" + "=" * 78)
+    print("  ALL 10 BACR-v3 MINIMAL TEACHER VERIFICATION INVARIANT TESTS PASSED 100%!")
+    print("=" * 78 + "\n")
 

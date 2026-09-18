@@ -34,7 +34,9 @@ from bacr.evaluator import (
     BACREvaluator,
     print_evaluation_report,
     evaluate_v3_trajectories,
-    print_v3_evaluation_report
+    print_v3_evaluation_report,
+    evaluate_v3_teacher,
+    print_v3_teacher_report
 )
 
 
@@ -282,20 +284,14 @@ def main():
         failures_file = os.path.join(run_dir, "failures.jsonl")
 
         if is_v3:
-            budget_cfg = exp_config.get("experiment", {}).get("budget", {})
-            max_deep_actions = budget_cfg.get("max_deep_actions", exp_config.get("experiment", {}).get("max_visual_probes", 2))
-            task_mode = exp_config.get("experiment", {}).get("task", {}).get("mode", "target_guided")
             pipeline = BACRPipelineV3(
                 client=client,
                 run_id=run_id,
-                max_visual_probes=max_deep_actions,
-                budget_config=budget_cfg,
-                task_mode=task_mode,
                 text_client=text_client,
                 controller_client=controller_client,
                 vision_client=vision_client
             )
-            logger.info(f"Initialized BACRPipelineV3 (Task Mode={task_mode}, Budget={budget_cfg})")
+            logger.info("Initialized BACRPipelineV3 (Minimal Teacher Verification, K=1)")
         else:
             controller_sees_raw = exp_config.get("experiment", {}).get("controller", {}).get("controller_sees_raw_modalities", False)
             pipeline = BACRPipeline(client=client, controller_sees_raw_modalities=controller_sees_raw)
@@ -322,8 +318,7 @@ def main():
                 if is_v3:
                     record = pipeline.run_sample(
                         sample=sample_copy,
-                        image_base_dir=PROJECT_ROOT,
-                        max_visual_probes=max_deep_actions
+                        image_base_dir=PROJECT_ROOT
                     )
                 else:
                     record = pipeline.run_sample(
@@ -424,8 +419,14 @@ def main():
         metrics = evaluator.evaluate_predictions(pred_file=traj_file)
         print_evaluation_report(metrics)
 
-        # If v3, also compute and display dual-hypothesis contrast diagnostics
+        # If v3, compute and display minimal teacher verification report and transition diagnostics
         if is_v3:
+            teacher_diag = evaluate_v3_teacher(traj_file=traj_file, gold_file=data_file)
+            print_v3_teacher_report(teacher_diag)
+            teacher_diag_path = os.path.join(run_dir, "v3_teacher_evaluation.json")
+            with open(teacher_diag_path, "w", encoding="utf-8") as f_t:
+                json.dump(teacher_diag, f_t, indent=2, ensure_ascii=False)
+
             v3_diag = evaluate_v3_trajectories(traj_file=traj_file, gold_file=data_file)
             print_v3_evaluation_report(v3_diag)
             v3_diag_path = os.path.join(run_dir, "v3_diagnostics.json")
