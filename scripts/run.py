@@ -284,14 +284,20 @@ def main():
         failures_file = os.path.join(run_dir, "failures.jsonl")
 
         if is_v3:
+            budget_cfg = exp_config.get("experiment", {}).get("budget", {})
+            max_visual_probes = budget_cfg.get("max_visual_probes", 1)
+            k_interventions = budget_cfg.get("k_interventions", 1)
+
             pipeline = BACRPipelineV3(
                 client=client,
                 run_id=run_id,
+                max_visual_probes=max_visual_probes,
+                k_interventions=k_interventions,
                 text_client=text_client,
                 controller_client=controller_client,
                 vision_client=vision_client
             )
-            logger.info("Initialized BACRPipelineV3 (Minimal Teacher Verification, K=1)")
+            logger.info(f"Initialized BACRPipelineV3 (Target-Guided Teacher Verification, K={k_interventions}, max_visual_probes={max_visual_probes})")
         else:
             controller_sees_raw = exp_config.get("experiment", {}).get("controller", {}).get("controller_sees_raw_modalities", False)
             pipeline = BACRPipeline(client=client, controller_sees_raw_modalities=controller_sees_raw)

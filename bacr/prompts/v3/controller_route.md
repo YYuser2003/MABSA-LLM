@@ -11,7 +11,7 @@ Your mission is to audit the initial text sentiment hypothesis ($T_0$) for the l
 ## Action Space
 Choose exactly ONE discrete action:
 - `KEEP`: $T_0$ is well-grounded in explicit tweet text, or the image is generic/decorative/target absent. No intervention needed.
-- `TEXT`: Syntactic ambiguity, affect spillover from hashtags/neighboring clauses, or reporting frame neutrality. Resolvable by linguistic re-deliberation without visual cues. Formulate a targeted `critique`.
+- `TEXT`: Syntactic ambiguity, affect spillover from hashtags/neighboring clauses, or reporting frame neutrality. Resolvable by linguistic re-deliberation without visual cues.
 - `VISION`: Minimalist or affect-withheld tweet where the target entity is physically visible in $V_0$ with clear facial expressions, gestures, or interactions. Formulate an objective, non-leading `question`.
 
 ## Output Format (Strict JSON)
@@ -21,7 +21,6 @@ Output strictly as a valid JSON object matching this schema:
   "risk_type": "NO_RISK|MISSING_AFFECT|AFFECT_SPILLOVER|REPORTING_FRAME|PRAGMATIC_AFFECT",
   "action": "KEEP|TEXT|VISION",
   "reason": "Clear justification for selecting this action.",
-  "critique": "Targeted linguistic critique if TEXT, else null",
   "question": "Objective, non-leading factual question if VISION, else null"
 }
 ```

@@ -8,7 +8,7 @@ Defines the 4 essential data contracts for the single-pass Teacher pipeline:
 """
 
 from enum import Enum
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -38,6 +38,18 @@ class TargetBinding(str, Enum):
     DIRECT = "DIRECT"
     INDIRECT = "INDIRECT"
     UNBOUND = "UNBOUND"
+
+
+class EvidenceRelevance(str, Enum):
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+
+
+class RevisionSupport(str, Enum):
+    SUPPORTS_REVISION = "SUPPORTS_REVISION"
+    CONTRADICTS_REVISION = "CONTRADICTS_REVISION"
+    NON_DECISIVE = "NON_DECISIVE"
 
 
 class AuditDecision(str, Enum):
@@ -83,8 +95,11 @@ class RouteDecision(BaseModel):
 class EvidenceResult(BaseModel):
     status: EvidenceStatus = EvidenceStatus.INVALID
     target_binding: TargetBinding = TargetBinding.UNBOUND
+    relevance: EvidenceRelevance = EvidenceRelevance.LOW
+    revision_support: RevisionSupport = RevisionSupport.NON_DECISIVE
     usable_evidence: List[str] = Field(default_factory=list)
     rejected_inferences: List[str] = Field(default_factory=list)
+    verification_notes: str = ""
 
     @classmethod
     def validate_fail_closed(cls, data: Any) -> "EvidenceResult":
@@ -92,8 +107,11 @@ class EvidenceResult(BaseModel):
         fail_default = cls(
             status=EvidenceStatus.INVALID,
             target_binding=TargetBinding.UNBOUND,
+            relevance=EvidenceRelevance.LOW,
+            revision_support=RevisionSupport.NON_DECISIVE,
             usable_evidence=[],
-            rejected_inferences=[]
+            rejected_inferences=[],
+            verification_notes="Fail-closed default due to invalid data structure."
         )
         if not isinstance(data, dict):
             return fail_default
@@ -107,21 +125,44 @@ class EvidenceResult(BaseModel):
             if tb not in [b.value for b in TargetBinding]:
                 tb = TargetBinding.UNBOUND.value
 
+            rel_str = str(data.get("relevance", "LOW")).upper().strip()
+            if rel_str not in [r.value for r in EvidenceRelevance]:
+                rel_str = EvidenceRelevance.LOW.value
+
+            sup_str = str(data.get("revision_support", "NON_DECISIVE")).upper().strip()
+            if sup_str not in [s.value for s in RevisionSupport]:
+                sup_str = RevisionSupport.NON_DECISIVE.value
+
             raw_usable = data.get("usable_evidence", [])
             if not isinstance(raw_usable, list):
                 return fail_default
 
             status_enum = EvidenceStatus(st)
-            if status_enum in [EvidenceStatus.INVALID, EvidenceStatus.INSUFFICIENT] or tb == TargetBinding.UNBOUND.value:
+            binding_enum = TargetBinding(tb)
+            rel_enum = EvidenceRelevance(rel_str)
+            sup_enum = RevisionSupport(sup_str)
+
+            # Strict fail-closed: usable_evidence must be cleared if status is not VALID,
+            # target_binding is not DIRECT, or revision_support is not SUPPORTS_REVISION
+            if (
+                status_enum != EvidenceStatus.VALID
+                or binding_enum != TargetBinding.DIRECT
+                or sup_enum != RevisionSupport.SUPPORTS_REVISION
+            ):
                 usable = []
             else:
                 usable = [str(x).strip() for x in raw_usable if str(x).strip()]
 
+            notes = str(data.get("verification_notes", data.get("reason", data.get("notes", ""))))
+
             return cls(
                 status=status_enum,
-                target_binding=TargetBinding(tb),
+                target_binding=binding_enum,
+                relevance=rel_enum,
+                revision_support=sup_enum,
                 usable_evidence=usable,
-                rejected_inferences=[str(x) for x in data.get("rejected_inferences", []) if str(x).strip()]
+                rejected_inferences=[str(x) for x in data.get("rejected_inferences", []) if str(x).strip()],
+                verification_notes=notes
             )
         except Exception:
             return fail_default
@@ -194,6 +235,24 @@ class FinalAudit(BaseModel):
             return fail_safe
 
 
+class TrainingTransitionRecord(BaseModel):
+    """Normalized transition record capturing intermediate states for SFT and RL training."""
+    sample_id: str
+    aspect: str
+    t0_sentiment: str
+    final_sentiment: str
+    route: str  # KEEP, TEXT, VISION
+    risk_type: str = "NO_RISK"
+    route_reason: str = ""
+    critique: Optional[str] = None
+    question: Optional[str] = None
+    raw_evidence: Optional[Dict[str, Any]] = None
+    verified_evidence: Optional[Dict[str, Any]] = None
+    candidate: Optional[Dict[str, Any]] = None
+    audit: Optional[Dict[str, Any]] = None
+    compute: Optional[Dict[str, Any]] = None
+
+
 # ============================================================================
 # Compatibility Aliases
 # ============================================================================
@@ -201,3 +260,4 @@ ControllerAction = RouteAction
 EvidenceFirewallOutput = EvidenceResult
 RevisionVerifierOutput = FinalAudit
 RiskDecision = RouteDecision
+

@@ -50,6 +50,8 @@ class MockTeacherClient:
         rethink_sentiment="NEU",
         firewall_status="VALID",
         firewall_binding="DIRECT",
+        firewall_revision_support="SUPPORTS_REVISION",
+        firewall_relevance="HIGH",
         fusion_sentiment="POS",
         audit_decision="ACCEPT",
         leak_visual_in_critique=False
@@ -60,6 +62,8 @@ class MockTeacherClient:
         self.rethink_sentiment = rethink_sentiment
         self.firewall_status = firewall_status
         self.firewall_binding = firewall_binding
+        self.firewall_revision_support = firewall_revision_support
+        self.firewall_relevance = firewall_relevance
         self.fusion_sentiment = fusion_sentiment
         self.audit_decision = audit_decision
         self.leak_visual_in_critique = leak_visual_in_critique
@@ -96,6 +100,8 @@ class MockTeacherClient:
                 return {
                     "status": "VALID",
                     "target_binding": self.firewall_binding,
+                    "relevance": self.firewall_relevance,
+                    "revision_support": self.firewall_revision_support,
                     "usable_evidence": ["Target entity displays broad smile and raised arms."],
                     "rejected_inferences": [],
                     "verification_notes": "Physical verifiable facts bound to target."
@@ -104,6 +110,8 @@ class MockTeacherClient:
                 return {
                     "status": self.firewall_status,
                     "target_binding": self.firewall_binding,
+                    "relevance": self.firewall_relevance,
+                    "revision_support": self.firewall_revision_support,
                     "usable_evidence": [],
                     "rejected_inferences": ["Subjective claim about mood."],
                     "verification_notes": "Evidence is unobservable or unbound."
@@ -381,12 +389,13 @@ def test_semantic_firewall_leak_sanitization():
     route_dec, _, _ = controller.decide_route(
         aspect="Obama",
         anchor={"sentiment": "POS"},
-        visual_sketch={"scene": "photo"}
+        visual_sketch={"scene": "photo with smiling face"}
     )
-    # The accidental visual leakage must be intercepted and sanitized
+    # Physical isolation: critique is generated from isolated C_Q^T without visual leakage
     assert "smiling" not in route_dec.critique
     assert "photo" not in route_dec.critique
-    assert "Re-examine the tweet's linguistic syntax" in route_dec.critique
+    assert "Obama" in route_dec.critique
+    assert "spilled over" in route_dec.critique or "syntax" in route_dec.critique
     print("Passed test_semantic_firewall_leak_sanitization!")
 
 
@@ -495,6 +504,121 @@ def test_evaluator_v3_teacher(tmp_path: pathlib.Path):
     print("Passed test_evaluator_v3_teacher!")
 
 
+def test_route_vision_firewall_non_decisive_reverts():
+    print("--- Running test_route_vision_firewall_non_decisive_reverts ---")
+    # Sensor returns VALID + DIRECT but NON_DECISIVE support -> Firewall must fail-closed & revert to T0
+    client = MockTeacherClient(
+        route_action="VISION",
+        firewall_status="VALID",
+        firewall_binding="DIRECT",
+        firewall_revision_support="NON_DECISIVE",
+        fusion_sentiment="POS",
+        audit_decision="ACCEPT"
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_non_decisive_01",
+        "text": "Check out the new features",
+        "image": "dummy.jpg",
+        "pairs": [["Features", "NEU"]],
+        "text_initial_cached": {"pairs": [["Features", "NEU"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    assert record["final_pairs"] == [["Features", "NEU"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "VISION"
+    assert asp_tr["final_sentiment"] == "NEU"
+    assert asp_tr["audit_decision"] == "REVERT"
+
+    # TF Deliberation MUST be bypassed when evidence is NON_DECISIVE
+    tf_calls = [c for c in client.call_history if "text_evidence_fusion.md" in c[1]]
+    assert len(tf_calls) == 0, "TF Deliberative reasoner should be bypassed when revision_support is NON_DECISIVE"
+    print("Passed test_route_vision_firewall_non_decisive_reverts!")
+
+
+def test_evaluator_cw_transition_count(tmp_path: pathlib.Path):
+    print("--- Running test_evaluator_cw_transition_count ---")
+    from bacr.evaluator import G3Evaluator
+    gold_file = str(tmp_path / "cw_gold.jsonl")
+    pred_file = str(tmp_path / "cw_pred.jsonl")
+
+    # Sample 1: T0 was correct (POS), final was wrong (NEG) -> This is CW harm!
+    # Sample 2: T0 was wrong (NEU), final was correct (POS) -> This is WC recover!
+    with open(gold_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({"sample_id": "s1", "pairs": [["ItemA", "POS"]]}) + "\n")
+        f.write(json.dumps({"sample_id": "s2", "pairs": [["ItemB", "POS"]]}) + "\n")
+
+    with open(pred_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "sample_id": "s1",
+            "text_initial": {"pairs": [["ItemA", "POS"]]},
+            "predictions": [["ItemA", "NEG"]]
+        }) + "\n")
+        f.write(json.dumps({
+            "sample_id": "s2",
+            "text_initial": {"pairs": [["ItemB", "NEU"]]},
+            "predictions": [["ItemB", "POS"]]
+        }) + "\n")
+
+    evaluator = G3Evaluator(gold_file=gold_file)
+    res = evaluator.evaluate_predictions(pred_file=pred_file)
+    sample_diag = res.get("sample_level_diagnostics", {})
+    assert sample_diag.get("sample_cw_harmful") == 1, f"Expected sample_cw_harmful == 1, got {sample_diag.get('sample_cw_harmful')}"
+    assert sample_diag.get("sample_wc_recovery") == 1, f"Expected sample_wc_recovery == 1, got {sample_diag.get('sample_wc_recovery')}"
+    assert sample_diag.get("sample_cc_maintained") == 0
+    assert sample_diag.get("sample_ww_unresolved") == 0
+    print("Passed test_evaluator_cw_transition_count!")
+
+
+def test_exact_aspect_matching_no_substring_confusion():
+    print("--- Running test_exact_aspect_matching_no_substring_confusion ---")
+    client = MockTeacherClient(route_action="KEEP")
+    pipeline = BACRPipelineV3(client=client)
+
+    # Sample has aspect "Apple". Cached T0 only has "Apple Watch" with POS.
+    # Because substring matching is forbidden, "Apple" must NOT match "Apple Watch",
+    # and must fallback to default NEU baseline rather than stealing POS.
+    sample = {
+        "sample_id": "test_exact_match_01",
+        "text": "Apple launched something, Apple Watch is great",
+        "image": "dummy.jpg",
+        "pairs": [["Apple", "NEU"]],
+        "text_initial_cached": {"pairs": [["Apple Watch", "POS"]]}
+    }
+    record = pipeline.run_sample(sample)
+    assert record["t0_pairs"] == [["Apple", "NEU"]], f"Got {record['t0_pairs']}, expected default NEU without substring match"
+    print("Passed test_exact_aspect_matching_no_substring_confusion!")
+
+
+def test_physical_isolation_of_text_critique():
+    print("--- Running test_physical_isolation_of_text_critique ---")
+    client = MockTeacherClient(route_action="KEEP")
+    controller = MetaController(client=client)
+
+    # Isolated generator strictly receives (aspect, anchor, risk_type) - zero visual exposure
+    crit_spill = controller.generate_text_critique(
+        aspect="MacBook",
+        anchor={"sentiment": "NEG"},
+        risk_type="AFFECT_SPILLOVER"
+    )
+    assert "MacBook" in crit_spill
+    assert "adjacent clauses" in crit_spill
+    assert "photo" not in crit_spill
+    assert "image" not in crit_spill
+
+    crit_frame = controller.generate_text_critique(
+        aspect="CEO",
+        anchor={"sentiment": "POS"},
+        risk_type="REPORTING_FRAME"
+    )
+    assert "CEO" in crit_frame
+    assert "reporting" in crit_frame
+    assert "visual" not in crit_frame
+    print("Passed test_physical_isolation_of_text_critique!")
+
+
 if __name__ == "__main__":
     test_v3_schemas_and_fail_closed_contract()
     test_route_keep()
@@ -503,12 +627,17 @@ if __name__ == "__main__":
     test_route_vision_firewall_fail_closed()
     test_route_vision_valid_accept()
     test_route_vision_valid_revert()
+    test_route_vision_firewall_non_decisive_reverts()
     test_semantic_firewall_leak_sanitization()
+    test_physical_isolation_of_text_critique()
+    test_exact_aspect_matching_no_substring_confusion()
     test_multi_aspect_sample_factoring()
     with tempfile.TemporaryDirectory() as td:
         test_evaluator_v3_teacher(pathlib.Path(td))
+        test_evaluator_cw_transition_count(pathlib.Path(td))
 
     print("\n" + "=" * 78)
-    print("  ALL 10 BACR-v3 MINIMAL TEACHER VERIFICATION INVARIANT TESTS PASSED 100%!")
+    print("  ALL 14 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
     print("=" * 78 + "\n")
+
 

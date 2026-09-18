@@ -31,12 +31,52 @@ def load_prompt(filename: str) -> str:
         return f.read().strip()
 
 
+SAFE_TEXT_CRITIQUES = {
+    "AFFECT_SPILLOVER": (
+        "Check whether sentiment from adjacent clauses, background entities, or trailing hashtags "
+        "improperly spilled over to target aspect '{aspect}'. Deliberate strictly on "
+        "evaluative modifiers syntactically bound to '{aspect}'."
+    ),
+    "REPORTING_FRAME": (
+        "Check whether the text merely reports or quotes someone else's emotional statement rather "
+        "than expressing authorial sentiment towards '{aspect}'. Verify if the author's stance towards '{aspect}' "
+        "is neutral reporting."
+    ),
+    "PRAGMATIC_AFFECT": (
+        "Check for subtle irony, rhetorical framing, or contrastive discourse markers (e.g. 'but', 'although') "
+        "modifying '{aspect}'. Determine if surface words mask the underlying contextual stance."
+    ),
+    "MISSING_AFFECT": (
+        "Re-evaluate whether the text contains implicit or subtle affective cues directly attached to '{aspect}', "
+        "or if the authorial stance is strictly neutral."
+    ),
+    "NO_RISK": (
+        "Re-evaluate syntactic dependencies directly attached to target aspect '{aspect}' "
+        "and verify if initial sentiment hypothesis ({sentiment}) is fully justified by the text alone."
+    ),
+}
+
+
 class MetaController:
     def __init__(self, client: BaseClient):
         self.client = client
         self.prompt_route = load_prompt("controller_route.md")
         self.prompt_firewall = load_prompt("controller_evidence_firewall.md")
         self.prompt_audit = load_prompt("controller_final_audit.md")
+
+    def generate_text_critique(
+        self,
+        aspect: str,
+        anchor: Dict[str, Any],
+        risk_type: str = "NO_RISK"
+    ) -> str:
+        """Isolated Text Critique Generator (C_Q^T).
+        Physically isolates text critique from V0 - receives strictly (aspect, anchor, risk_type).
+        Zero visual sketch or image information can physically enter this generator.
+        """
+        sentiment = anchor.get("sentiment", "NEU")
+        template = SAFE_TEXT_CRITIQUES.get(risk_type, SAFE_TEXT_CRITIQUES["NO_RISK"])
+        return template.format(aspect=aspect, sentiment=sentiment)
 
     def decide_route(
         self,
@@ -45,7 +85,7 @@ class MetaController:
         visual_sketch: Dict[str, Any]
     ) -> Tuple[RouteDecision, Dict[str, int], float]:
         """C_R: Decides discrete route action in {KEEP, TEXT, VISION} given (a_gold, T0, V0).
-        Enforces semantic firewall against visual leakages in text critique.
+        Physical isolation: text critique is generated strictly by isolated C_Q^T without visual cues.
         """
         user_prompt = (
             f'Target Aspect: "{aspect}"\n\n'
@@ -61,15 +101,13 @@ class MetaController:
 
         decision = RouteDecision.validate_or_fallback(res)
 
-        # Semantic Firewall: Sanitize critique if TEXT action contains accidental visual words
-        if decision.action == RouteAction.TEXT and decision.critique:
-            visual_leak_words = [
-                "image", "photo", "picture", "visual", "smiling", "smile",
-                "facial", "expression", "wearing", "background", "depicts", "shown"
-            ]
-            critique_lower = decision.critique.lower()
-            if any(w in critique_lower for w in visual_leak_words):
-                decision.critique = "Re-examine the tweet's linguistic syntax, modifier scope, and reporting frame neutrality without assuming external visual cues."
+        # Physical isolation: generate text critique strictly through isolated C_Q^T
+        if decision.action == RouteAction.TEXT:
+            decision.critique = self.generate_text_critique(
+                aspect=aspect,
+                anchor=anchor,
+                risk_type=decision.risk_type
+            )
 
         return decision, usage, lat
 
@@ -130,15 +168,21 @@ class MetaController:
 
         audit = FinalAudit.validate_or_fallback(res)
 
-        # Hard-rule safeguard: if VISION route, verify that evidence is genuinely valid and bound
+        # Hard-rule safeguard: if VISION route, verify that evidence is genuinely valid, direct, and supports revision
         if route == "VISION":
             ev_status = evidence.get("status") if isinstance(evidence, dict) else None
             ev_binding = evidence.get("target_binding") if isinstance(evidence, dict) else None
+            ev_support = evidence.get("revision_support") if isinstance(evidence, dict) else None
             usable = evidence.get("usable_evidence") if isinstance(evidence, dict) else None
 
-            if ev_status != "VALID" or ev_binding != "DIRECT" or not usable:
+            if (
+                ev_status != "VALID"
+                or ev_binding != "DIRECT"
+                or ev_support != "SUPPORTS_REVISION"
+                or not usable
+            ):
                 audit.decision = AuditDecision.REVERT
-                audit.reason = (audit.reason + " [Safeguard: Evidence was not valid or not directly bound; forced REVERT to T0.]").strip()
+                audit.reason = (audit.reason + " [Safeguard: Evidence did not conclusively support revision or was not direct; forced REVERT to T0.]").strip()
 
         return audit, usage, lat
 

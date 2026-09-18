@@ -259,14 +259,17 @@ class G3Evaluator:
             final_set = set(normalize_pair(x) for x in final_pairs)
             gold_set = set(normalize_pair(x) for x in gold_pairs)
 
-            if init_correct := (init_set == gold_set) and (final_set == gold_set):
+            init_correct = (init_set == gold_set)
+            final_correct = (final_set == gold_set)
+
+            if init_correct and final_correct:
                 sample_cc += 1
-            elif not init_correct and (final_set == gold_set):
+            elif (not init_correct) and final_correct:
                 sample_wc += 1
                 for r in p.get("rounds", []):
                     qt = r.get("query_type", "GENERAL")
                     taxonomy_recoveries[qt] = taxonomy_recoveries.get(qt, 0) + 1
-            elif init_correct and not (final_set == gold_set):
+            elif init_correct and (not final_correct):
                 sample_cw += 1
             else:
                 sample_ww += 1
@@ -735,11 +738,6 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
                 audit_dec = at.get("audit_decision", "N/A")
 
                 gold_s = gold_asps.get(asp_text.strip().lower())
-                if gold_s is None:
-                    for gk, gv in gold_asps.items():
-                        if gk in asp_text.strip().lower() or asp_text.strip().lower() in gk:
-                            gold_s = gv
-                            break
 
                 was_correct = (gold_s is not None and t0_s == gold_s)
                 now_correct = (gold_s is not None and fin_s == gold_s)
@@ -834,8 +832,8 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
 
 
 def print_v3_teacher_report(r: Dict[str, Any]):
-    print("\n" + "=" * 78)
-    print("           BACR-v3 TEACHER VERIFICATION EXPERIMENT REPORT")
+    print("=" * 78)
+    print("      TARGET-GUIDED TEACHER VERIFICATION EXPERIMENT REPORT (BACR-v3)")
     print("=" * 78)
     print(f"Total Evaluated Samples : {r.get('total_samples')} | Total Target Aspects: {r.get('total_aspects')}")
     print("-" * 78)

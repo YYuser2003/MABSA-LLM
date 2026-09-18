@@ -23,10 +23,13 @@ from bacr.schemas_v3 import (
     RouteAction,
     EvidenceStatus,
     TargetBinding,
+    EvidenceRelevance,
+    RevisionSupport,
     AuditDecision,
     CandidatePrediction,
     FinalAudit,
-    RouteDecision
+    RouteDecision,
+    TrainingTransitionRecord
 )
 
 
@@ -38,6 +41,7 @@ class BACRPipelineV3:
         client: Optional[BaseClient] = None,
         run_id: Optional[str] = None,
         max_visual_probes: int = 1,
+        k_interventions: int = 1,
         text_client: Optional[BaseClient] = None,
         controller_client: Optional[BaseClient] = None,
         vision_client: Optional[BaseClient] = None,
@@ -46,6 +50,7 @@ class BACRPipelineV3:
         self.client = client
         self.run_id = run_id or f"bacr_v3_{int(time.time())}"
         self.max_visual_probes = max_visual_probes
+        self.k_interventions = k_interventions
 
         # Initialize sub-components
         self.text_reasoner = TextReasoner(client=text_client or client)
@@ -101,9 +106,11 @@ class BACRPipelineV3:
 
         action = route_dec.action
         candidate_dict: Optional[Dict[str, Any]] = None
+        raw_evidence_dict: Optional[Dict[str, Any]] = None
         evidence_dict: Optional[Dict[str, Any]] = None
         audit_dict: Optional[Dict[str, Any]] = None
         final_sentiment = anchor_sent
+        critique_text: Optional[str] = None
 
         # --------------------------------------------------------------------
         # Route 1: KEEP
@@ -115,12 +122,16 @@ class BACRPipelineV3:
         # Route 2: TEXT Re-deliberation
         # --------------------------------------------------------------------
         elif action == RouteAction.TEXT:
-            critique = route_dec.critique or f"Re-evaluate whether {aspect} is modified by sentiment or is purely a neutral entity."
+            critique_text = route_dec.critique or self.controller.generate_text_critique(
+                aspect=aspect,
+                anchor=anchor_dict,
+                risk_type=route_dec.risk_type
+            )
             cand, usage_t, lat_t = self.text_reasoner.rethink_text(
                 text=text,
                 aspect=aspect,
                 anchor=anchor_dict,
-                critique=critique
+                critique=critique_text
             )
             compute["api_calls_text"] += 1
             compute["api_calls_total"] += 1
@@ -155,6 +166,7 @@ class BACRPipelineV3:
                 image_path=image_path,
                 question=question
             )
+            raw_evidence_dict = raw_obs
             compute["api_calls_vision"] += 1
             compute["api_calls_total"] += 1
             compute["image_invocations"] += 1
@@ -173,11 +185,17 @@ class BACRPipelineV3:
             evidence_dict = ev_res.model_dump()
 
             # Fail-closed Firewall Check
-            if ev_res.status != EvidenceStatus.VALID or ev_res.target_binding != TargetBinding.DIRECT or not ev_res.usable_evidence:
+            is_valid_evidence = (
+                ev_res.status == EvidenceStatus.VALID
+                and ev_res.target_binding == TargetBinding.DIRECT
+                and ev_res.revision_support == RevisionSupport.SUPPORTS_REVISION
+                and len(ev_res.usable_evidence) > 0
+            )
+            if not is_valid_evidence:
                 final_sentiment = anchor_sent
                 audit_dict = {
                     "decision": AuditDecision.REVERT.value,
-                    "reason": f"Firewall fail-closed: status={ev_res.status.value}, binding={ev_res.target_binding.value}."
+                    "reason": f"Firewall fail-closed: status={ev_res.status.value}, binding={ev_res.target_binding.value}, support={ev_res.revision_support.value}."
                 }
             else:
                 cand, usage_tf, lat_tf = self.text_reasoner.fuse_evidence(
@@ -217,10 +235,12 @@ class BACRPipelineV3:
             "route": action.value,
             "risk_type": route_dec.risk_type,
             "route_reason": route_dec.reason,
-            "critique": route_dec.critique,
-            "question": route_dec.question,
+            "critique": critique_text if action == RouteAction.TEXT else None,
+            "question": route_dec.question if action == RouteAction.VISION else None,
             "candidate": candidate_dict,
             "candidate_sentiment": candidate_dict.get("sentiment") if candidate_dict else None,
+            "raw_evidence": raw_evidence_dict,
+            "verified_evidence": evidence_dict,
             "evidence": evidence_dict,
             "audit": audit_dict,
             "audit_decision": audit_dict.get("decision") if audit_dict else "N/A",
@@ -315,15 +335,9 @@ class BACRPipelineV3:
 
         for step_idx, asp in enumerate(target_aspects):
             k = asp.strip().lower()
-            t0_item = aspect_t0_map.get(k, {})
+            t0_item = aspect_t0_map.get(k)
             if not t0_item:
-                # Find matching by substring
-                for map_k, map_v in aspect_t0_map.items():
-                    if map_k in k or k in map_k:
-                        t0_item = map_v
-                        break
-            if not t0_item:
-                # Fallback to NEU
+                # Fallback to default NEU baseline (exact match only, zero substring bleeding)
                 t0_item = {"text": asp, "sentiment": "NEU", "reason": "Default text baseline"}
 
             t0_sent = t0_item.get("sentiment", "NEU")
@@ -344,19 +358,36 @@ class BACRPipelineV3:
                 if comp_k in total_compute:
                     total_compute[comp_k] += comp_v
 
-            # Build transition record for diagnostic logging and evaluator
+            # Build rich training-compatible transition record for SFT/RL and evaluator
+            action_name = "TEXT_RETHINK" if asp_res["route"] == RouteAction.TEXT.value else ("VISION_PROBE" if asp_res["route"] == RouteAction.VISION.value else "KEEP")
+            vdec = "ACCEPT_REVISION" if asp_res["audit_decision"] == AuditDecision.ACCEPT.value else ("REVERT_TEXT_BASELINE" if asp_res["route"] != RouteAction.KEEP.value else "NO_OP")
+            trans_rec = {
+                "step": step_idx + 1,
+                "sample_id": sid,
+                "aspect": asp,
+                "aspect_text": asp,
+                "t0_sentiment": t0_sent,
+                "pre_sentiment": t0_sent,
+                "route": asp_res["route"],
+                "risk_type": asp_res.get("risk_type", "NO_RISK"),
+                "route_reason": asp_res.get("route_reason", ""),
+                "action": action_name,
+                "critique": asp_res.get("critique"),
+                "question": asp_res.get("question"),
+                "candidate": asp_res.get("candidate"),
+                "candidate_sentiment": asp_res.get("candidate_sentiment"),
+                "evidence": asp_res.get("evidence"),
+                "raw_evidence": asp_res.get("raw_evidence"),
+                "verified_evidence": asp_res.get("verified_evidence"),
+                "audit": asp_res.get("audit"),
+                "audit_decision": asp_res.get("audit_decision", "N/A"),
+                "verifier_decision": vdec,
+                "post_sentiment": asp_res["final_sentiment"],
+                "final_sentiment": asp_res["final_sentiment"],
+                "compute": asp_res["compute"]
+            }
             if asp_res["route"] != RouteAction.KEEP.value:
-                action_name = "TEXT_RETHINK" if asp_res["route"] == RouteAction.TEXT.value else "VISION_PROBE"
-                vdec = "ACCEPT_REVISION" if asp_res["audit_decision"] == AuditDecision.ACCEPT.value else "REVERT_TEXT_BASELINE"
-                transitions.append({
-                    "step": step_idx + 1,
-                    "action": action_name,
-                    "aspect_text": asp,
-                    "pre_sentiment": t0_sent,
-                    "candidate_sentiment": asp_res["candidate_sentiment"],
-                    "verifier_decision": vdec,
-                    "post_sentiment": asp_res["final_sentiment"]
-                })
+                transitions.append(trans_rec)
 
         num_v = sum(1 for at in aspect_trajectories if at["route"] == RouteAction.VISION.value)
         num_t = sum(1 for at in aspect_trajectories if at["route"] == RouteAction.TEXT.value)
