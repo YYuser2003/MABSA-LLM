@@ -133,11 +133,11 @@ OPENAI_API_KEY=EMPTY
 ### Running Experiments
 
 ```bash
-# BACR-v3 Full Run on Twitter-2015 test set
-python scripts/run.py --config configs/experiments/bacr_v3.yaml --tag v3_production
+# BACR-v3 Minimal Teacher Verification on Twitter-2015 dev set (Recommended)
+python scripts/run.py --config configs/experiments/bacr_v3.yaml --split dev --limit 20 --tag dev_pilot
 
-# Run with sample limit for quick validation
-python scripts/run.py --config configs/experiments/bacr_v3.yaml --limit 5 --tag smoke_test
+# Full run on dev set
+python scripts/run.py --config configs/experiments/bacr_v3.yaml --split dev --tag v3_dev_full
 ```
 
 ### Running Invariant Tests

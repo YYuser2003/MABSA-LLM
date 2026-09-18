@@ -278,12 +278,17 @@ class FinalAudit(BaseModel):
 
 class TrainingTransitionRecord(BaseModel):
     """Normalized transition record capturing full MDP state for SFT and RL training."""
-    step: int = 1
+    aspect_index: int = 0
+    decision_step: int = 0
+    step: int = 1  # compatibility: decision_step + 1
+    aspect_id: str = ""
+    span: Optional[Tuple[int, int]] = None
     sample_id: str
     aspect: str
     aspect_text: str
     t0_sentiment: str
     pre_sentiment: str
+    state_before: Dict[str, Any] = Field(default_factory=dict)
     route: str  # KEEP, TEXT, VISION
     risk_type: str = "NO_RISK"
     route_reason: str = ""

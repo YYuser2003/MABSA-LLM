@@ -13,7 +13,7 @@ Invariants:
 import os
 import time
 import copy
-from typing import Dict, Any, Optional, Union, List
+from typing import Dict, Any, Optional, Union, List, Tuple
 
 from bacr.client import BaseClient
 from bacr.meta_controller import MetaController
@@ -34,7 +34,7 @@ from bacr.schemas_v3 import (
 
 
 class BACRPipelineV3:
-    """Production-grade Minimal Teacher Pipeline Runner for BACR-v3."""
+    """Minimal Teacher Pipeline implementing single-pass target-guided verification (K=1)."""
 
     def __init__(
         self,
@@ -52,6 +52,16 @@ class BACRPipelineV3:
         self.max_visual_probes = max_visual_probes
         self.k_interventions = k_interventions
 
+        if self.k_interventions != 1:
+            raise ValueError(
+                f"BACR-v3 Minimal Teacher currently strictly supports only K=1 (got k_interventions={self.k_interventions}). "
+                "For multi-turn RL environment, use the dedicated BACREnv."
+            )
+        if self.max_visual_probes != 1:
+            raise ValueError(
+                f"BACR-v3 Minimal Teacher currently strictly supports only max_visual_probes=1 (got max_visual_probes={self.max_visual_probes})."
+            )
+
         # Initialize sub-components
         self.text_reasoner = TextReasoner(client=text_client or client)
         self.controller = MetaController(client=controller_client or client)
@@ -66,7 +76,10 @@ class BACRPipelineV3:
         image_path: str,
         aspect: str,
         t0: Dict[str, Any],
-        v0: Dict[str, Any]
+        v0: Dict[str, Any],
+        aspect_id: str = "",
+        aspect_index: int = 0,
+        span: Optional[Tuple[int, int]] = None
     ) -> Dict[str, Any]:
         """Runs the minimal Teacher loop for a single gold aspect (K=1).
         
@@ -91,6 +104,14 @@ class BACRPipelineV3:
             "sentiment": anchor_sent,
             "reason": t0.get("reason", t0.get("rationale", "")),
             "evidence": t0.get("evidence", t0.get("text_evidence", []))
+        }
+        state_before = {
+            "anchor": anchor_dict,
+            "visual_sketch": v0,
+            "budget": {
+                "remaining_interventions": 1,
+                "remaining_visual_probes": 1
+            }
         }
 
         # Step 1: Controller Route Decision
@@ -240,6 +261,10 @@ class BACRPipelineV3:
 
         return {
             "aspect": aspect,
+            "aspect_id": aspect_id or f"{aspect}_{aspect_index}",
+            "aspect_index": aspect_index,
+            "span": span,
+            "state_before": state_before,
             "t0_sentiment": anchor_sent,
             "route": action.value,
             "risk_type": route_dec.risk_type,
@@ -306,13 +331,46 @@ class BACRPipelineV3:
                 if k not in aspect_t0_map:
                     aspect_t0_map[k] = {"text": p_text, "sentiment": p_sent, "reason": "Cached canonical T0"}
 
-        # Target aspects to evaluate
-        if gold_pairs:
-            target_aspects = [p[0] for p in gold_pairs]
+        # Target aspects to evaluate (preserving aspect index and spans)
+        target_aspect_items: List[Dict[str, Any]] = []
+        annotations = sample.get("annotations", [])
+        if annotations and isinstance(annotations, list) and len(annotations) > 0:
+            for idx, ann in enumerate(annotations):
+                asp_name = ann.get("aspect", "")
+                raw_span = ann.get("span")
+                span = tuple(raw_span) if isinstance(raw_span, (list, tuple)) and len(raw_span) == 2 else None
+                aid = str(ann.get("aspect_id") or f"{sid}_{asp_name}_{idx}")
+                target_aspect_items.append({
+                    "aspect": asp_name,
+                    "aspect_index": idx,
+                    "aspect_id": aid,
+                    "span": span
+                })
+        elif gold_pairs:
+            for idx, p in enumerate(gold_pairs):
+                asp_name = p[0] if isinstance(p, (list, tuple)) else (p.get("aspect", "") if isinstance(p, dict) else str(p))
+                target_aspect_items.append({
+                    "aspect": asp_name,
+                    "aspect_index": idx,
+                    "aspect_id": f"{sid}_{asp_name}_{idx}",
+                    "span": None
+                })
         elif aspect_t0_map:
-            target_aspects = [a.get("text", "") for a in aspect_t0_map.values()]
+            for idx, (k, a) in enumerate(aspect_t0_map.items()):
+                asp_name = a.get("text", a.get("aspect", ""))
+                target_aspect_items.append({
+                    "aspect": asp_name,
+                    "aspect_index": idx,
+                    "aspect_id": f"{sid}_{asp_name}_{idx}",
+                    "span": None
+                })
         else:
-            target_aspects = ["Target Aspect"]
+            target_aspect_items.append({
+                "aspect": "Target Aspect",
+                "aspect_index": 0,
+                "aspect_id": f"{sid}_Target Aspect_0",
+                "span": None
+            })
 
         # Resolve V0 cache or perceive globally
         v0_cache = sample.get("image_initial_cached", sample.get("v0_cached"))
@@ -342,7 +400,12 @@ class BACRPipelineV3:
         transitions: List[Dict[str, Any]] = []
         t0_pairs: List[List[str]] = []
 
-        for step_idx, asp in enumerate(target_aspects):
+        for step_idx, asp_item in enumerate(target_aspect_items):
+            asp = asp_item["aspect"]
+            asp_idx = asp_item["aspect_index"]
+            aid = asp_item["aspect_id"]
+            span = asp_item["span"]
+
             k = asp.strip().lower()
             t0_item = aspect_t0_map.get(k)
             if not t0_item:
@@ -357,7 +420,10 @@ class BACRPipelineV3:
                 image_path=image_path,
                 aspect=asp,
                 t0=t0_item,
-                v0=v0
+                v0=v0,
+                aspect_id=aid,
+                aspect_index=asp_idx,
+                span=span
             )
             aspect_trajectories.append(asp_res)
             final_pairs.append([asp, asp_res["final_sentiment"]])
@@ -371,12 +437,17 @@ class BACRPipelineV3:
             action_name = "TEXT_RETHINK" if asp_res["route"] == RouteAction.TEXT.value else ("VISION_PROBE" if asp_res["route"] == RouteAction.VISION.value else "KEEP")
             vdec = "ACCEPT_REVISION" if asp_res["audit_decision"] == AuditDecision.ACCEPT.value else ("REVERT_TEXT_BASELINE" if asp_res["route"] != RouteAction.KEEP.value else "NO_OP")
             trans_obj = TrainingTransitionRecord(
+                aspect_index=asp_idx,
+                decision_step=0,
                 step=step_idx + 1,
+                aspect_id=aid,
+                span=span,
                 sample_id=sid,
                 aspect=asp,
                 aspect_text=asp,
                 t0_sentiment=t0_sent,
                 pre_sentiment=t0_sent,
+                state_before=asp_res.get("state_before", {}),
                 route=asp_res["route"],
                 risk_type=asp_res.get("risk_type", "NO_RISK"),
                 route_reason=asp_res.get("route_reason", ""),
@@ -406,7 +477,6 @@ class BACRPipelineV3:
             "sample_id": sid,
             "text": text,
             "image": raw_image,
-            "gold_pairs": gold_pairs,
             "t0_pairs": t0_pairs,
             "final_pairs": final_pairs,
             "text_anchor": {"pairs": t0_pairs},

@@ -489,6 +489,7 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
     """Computes transition-level BACR-v3 diagnostic metrics from trajectories and gold labels."""
     gold_map = {}
     gold_aspect_map = {}
+    gold_pairs_list = {}
     with open(gold_file, "r", encoding="utf-8") as f:
         for line in f:
             if line.strip():
@@ -496,6 +497,7 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
                 sid = d["sample_id"]
                 gold_map[sid] = {tuple(p) for p in d.get("pairs", [])}
                 gold_aspect_map[sid] = {p[0]: p[1] for p in d.get("pairs", [])}
+                gold_pairs_list[sid] = d.get("pairs", [])
 
     trajs = []
     with open(traj_file, "r", encoding="utf-8") as f:
@@ -554,24 +556,15 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
         elif is_ha_correct and not is_final_correct:
             anchor_corruptions += 1
 
-        # Controller initial action & contrast
-        act = tr.get("action", "FINALIZE")
-        action_counts[act] += 1
-        c_type = tr.get("contrast_type", "NO_RISK")
-        contrast_types[c_type] += 1
-
-        # Transition-level evaluation
+        # Transition-level evaluation and action/contrast counting
         transitions = tr.get("transitions", [])
-        if not transitions and "rounds" in tr:
-            # Reconstruct transitions from rounds if older format
-            for rnd in tr["rounds"]:
-                vdec = rnd.get("verifier_decision", {}).get("decision") or rnd.get("ct_decision", {}).get("decision", "REVERT_TEXT_BASELINE")
-                if vdec in ["REVERT_TEXT_BASELINE", "REVERT_ANCHOR", "REJECT_REVISION"]:
-                    revert_count += 1
-                verifier_decisions[vdec] += 1
-        else:
+        if transitions:
             for t in transitions:
-                action = t.get("action")
+                action = t.get("action", "KEEP")
+                action_counts[action] += 1
+                c_type = t.get("risk_type", t.get("contrast_type", "NO_RISK"))
+                contrast_types[c_type] += 1
+
                 vdec = t.get("verifier_decision", "REVERT_TEXT_BASELINE")
                 verifier_decisions[vdec] += 1
                 if vdec in ["REVERT_TEXT_BASELINE", "REVERT_ANCHOR"]:
@@ -580,11 +573,15 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
                 # Aspect-level marginal utility calculation
                 aid = t.get("aspect_id")
                 asp_text = t.get("aspect_text")
+                asp_idx = t.get("aspect_index")
                 pre = t.get("pre_sentiment")
                 post = t.get("post_sentiment")
 
                 gold_sent = None
-                if asp_text and asp_text in gold_asp_sents:
+                if asp_idx is not None and sid in gold_pairs_list and asp_idx < len(gold_pairs_list[sid]):
+                    pair = gold_pairs_list[sid][asp_idx]
+                    gold_sent = pair[1] if isinstance(pair, (list, tuple)) else pair.get("sentiment")
+                elif asp_text and asp_text in gold_asp_sents:
                     gold_sent = gold_asp_sents[asp_text]
                 elif aid and aid in gold_asp_sents:
                     gold_sent = gold_asp_sents[aid]
@@ -608,6 +605,22 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
                             recover_v += 1
                         elif was_correct and not now_correct:
                             harm_v += 1
+        elif "rounds" in tr:
+            # Reconstruct transitions from rounds if older format
+            for rnd in tr["rounds"]:
+                act = rnd.get("action", "FINALIZE")
+                action_counts[act] += 1
+                vdec = rnd.get("verifier_decision", {}).get("decision") or rnd.get("ct_decision", {}).get("decision", "REVERT_TEXT_BASELINE")
+                if vdec in ["REVERT_TEXT_BASELINE", "REVERT_ANCHOR", "REJECT_REVISION"]:
+                    revert_count += 1
+                verifier_decisions[vdec] += 1
+            c_type = tr.get("contrast_type", "NO_RISK")
+            contrast_types[c_type] += 1
+        else:
+            act = tr.get("action", "FINALIZE")
+            action_counts[act] += 1
+            c_type = tr.get("contrast_type", "NO_RISK")
+            contrast_types[c_type] += 1
 
     acc_ha = round(ha_correct / total_samples * 100, 2)
     acc_hb0 = round(hb0_correct / total_samples * 100, 2)
@@ -678,6 +691,7 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
     """
     gold_aspect_map = {}
     gold_pair_map = {}
+    gold_pairs_list = {}
     with open(gold_file, "r", encoding="utf-8") as f:
         for line in f:
             if line.strip():
@@ -685,6 +699,7 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
                 sid = d["sample_id"]
                 gold_pair_map[sid] = {tuple(p) for p in d.get("pairs", [])}
                 gold_aspect_map[sid] = {p[0].strip().lower(): p[1] for p in d.get("pairs", [])}
+                gold_pairs_list[sid] = d.get("pairs", [])
 
     trajs = []
     with open(traj_file, "r", encoding="utf-8") as f:
@@ -729,7 +744,7 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
         # Aspect trajectories
         asp_trajs = tr.get("aspect_trajectories", [])
         if asp_trajs:
-            for at in asp_trajs:
+            for at_idx, at in enumerate(asp_trajs):
                 total_aspects += 1
                 asp_text = at.get("aspect", "")
                 t0_s = at.get("t0_sentiment", "NEU")
@@ -737,7 +752,13 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
                 route = at.get("route", "KEEP")
                 audit_dec = at.get("audit_decision", "N/A")
 
-                gold_s = gold_asps.get(asp_text.strip().lower())
+                gold_s = None
+                asp_idx = at.get("aspect_index", at_idx)
+                if sid in gold_pairs_list and asp_idx is not None and asp_idx < len(gold_pairs_list[sid]):
+                    pair = gold_pairs_list[sid][asp_idx]
+                    gold_s = pair[1] if isinstance(pair, (list, tuple)) else pair.get("sentiment")
+                if gold_s is None:
+                    gold_s = gold_asps.get(asp_text.strip().lower())
 
                 was_correct = (gold_s is not None and t0_s == gold_s)
                 now_correct = (gold_s is not None and fin_s == gold_s)

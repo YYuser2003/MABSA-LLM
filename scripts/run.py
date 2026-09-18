@@ -91,7 +91,7 @@ def main():
     ds_cfg_path = os.path.join(PROJECT_ROOT, "configs", "datasets", ds_cfg_file)
     ds_config = load_yaml(ds_cfg_path)
 
-    split = args.split or "test"
+    split = args.split or "dev"
     concurrency = args.concurrency or exp_config.get("experiment", {}).get("concurrency", 4)
 
     # 3. Resolve Model config

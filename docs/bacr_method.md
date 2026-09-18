@@ -1,22 +1,21 @@
 # MABSA-LLM 技术路线规划：从 Active Visual Reasoning 到 Bidirectional Active Cross-Modal Reasoning
 
+> [!NOTE]
+> **历史与全景技术档案说明（Historical Archive & General Roadmap）**  
+> 本文档记录了 MABSA-LLM 课题从 Stage A/B 到 v1/v2 多轮双向主动推理（Bidirectional Multi-Turn Probing）的完整探索过程与技术路线全景。  
+> 对于当前代码库正在运行与验证的 **BACR-v3 Minimal Teacher 架构（单次路由 K=1、严格信息流隔离 V0↛TR、Fail-Closed 证据防火墙、最终审计 Safeguard 与训练数据契约）**，请直接查阅：  
+> 👉 [docs/bacr_v3_method.md](file:///d:/YY/MABSA-LLM/docs/bacr_v3_method.md)
+
 - **研究课题**: 面向社交媒体多模态方面级情感分析（MABSA）的双向主动跨模态推理
-
 - **核心命题**: 将多模态推理从“一次性直接图文融合（Direct Multimodal Fusion）”重构为“**双初始粗描 + 双向选择性深探（Dual Initial Sketches + Bidirectional Selective Probing）**”，由 Controller 动态判断当前信息缺口位于文本侧还是视觉侧，并选择最值得查询的模态。
-
 - **已验证前身**: Stage A / B 已完成单向 Active Visual Reasoning（G3）的强模型机制验证，证明“全局视觉粗描 + 选择性视觉深探”具有可行性与选择性价值。
-
 - **升级架构**: **BACR — Bidirectional Active Cross-Modal Reasoning（双向主动跨模态推理）**
-
 - **实验骨干**:
   - **Stage A / B 历史机制验证**: Gemini 3.8 Flash (`thinking_level = high`)
   - **Stage B.6 双向机制验证**: Gemini 3.8 Flash，严格角色隔离，新增 Text Deep Probe
   - **Stage C / D 学生蒸馏与强化**: Qwen3-VL-8B-Instruct (LoRA / SFT / GRPO)
-
 - **基准数据集**: Twitter-2015 & Twitter-2017 (IJCAI 2019 标准基准)
-
-- **文档状态**: Stage A/B 与 G1-SR 已完成；当前架构升级为 BACR，下一步先验证双向探针，再进入双向策略蒸馏与三策略强化学习
-
+- **文档状态**: 历史全景路线档；当前实现统一遵循 BACR-v3 规范
 - **最新更新日期**: 2026-09-18
 
 ---

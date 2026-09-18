@@ -40,7 +40,7 @@ from bacr.text_reasoner import TextReasoner
 from bacr.meta_controller import MetaController
 from bacr.vision_sensor import VisionSensor
 from bacr.pipeline_v3 import BACRPipelineV3
-from bacr.evaluator import evaluate_v3_teacher, print_v3_teacher_report
+from bacr.evaluator import evaluate_v3_teacher, print_v3_teacher_report, evaluate_v3_trajectories
 
 
 class MockTeacherClient:
@@ -775,6 +775,230 @@ def test_keep_transitions_recorded_and_schema_validated():
     print("Passed test_keep_transitions_recorded_and_schema_validated!")
 
 
+def test_k1_runtime_assertion():
+    print("--- Running test_k1_runtime_assertion ---")
+    # Invariant: k_interventions != 1 or max_visual_probes != 1 must raise explicit ValueError
+    try:
+        BACRPipelineV3(k_interventions=2)
+        assert False, "Should have raised ValueError for k_interventions != 1"
+    except ValueError as e:
+        assert "K=1" in str(e)
+
+    try:
+        BACRPipelineV3(max_visual_probes=2)
+        assert False, "Should have raised ValueError for max_visual_probes != 1"
+    except ValueError as e:
+        assert "max_visual_probes=1" in str(e)
+    print("Passed test_k1_runtime_assertion!")
+
+
+def test_zero_label_leakage_and_state_before():
+    print("--- Running test_zero_label_leakage_and_state_before ---")
+    client = MockTeacherClient(route_action="KEEP")
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_leak_01",
+        "text": "Pedro played well in Cooperstown.",
+        "image": "dummy.jpg",
+        "pairs": [["Pedro", "POS"], ["Cooperstown", "NEU"]],
+        "annotations": [
+            {"aspect": "Pedro", "sentiment": "POS", "span": [0, 5], "aspect_id": "a1"},
+            {"aspect": "Cooperstown", "sentiment": "NEU", "span": [21, 32], "aspect_id": "a2"}
+        ],
+        "text_initial_cached": {"pairs": [["Pedro", "POS"], ["Cooperstown", "NEU"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    # 1. Zero Label Leakage Invariant: gold_pairs must NEVER be in returned record
+    assert "gold_pairs" not in record, "gold_pairs must be strictly omitted to prevent student training leakage!"
+
+    # 2. State Before and Aspect Identity Invariants
+    transitions = record["transitions"]
+    assert len(transitions) == 2
+
+    # Aspect 0
+    t0 = transitions[0]
+    assert t0["aspect_index"] == 0
+    assert t0["decision_step"] == 0
+    assert t0["aspect_id"] == "a1"
+    assert t0["span"] == (0, 5) or t0["span"] == [0, 5]
+    assert "state_before" in t0
+    assert "anchor" in t0["state_before"]
+    assert t0["state_before"]["anchor"]["sentiment"] == "POS"
+    assert "budget" in t0["state_before"]
+    assert t0["state_before"]["budget"]["remaining_interventions"] == 1
+
+    # Aspect 1
+    t1 = transitions[1]
+    assert t1["aspect_index"] == 1
+    assert t1["decision_step"] == 0
+    assert t1["aspect_id"] == "a2"
+    assert t1["span"] == (21, 32) or t1["span"] == [21, 32]
+    assert t1["state_before"]["anchor"]["sentiment"] == "NEU"
+
+    # Schema validation
+    v0 = TrainingTransitionRecord(**t0)
+    v1 = TrainingTransitionRecord(**t1)
+    assert v0.aspect_id == "a1"
+    assert v1.aspect_id == "a2"
+    print("Passed test_zero_label_leakage_and_state_before!")
+
+
+def test_evaluator_v3_trajectories_action_distribution(tmp_path: pathlib.Path):
+    print("--- Running test_evaluator_v3_trajectories_action_distribution ---")
+    gold_file = str(tmp_path / "test_act_gold.jsonl")
+    traj_file = str(tmp_path / "test_act_traj.jsonl")
+
+    # Write 2 samples with 3 aspect transitions total: 1 KEEP, 1 TEXT_RETHINK, 1 VISION_PROBE
+    with open(gold_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({"sample_id": "s1", "pairs": [["ItemA", "POS"], ["ItemB", "NEG"]]}) + "\n")
+        f.write(json.dumps({"sample_id": "s2", "pairs": [["ItemC", "POS"]]}) + "\n")
+
+    with open(traj_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "sample_id": "s1",
+            "text_anchor": {"pairs": [["ItemA", "POS"], ["ItemB", "NEU"]]},
+            "final_pairs": [["ItemA", "POS"], ["ItemB", "NEG"]],
+            "transitions": [
+                {
+                    "aspect_index": 0,
+                    "aspect": "ItemA",
+                    "action": "KEEP",
+                    "risk_type": "NO_RISK",
+                    "pre_sentiment": "POS",
+                    "post_sentiment": "POS",
+                    "verifier_decision": "NO_OP"
+                },
+                {
+                    "aspect_index": 1,
+                    "aspect": "ItemB",
+                    "action": "TEXT_RETHINK",
+                    "risk_type": "NEGATION_INVERSION",
+                    "pre_sentiment": "NEU",
+                    "post_sentiment": "NEG",
+                    "verifier_decision": "ACCEPT_REVISION"
+                }
+            ]
+        }) + "\n")
+        f.write(json.dumps({
+            "sample_id": "s2",
+            "text_anchor": {"pairs": [["ItemC", "NEU"]]},
+            "final_pairs": [["ItemC", "POS"]],
+            "transitions": [
+                {
+                    "aspect_index": 0,
+                    "aspect": "ItemC",
+                    "action": "VISION_PROBE",
+                    "risk_type": "EMBEDDED_TEXT_IMAGE",
+                    "pre_sentiment": "NEU",
+                    "post_sentiment": "POS",
+                    "verifier_decision": "ACCEPT_REVISION"
+                }
+            ]
+        }) + "\n")
+
+    diag = evaluate_v3_trajectories(traj_file=traj_file, gold_file=gold_file)
+
+    # Invariant: Action distribution must accurately count KEEP, TEXT_RETHINK, VISION_PROBE from transitions
+    act_dist = diag.get("action_distribution", {})
+    assert act_dist.get("KEEP") == 1, f"Expected KEEP: 1, got {act_dist}"
+    assert act_dist.get("TEXT_RETHINK") == 1, f"Expected TEXT_RETHINK: 1, got {act_dist}"
+    assert act_dist.get("VISION_PROBE") == 1, f"Expected VISION_PROBE: 1, got {act_dist}"
+
+    # Invariant: Contrast distribution must accurately count from transitions
+    contrast_dist = diag.get("contrast_distribution", {})
+    assert contrast_dist.get("NO_RISK") == 1
+    assert contrast_dist.get("NEGATION_INVERSION") == 1
+    assert contrast_dist.get("EMBEDDED_TEXT_IMAGE") == 1
+
+    # Invariant: Marginal utility correctly computed
+    mu_t = diag.get("marginal_utility_text", {})
+    assert mu_t.get("recover") == 1
+    assert mu_t.get("harm") == 0
+    assert mu_t.get("mu_t") == 1
+
+    mu_v = diag.get("marginal_utility_vision", {})
+    assert mu_v.get("recover") == 1
+    assert mu_v.get("harm") == 0
+    assert mu_v.get("mu_v") == 1
+
+    print("Passed test_evaluator_v3_trajectories_action_distribution!")
+
+
+def test_duplicate_aspect_names_indexing(tmp_path: pathlib.Path):
+    print("--- Running test_duplicate_aspect_names_indexing ---")
+    gold_file = str(tmp_path / "dup_gold.jsonl")
+    traj_file = str(tmp_path / "dup_traj.jsonl")
+
+    # Tweet with 2 separate mentions of the same aspect "Nick", with different sentiments:
+    # Nick #0 is POS, Nick #1 is NEG
+    with open(gold_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "sample_id": "dup_01",
+            "pairs": [["Nick", "POS"], ["Nick", "NEG"]]
+        }) + "\n")
+
+    with open(traj_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "sample_id": "dup_01",
+            "t0_pairs": [["Nick", "NEU"], ["Nick", "NEU"]],
+            "text_anchor": {"pairs": [["Nick", "NEU"], ["Nick", "NEU"]]},
+            "final_pairs": [["Nick", "POS"], ["Nick", "NEG"]],
+            "aspect_trajectories": [
+                {
+                    "aspect": "Nick",
+                    "aspect_index": 0,
+                    "t0_sentiment": "NEU",
+                    "final_sentiment": "POS",
+                    "route": "TEXT",
+                    "audit_decision": "ACCEPT"
+                },
+                {
+                    "aspect": "Nick",
+                    "aspect_index": 1,
+                    "t0_sentiment": "NEU",
+                    "final_sentiment": "NEG",
+                    "route": "VISION",
+                    "audit_decision": "ACCEPT"
+                }
+            ],
+            "transitions": [
+                {
+                    "aspect_index": 0,
+                    "aspect": "Nick",
+                    "aspect_text": "Nick",
+                    "action": "TEXT_RETHINK",
+                    "pre_sentiment": "NEU",
+                    "post_sentiment": "POS",
+                    "verifier_decision": "ACCEPT_REVISION"
+                },
+                {
+                    "aspect_index": 1,
+                    "aspect": "Nick",
+                    "aspect_text": "Nick",
+                    "action": "VISION_PROBE",
+                    "pre_sentiment": "NEU",
+                    "post_sentiment": "NEG",
+                    "verifier_decision": "ACCEPT_REVISION"
+                }
+            ]
+        }) + "\n")
+
+    # Invariant: evaluate_v3_teacher correctly pairs by aspect_index
+    res_t = evaluate_v3_teacher(traj_file=traj_file, gold_file=gold_file)
+    assert res_t["total_aspects"] == 2
+    assert res_t["total_recover"] == 2
+    assert res_t["total_harm"] == 0
+    assert res_t["aspect_final_acc"] == 100.0
+
+    # Invariant: evaluate_v3_trajectories correctly pairs by aspect_index
+    res_v3 = evaluate_v3_trajectories(traj_file=traj_file, gold_file=gold_file)
+    assert res_v3["marginal_utility_text"]["recover"] == 1
+    assert res_v3["marginal_utility_vision"]["recover"] == 1
+    print("Passed test_duplicate_aspect_names_indexing!")
+
+
 if __name__ == "__main__":
     test_v3_schemas_and_fail_closed_contract()
     test_route_keep()
@@ -788,6 +1012,8 @@ if __name__ == "__main__":
     test_route_vision_missing_question_falls_back_to_keep()
     test_text_rethink_invalid_sentiment_reverts_to_anchor()
     test_keep_transitions_recorded_and_schema_validated()
+    test_k1_runtime_assertion()
+    test_zero_label_leakage_and_state_before()
     test_semantic_firewall_leak_sanitization()
     test_physical_isolation_of_text_critique()
     test_exact_aspect_matching_no_substring_confusion()
@@ -795,9 +1021,11 @@ if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as td:
         test_evaluator_v3_teacher(pathlib.Path(td))
         test_evaluator_cw_transition_count(pathlib.Path(td))
+        test_evaluator_v3_trajectories_action_distribution(pathlib.Path(td))
+        test_duplicate_aspect_names_indexing(pathlib.Path(td))
 
     print("\n" + "=" * 78)
-    print("  ALL 18 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
+    print("  ALL 22 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
     print("=" * 78 + "\n")
 
 
