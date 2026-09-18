@@ -61,6 +61,16 @@ class AuditDecision(str, Enum):
 # Core Teacher Models
 # ============================================================================
 
+VALID_SENTIMENT_MAP = {
+    "POS": "POS",
+    "POSITIVE": "POS",
+    "NEG": "NEG",
+    "NEGATIVE": "NEG",
+    "NEU": "NEU",
+    "NEUTRAL": "NEU"
+}
+
+
 class RouteDecision(BaseModel):
     action: RouteAction = RouteAction.KEEP
     risk_type: str = "NO_RISK"
@@ -70,7 +80,9 @@ class RouteDecision(BaseModel):
 
     @classmethod
     def validate_or_fallback(cls, data: Any) -> "RouteDecision":
-        """Strict validation with safe KEEP fallback."""
+        """Strict validation with safe KEEP fallback.
+        Fail-closed invariant: VISION route without an explicit, non-empty question falls back to KEEP.
+        """
         if not isinstance(data, dict):
             return cls(action=RouteAction.KEEP, reason="Invalid response payload; fallback to KEEP.")
         try:
@@ -79,12 +91,21 @@ class RouteDecision(BaseModel):
                 raw_act = RouteAction.KEEP.value
 
             critique = data.get("critique") or data.get("critique_for_text")
-            question = data.get("question") or data.get("question_for_vision")
+            raw_q = data.get("question") or data.get("question_for_vision")
+            question = str(raw_q).strip() if raw_q and str(raw_q).strip() else None
+
+            action_enum = RouteAction(raw_act)
+            reason = str(data.get("reason", data.get("decision_reason", "")))
+
+            # Fail-closed: cannot enter VISION without an explicit factual question
+            if action_enum == RouteAction.VISION and not question:
+                action_enum = RouteAction.KEEP
+                reason = f"{reason} [Fail-closed: VISION requested without valid question; safely downgraded to KEEP.]".strip()
 
             return cls(
-                action=RouteAction(raw_act),
+                action=action_enum,
                 risk_type=str(data.get("risk_type", "NO_RISK")),
-                reason=str(data.get("reason", data.get("decision_reason", ""))),
+                reason=reason,
                 critique=critique,
                 question=question
             )
@@ -142,11 +163,15 @@ class EvidenceResult(BaseModel):
             rel_enum = EvidenceRelevance(rel_str)
             sup_enum = RevisionSupport(sup_str)
 
-            # Strict fail-closed: usable_evidence must be cleared if status is not VALID,
-            # target_binding is not DIRECT, or revision_support is not SUPPORTS_REVISION
+            # Strict fail-closed: usable_evidence must be cleared unless all 4 conditions hold:
+            # 1. status == VALID
+            # 2. target_binding == DIRECT
+            # 3. relevance == HIGH
+            # 4. revision_support == SUPPORTS_REVISION
             if (
                 status_enum != EvidenceStatus.VALID
                 or binding_enum != TargetBinding.DIRECT
+                or rel_enum != EvidenceRelevance.HIGH
                 or sup_enum != RevisionSupport.SUPPORTS_REVISION
             ):
                 usable = []
@@ -178,36 +203,52 @@ class CandidatePrediction(BaseModel):
     @classmethod
     def normalize_sentiment(cls, v: Any) -> str:
         s = str(v).upper().strip()
-        if s in ["POS", "POSITIVE"]:
-            return "POS"
-        elif s in ["NEG", "NEGATIVE"]:
-            return "NEG"
-        return "NEU"
+        if s in VALID_SENTIMENT_MAP:
+            return VALID_SENTIMENT_MAP[s]
+        raise ValueError(f"Invalid sentiment value '{v}'. Must be one of {list(VALID_SENTIMENT_MAP.keys())}.")
 
     @classmethod
     def validate_or_fallback(cls, data: Any, default_aspect: str = "", default_sentiment: str = "NEU") -> "CandidatePrediction":
-        """Validates candidate response or falls back to anchor baseline."""
+        """Validates candidate response; strictly reverts to default_sentiment anchor on invalid sentiment."""
+        safe_sentiment = VALID_SENTIMENT_MAP.get(str(default_sentiment).upper().strip(), "NEU")
+        fallback = cls(
+            aspect=default_aspect,
+            sentiment=safe_sentiment,
+            reason="Invalid candidate payload; reverted to baseline.",
+            evidence=[]
+        )
         if not isinstance(data, dict):
-            return cls(aspect=default_aspect, sentiment=default_sentiment, reason="Invalid candidate payload.")
+            return fallback
         try:
             # Handle potential nested 'aspects' list
             if "aspects" in data and isinstance(data["aspects"], list) and data["aspects"]:
-                asp_item = data["aspects"][0]
+                target_dict = data["aspects"][0]
+                aspect_name = str(target_dict.get("text", default_aspect))
+                reason = str(target_dict.get("rationale", target_dict.get("reason", "")))
+                evidence = list(target_dict.get("text_evidence", target_dict.get("evidence", [])))
+            else:
+                target_dict = data
+                aspect_name = str(target_dict.get("aspect", default_aspect))
+                reason = str(target_dict.get("reason", target_dict.get("rationale", "")))
+                evidence = list(target_dict.get("evidence", target_dict.get("text_evidence", [])))
+
+            raw_sent = str(target_dict.get("sentiment", "")).upper().strip()
+            if raw_sent not in VALID_SENTIMENT_MAP:
                 return cls(
-                    aspect=str(asp_item.get("text", default_aspect)),
-                    sentiment=str(asp_item.get("sentiment", default_sentiment)),
-                    reason=str(asp_item.get("rationale", asp_item.get("reason", ""))),
-                    evidence=list(asp_item.get("text_evidence", []))
+                    aspect=default_aspect,
+                    sentiment=safe_sentiment,
+                    reason=f"Invalid sentiment output '{raw_sent}'; strictly reverted to baseline.",
+                    evidence=[]
                 )
 
             return cls(
-                aspect=str(data.get("aspect", default_aspect)),
-                sentiment=str(data.get("sentiment", default_sentiment)),
-                reason=str(data.get("reason", data.get("rationale", ""))),
-                evidence=list(data.get("evidence", data.get("text_evidence", [])))
+                aspect=aspect_name,
+                sentiment=VALID_SENTIMENT_MAP[raw_sent],
+                reason=reason,
+                evidence=evidence
             )
         except Exception:
-            return cls(aspect=default_aspect, sentiment=default_sentiment, reason="Candidate parse failure.")
+            return fallback
 
 
 class FinalAudit(BaseModel):
@@ -236,20 +277,30 @@ class FinalAudit(BaseModel):
 
 
 class TrainingTransitionRecord(BaseModel):
-    """Normalized transition record capturing intermediate states for SFT and RL training."""
+    """Normalized transition record capturing full MDP state for SFT and RL training."""
+    step: int = 1
     sample_id: str
     aspect: str
+    aspect_text: str
     t0_sentiment: str
-    final_sentiment: str
+    pre_sentiment: str
     route: str  # KEEP, TEXT, VISION
     risk_type: str = "NO_RISK"
     route_reason: str = ""
+    action: str  # KEEP, TEXT_RETHINK, VISION_PROBE
+    action_mask: List[int] = Field(default_factory=lambda: [1, 1, 1])  # [KEEP, TEXT, VISION]
     critique: Optional[str] = None
     question: Optional[str] = None
     raw_evidence: Optional[Dict[str, Any]] = None
     verified_evidence: Optional[Dict[str, Any]] = None
+    evidence: Optional[Dict[str, Any]] = None
     candidate: Optional[Dict[str, Any]] = None
+    candidate_sentiment: Optional[str] = None
     audit: Optional[Dict[str, Any]] = None
+    audit_decision: str = "N/A"
+    verifier_decision: str = "NO_OP"
+    post_sentiment: str
+    final_sentiment: str
     compute: Optional[Dict[str, Any]] = None
 
 

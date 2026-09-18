@@ -168,21 +168,23 @@ class MetaController:
 
         audit = FinalAudit.validate_or_fallback(res)
 
-        # Hard-rule safeguard: if VISION route, verify that evidence is genuinely valid, direct, and supports revision
+        # Hard-rule safeguard: if VISION route, verify that evidence is genuinely valid, direct, highly relevant, and supports revision
         if route == "VISION":
             ev_status = evidence.get("status") if isinstance(evidence, dict) else None
             ev_binding = evidence.get("target_binding") if isinstance(evidence, dict) else None
+            ev_relevance = evidence.get("relevance") if isinstance(evidence, dict) else None
             ev_support = evidence.get("revision_support") if isinstance(evidence, dict) else None
             usable = evidence.get("usable_evidence") if isinstance(evidence, dict) else None
 
             if (
                 ev_status != "VALID"
                 or ev_binding != "DIRECT"
+                or ev_relevance != "HIGH"
                 or ev_support != "SUPPORTS_REVISION"
                 or not usable
             ):
                 audit.decision = AuditDecision.REVERT
-                audit.reason = (audit.reason + " [Safeguard: Evidence did not conclusively support revision or was not direct; forced REVERT to T0.]").strip()
+                audit.reason = (audit.reason + " [Safeguard: Evidence did not meet strict gate (VALID+DIRECT+HIGH+SUPPORTS_REVISION); forced REVERT to T0.]").strip()
 
         return audit, usage, lat
 

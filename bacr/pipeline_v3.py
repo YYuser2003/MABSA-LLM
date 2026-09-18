@@ -161,73 +161,82 @@ class BACRPipelineV3:
         # Route 3: VISION Probe + Evidence Firewall
         # --------------------------------------------------------------------
         elif action == RouteAction.VISION:
-            question = route_dec.question or f"What specific facial expression or physical interaction is displayed by {aspect} in the image?"
-            raw_obs, usage_v, lat_v = self.vision_sensor.probe_deep(
-                image_path=image_path,
-                question=question
-            )
-            raw_evidence_dict = raw_obs
-            compute["api_calls_vision"] += 1
-            compute["api_calls_total"] += 1
-            compute["image_invocations"] += 1
-            compute["total_tokens"] += usage_v.get("total_tokens", 0)
-            compute["latency_ms"] += lat_v * 1000
-
-            ev_res, usage_ce, lat_ce = self.controller.filter_evidence(
-                aspect=aspect,
-                question=question,
-                raw_evidence=raw_obs
-            )
-            compute["api_calls_controller"] += 1
-            compute["api_calls_total"] += 1
-            compute["total_tokens"] += usage_ce.get("total_tokens", 0)
-            compute["latency_ms"] += lat_ce * 1000
-            evidence_dict = ev_res.model_dump()
-
-            # Fail-closed Firewall Check
-            is_valid_evidence = (
-                ev_res.status == EvidenceStatus.VALID
-                and ev_res.target_binding == TargetBinding.DIRECT
-                and ev_res.revision_support == RevisionSupport.SUPPORTS_REVISION
-                and len(ev_res.usable_evidence) > 0
-            )
-            if not is_valid_evidence:
+            if not route_dec.question:
+                # Double safety guard: cannot probe vision without an explicit factual question
                 final_sentiment = anchor_sent
                 audit_dict = {
                     "decision": AuditDecision.REVERT.value,
-                    "reason": f"Firewall fail-closed: status={ev_res.status.value}, binding={ev_res.target_binding.value}, support={ev_res.revision_support.value}."
+                    "reason": "Firewall fail-closed: VISION route had no valid question; safely defaulted to T0 baseline."
                 }
             else:
-                cand, usage_tf, lat_tf = self.text_reasoner.fuse_evidence(
-                    text=text,
-                    aspect=aspect,
-                    anchor=anchor_dict,
-                    verified_evidence=evidence_dict
+                question = route_dec.question
+                raw_obs, usage_v, lat_v = self.vision_sensor.probe_deep(
+                    image_path=image_path,
+                    question=question
                 )
-                compute["api_calls_text"] += 1
+                raw_evidence_dict = raw_obs
+                compute["api_calls_vision"] += 1
                 compute["api_calls_total"] += 1
-                compute["total_tokens"] += usage_tf.get("total_tokens", 0)
-                compute["latency_ms"] += lat_tf * 1000
-                candidate_dict = cand.model_dump()
+                compute["image_invocations"] += 1
+                compute["total_tokens"] += usage_v.get("total_tokens", 0)
+                compute["latency_ms"] += lat_v * 1000
 
-                audit, usage_a, lat_a = self.controller.audit_revision(
-                    route="VISION",
-                    text=text,
+                ev_res, usage_ce, lat_ce = self.controller.filter_evidence(
                     aspect=aspect,
-                    anchor=anchor_dict,
-                    candidate=candidate_dict,
-                    evidence=evidence_dict
+                    question=question,
+                    raw_evidence=raw_obs
                 )
                 compute["api_calls_controller"] += 1
                 compute["api_calls_total"] += 1
-                compute["total_tokens"] += usage_a.get("total_tokens", 0)
-                compute["latency_ms"] += lat_a * 1000
-                audit_dict = audit.model_dump()
+                compute["total_tokens"] += usage_ce.get("total_tokens", 0)
+                compute["latency_ms"] += lat_ce * 1000
+                evidence_dict = ev_res.model_dump()
 
-                if audit.decision == AuditDecision.ACCEPT:
-                    final_sentiment = cand.sentiment
-                else:
+                # Fail-closed Firewall Check: VALID + DIRECT + HIGH + SUPPORTS_REVISION
+                is_valid_evidence = (
+                    ev_res.status == EvidenceStatus.VALID
+                    and ev_res.target_binding == TargetBinding.DIRECT
+                    and ev_res.relevance == EvidenceRelevance.HIGH
+                    and ev_res.revision_support == RevisionSupport.SUPPORTS_REVISION
+                    and len(ev_res.usable_evidence) > 0
+                )
+                if not is_valid_evidence:
                     final_sentiment = anchor_sent
+                    audit_dict = {
+                        "decision": AuditDecision.REVERT.value,
+                        "reason": f"Firewall fail-closed: status={ev_res.status.value}, binding={ev_res.target_binding.value}, relevance={ev_res.relevance.value}, support={ev_res.revision_support.value}."
+                    }
+                else:
+                    cand, usage_tf, lat_tf = self.text_reasoner.fuse_evidence(
+                        text=text,
+                        aspect=aspect,
+                        anchor=anchor_dict,
+                        verified_evidence=evidence_dict
+                    )
+                    compute["api_calls_text"] += 1
+                    compute["api_calls_total"] += 1
+                    compute["total_tokens"] += usage_tf.get("total_tokens", 0)
+                    compute["latency_ms"] += lat_tf * 1000
+                    candidate_dict = cand.model_dump()
+
+                    audit, usage_a, lat_a = self.controller.audit_revision(
+                        route="VISION",
+                        text=text,
+                        aspect=aspect,
+                        anchor=anchor_dict,
+                        candidate=candidate_dict,
+                        evidence=evidence_dict
+                    )
+                    compute["api_calls_controller"] += 1
+                    compute["api_calls_total"] += 1
+                    compute["total_tokens"] += usage_a.get("total_tokens", 0)
+                    compute["latency_ms"] += lat_a * 1000
+                    audit_dict = audit.model_dump()
+
+                    if audit.decision == AuditDecision.ACCEPT:
+                        final_sentiment = cand.sentiment
+                    else:
+                        final_sentiment = anchor_sent
 
         return {
             "aspect": aspect,
@@ -358,36 +367,37 @@ class BACRPipelineV3:
                 if comp_k in total_compute:
                     total_compute[comp_k] += comp_v
 
-            # Build rich training-compatible transition record for SFT/RL and evaluator
+            # Build rich training-compatible transition record validated by TrainingTransitionRecord schema
             action_name = "TEXT_RETHINK" if asp_res["route"] == RouteAction.TEXT.value else ("VISION_PROBE" if asp_res["route"] == RouteAction.VISION.value else "KEEP")
             vdec = "ACCEPT_REVISION" if asp_res["audit_decision"] == AuditDecision.ACCEPT.value else ("REVERT_TEXT_BASELINE" if asp_res["route"] != RouteAction.KEEP.value else "NO_OP")
-            trans_rec = {
-                "step": step_idx + 1,
-                "sample_id": sid,
-                "aspect": asp,
-                "aspect_text": asp,
-                "t0_sentiment": t0_sent,
-                "pre_sentiment": t0_sent,
-                "route": asp_res["route"],
-                "risk_type": asp_res.get("risk_type", "NO_RISK"),
-                "route_reason": asp_res.get("route_reason", ""),
-                "action": action_name,
-                "critique": asp_res.get("critique"),
-                "question": asp_res.get("question"),
-                "candidate": asp_res.get("candidate"),
-                "candidate_sentiment": asp_res.get("candidate_sentiment"),
-                "evidence": asp_res.get("evidence"),
-                "raw_evidence": asp_res.get("raw_evidence"),
-                "verified_evidence": asp_res.get("verified_evidence"),
-                "audit": asp_res.get("audit"),
-                "audit_decision": asp_res.get("audit_decision", "N/A"),
-                "verifier_decision": vdec,
-                "post_sentiment": asp_res["final_sentiment"],
-                "final_sentiment": asp_res["final_sentiment"],
-                "compute": asp_res["compute"]
-            }
-            if asp_res["route"] != RouteAction.KEEP.value:
-                transitions.append(trans_rec)
+            trans_obj = TrainingTransitionRecord(
+                step=step_idx + 1,
+                sample_id=sid,
+                aspect=asp,
+                aspect_text=asp,
+                t0_sentiment=t0_sent,
+                pre_sentiment=t0_sent,
+                route=asp_res["route"],
+                risk_type=asp_res.get("risk_type", "NO_RISK"),
+                route_reason=asp_res.get("route_reason", ""),
+                action=action_name,
+                action_mask=[1, 1, 1],
+                critique=asp_res.get("critique"),
+                question=asp_res.get("question"),
+                raw_evidence=asp_res.get("raw_evidence"),
+                verified_evidence=asp_res.get("verified_evidence"),
+                evidence=asp_res.get("evidence"),
+                candidate=asp_res.get("candidate"),
+                candidate_sentiment=asp_res.get("candidate_sentiment"),
+                audit=asp_res.get("audit"),
+                audit_decision=asp_res.get("audit_decision", "N/A"),
+                verifier_decision=vdec,
+                post_sentiment=asp_res["final_sentiment"],
+                final_sentiment=asp_res["final_sentiment"],
+                compute=asp_res["compute"]
+            )
+            # Record ALL aspect decisions including KEEP to prevent selection bias in downstream SFT/RL
+            transitions.append(trans_obj.model_dump())
 
         num_v = sum(1 for at in aspect_trajectories if at["route"] == RouteAction.VISION.value)
         num_t = sum(1 for at in aspect_trajectories if at["route"] == RouteAction.TEXT.value)

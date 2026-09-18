@@ -27,11 +27,14 @@ from bacr.schemas_v3 import (
     RouteAction,
     EvidenceStatus,
     TargetBinding,
+    EvidenceRelevance,
+    RevisionSupport,
     AuditDecision,
     RouteDecision,
     EvidenceResult,
     CandidatePrediction,
-    FinalAudit
+    FinalAudit,
+    TrainingTransitionRecord
 )
 from bacr.text_reasoner import TextReasoner
 from bacr.meta_controller import MetaController
@@ -46,7 +49,7 @@ class MockTeacherClient:
         self,
         route_action="KEEP",
         route_critique=None,
-        route_question=None,
+        route_question="DEFAULT",
         rethink_sentiment="NEU",
         firewall_status="VALID",
         firewall_binding="DIRECT",
@@ -77,12 +80,16 @@ class MockTeacherClient:
             crit = self.route_critique
             if self.leak_visual_in_critique:
                 crit = "The photo image shows a smiling face, please re-evaluate tone."
+            if self.route_question == "DEFAULT":
+                q = "What expression is visible?" if self.route_action == "VISION" else None
+            else:
+                q = self.route_question
             return {
                 "risk_type": "AFFECT_SPILLOVER" if self.route_action == "TEXT" else "MISSING_AFFECT",
                 "action": self.route_action,
                 "reason": f"Selected {self.route_action} route based on audit.",
                 "critique": crit,
-                "question": self.route_question or "What expression is visible?"
+                "question": q
             }, {"total_tokens": 20}, 0.05
 
         # TR: Text Rethink
@@ -173,6 +180,12 @@ def test_v3_schemas_and_fail_closed_contract():
     assert r_valid.action == RouteAction.TEXT
     assert r_valid.critique == "check scope"
 
+    # Invariant: VISION without question must fail-closed to KEEP
+    r_vision_no_q = RouteDecision.validate_or_fallback({"action": "VISION", "question": None})
+    assert r_vision_no_q.action == RouteAction.KEEP
+    r_vision_blank_q = RouteDecision.validate_or_fallback({"action": "VISION", "question": "   "})
+    assert r_vision_blank_q.action == RouteAction.KEEP
+
     # 2. EvidenceResult fail-closed contracts
     ev_empty = EvidenceResult.validate_fail_closed({})
     assert ev_empty.status == EvidenceStatus.INVALID
@@ -194,7 +207,31 @@ def test_v3_schemas_and_fail_closed_contract():
     })
     assert ev_unbound.usable_evidence == []
 
-    # 3. FinalAudit fallback
+    # Invariant: LOW or MEDIUM relevance must clear usable_evidence (Gate requires HIGH)
+    ev_low_rel = EvidenceResult.validate_fail_closed({
+        "status": "VALID",
+        "target_binding": "DIRECT",
+        "relevance": "LOW",
+        "revision_support": "SUPPORTS_REVISION",
+        "usable_evidence": ["Irrelevant background fact"]
+    })
+    assert ev_low_rel.usable_evidence == []
+    ev_med_rel = EvidenceResult.validate_fail_closed({
+        "status": "VALID",
+        "target_binding": "DIRECT",
+        "relevance": "MEDIUM",
+        "revision_support": "SUPPORTS_REVISION",
+        "usable_evidence": ["Medium relevance fact"]
+    })
+    assert ev_med_rel.usable_evidence == []
+
+    # 3. CandidatePrediction fallback: invalid sentiment strictly reverts to default_sentiment anchor
+    cand_invalid = CandidatePrediction.validate_or_fallback({"sentiment": "uncertain"}, default_sentiment="POS")
+    assert cand_invalid.sentiment == "POS"
+    cand_na = CandidatePrediction.validate_or_fallback({"sentiment": "N/A"}, default_sentiment="NEG")
+    assert cand_na.sentiment == "NEG"
+
+    # 4. FinalAudit fallback
     fa_fallback = FinalAudit.validate_or_fallback({})
     assert fa_fallback.decision == AuditDecision.REVERT
 
@@ -619,6 +656,125 @@ def test_physical_isolation_of_text_critique():
     print("Passed test_physical_isolation_of_text_critique!")
 
 
+def test_route_vision_low_relevance_reverts():
+    print("--- Running test_route_vision_low_relevance_reverts ---")
+    # Sensor returns VALID + DIRECT + SUPPORTS_REVISION, but relevance == LOW -> Firewall MUST fail-closed & revert to T0
+    client = MockTeacherClient(
+        route_action="VISION",
+        firewall_status="VALID",
+        firewall_binding="DIRECT",
+        firewall_relevance="LOW",
+        firewall_revision_support="SUPPORTS_REVISION",
+        fusion_sentiment="POS",
+        audit_decision="ACCEPT"
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_low_rel_01",
+        "text": "Discussion on economic trends",
+        "image": "dummy.jpg",
+        "pairs": [["Economy", "NEU"]],
+        "text_initial_cached": {"pairs": [["Economy", "NEU"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    assert record["final_pairs"] == [["Economy", "NEU"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "VISION"
+    assert asp_tr["final_sentiment"] == "NEU"
+    assert asp_tr["audit_decision"] == "REVERT"
+
+    # TF Deliberation MUST be bypassed when evidence is LOW relevance
+    tf_calls = [c for c in client.call_history if "text_evidence_fusion.md" in c[1]]
+    assert len(tf_calls) == 0, "TF should NOT be called when relevance is not HIGH"
+    print("Passed test_route_vision_low_relevance_reverts!")
+
+
+def test_route_vision_missing_question_falls_back_to_keep():
+    print("--- Running test_route_vision_missing_question_falls_back_to_keep ---")
+    # Router selected VISION, but returned question=None -> Must fail-closed to KEEP
+    client = MockTeacherClient(
+        route_action="VISION",
+        route_question=None
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_missing_q_01",
+        "text": "Report from Jakarta today",
+        "image": "dummy.jpg",
+        "pairs": [["Jakarta", "NEU"]],
+        "text_initial_cached": {"pairs": [["Jakarta", "NEU"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    # Must be safely downgraded to KEEP, with zero vision probe calls
+    assert record["final_pairs"] == [["Jakarta", "NEU"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["route"] == "KEEP"
+    assert asp_tr["final_sentiment"] == "NEU"
+
+    probe_calls = [c for c in client.call_history if "vision_probe.md" in c[1]]
+    assert len(probe_calls) == 0, "Visual probe should NEVER be invoked if question is missing"
+    print("Passed test_route_vision_missing_question_falls_back_to_keep!")
+
+
+def test_text_rethink_invalid_sentiment_reverts_to_anchor():
+    print("--- Running test_text_rethink_invalid_sentiment_reverts_to_anchor ---")
+    # T_R outputs invalid sentiment like 'uncertain' -> Must strictly revert to anchor (POS), not silently map to NEU
+    client = MockTeacherClient(
+        route_action="TEXT",
+        rethink_sentiment="uncertain",
+        audit_decision="ACCEPT"
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_invalid_sent_01",
+        "text": "Great victory for the champion",
+        "image": "dummy.jpg",
+        "pairs": [["Champion", "POS"]],
+        "text_initial_cached": {"pairs": [["Champion", "POS"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    # Invariant: Invalid candidate sentiment strictly defaults to anchor sentiment (POS), not NEU!
+    assert record["final_pairs"] == [["Champion", "POS"]]
+    asp_tr = record["aspect_trajectories"][0]
+    assert asp_tr["candidate_sentiment"] == "POS"
+    assert asp_tr["final_sentiment"] == "POS"
+    print("Passed test_text_rethink_invalid_sentiment_reverts_to_anchor!")
+
+
+def test_keep_transitions_recorded_and_schema_validated():
+    print("--- Running test_keep_transitions_recorded_and_schema_validated ---")
+    client = MockTeacherClient(route_action="KEEP")
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_keep_trans_01",
+        "text": "Normal statement about Google",
+        "image": "dummy.jpg",
+        "pairs": [["Google", "NEU"]],
+        "text_initial_cached": {"pairs": [["Google", "NEU"]]}
+    }
+    record = pipeline.run_sample(sample)
+
+    # Invariant: KEEP actions MUST be recorded in transitions to prevent SFT/RL selection bias!
+    assert len(record["transitions"]) == 1, "KEEP action must be recorded in transitions"
+    t_rec = record["transitions"][0]
+    assert t_rec["action"] == "KEEP"
+    assert t_rec["route"] == "KEEP"
+    assert t_rec["post_sentiment"] == "NEU"
+
+    # Invariant: Record must strictly validate against TrainingTransitionRecord schema
+    validated_obj = TrainingTransitionRecord(**t_rec)
+    assert validated_obj.sample_id == "test_keep_trans_01"
+    assert validated_obj.action == "KEEP"
+    print("Passed test_keep_transitions_recorded_and_schema_validated!")
+
+
 if __name__ == "__main__":
     test_v3_schemas_and_fail_closed_contract()
     test_route_keep()
@@ -628,6 +784,10 @@ if __name__ == "__main__":
     test_route_vision_valid_accept()
     test_route_vision_valid_revert()
     test_route_vision_firewall_non_decisive_reverts()
+    test_route_vision_low_relevance_reverts()
+    test_route_vision_missing_question_falls_back_to_keep()
+    test_text_rethink_invalid_sentiment_reverts_to_anchor()
+    test_keep_transitions_recorded_and_schema_validated()
     test_semantic_firewall_leak_sanitization()
     test_physical_isolation_of_text_critique()
     test_exact_aspect_matching_no_substring_confusion()
@@ -637,7 +797,7 @@ if __name__ == "__main__":
         test_evaluator_cw_transition_count(pathlib.Path(td))
 
     print("\n" + "=" * 78)
-    print("  ALL 14 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
+    print("  ALL 18 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
     print("=" * 78 + "\n")
 
 

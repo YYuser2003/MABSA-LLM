@@ -778,7 +778,13 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
                             route_stats["VISION"]["harm"] += 1
                         route_stats["VISION"]["net"] = route_stats["VISION"]["recover"] - route_stats["VISION"]["harm"]
                         ev = at.get("evidence")
-                        if ev and ev.get("status") == "VALID":
+                        if (
+                            ev
+                            and ev.get("status") == "VALID"
+                            and ev.get("target_binding") == "DIRECT"
+                            and ev.get("relevance") == "HIGH"
+                            and ev.get("revision_support") == "SUPPORTS_REVISION"
+                        ):
                             route_stats["VISION"]["firewall_valid"] += 1
                         else:
                             route_stats["VISION"]["firewall_invalid"] += 1
