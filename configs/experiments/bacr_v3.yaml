@@ -5,6 +5,10 @@ experiment:
   description: "BACR-v3: Text Anchor + Risk Diagnosis + Evidence Firewall + Selective Deliberation"
   model_config: configs/models/gemini.yaml
   dataset_config: configs/datasets/twitter15.yaml
+  budget:
+    max_deep_actions: 2
+    max_text_rethinks: 1
+    max_visual_probes: 2
   max_visual_probes: 2
   aspect_lock: true
   controller:

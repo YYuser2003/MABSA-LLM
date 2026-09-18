@@ -483,13 +483,16 @@ BACREvaluator = G3Evaluator
 
 
 def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
-    """Computes specialized BACR-v3 diagnostic metrics from trajectories and gold labels."""
+    """Computes transition-level BACR-v3 diagnostic metrics from trajectories and gold labels."""
     gold_map = {}
+    gold_aspect_map = {}
     with open(gold_file, "r", encoding="utf-8") as f:
         for line in f:
             if line.strip():
                 d = json.loads(line)
-                gold_map[d["sample_id"]] = {tuple(p) for p in d.get("pairs", [])}
+                sid = d["sample_id"]
+                gold_map[sid] = {tuple(p) for p in d.get("pairs", [])}
+                gold_aspect_map[sid] = {p[0]: p[1] for p in d.get("pairs", [])}
 
     trajs = []
     with open(traj_file, "r", encoding="utf-8") as f:
@@ -501,138 +504,157 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
     if total_samples == 0:
         return {"error": "Empty trajectory file"}
 
-    # Stage accuracy counters
-    t_correct = 0
-    tv_correct = 0
+    # Accuracy accumulators
+    ha_correct = 0
+    hb0_correct = 0
     final_correct = 0
 
-    visual_shift_count = 0
-    vis_correction = 0   # T wrong, TV correct
-    vis_corruption = 0   # T correct, TV wrong
-    vis_both_correct = 0
-    vis_both_wrong = 0
+    # Marginal Utility accumulators
+    recover_t, harm_t = 0, 0
+    recover_v, harm_v = 0, 0
 
-    probe_recovery = 0   # TV wrong, Final correct
-    probe_harm = 0       # TV correct, Final wrong
-
-    contrast_types = Counter()
-    probe_counts = Counter()
-    action_counts = Counter()
-    revert_count = 0
+    # System-level anchor protection
     anchor_corrections = 0
     anchor_corruptions = 0
 
+    action_counts = Counter()
+    verifier_decisions = Counter()
+    contrast_types = Counter()
+    revert_count = 0
+
     for tr in trajs:
         sid = tr["sample_id"]
-        gold = gold_map.get(sid, set())
+        gold_pairs = gold_map.get(sid, set())
+        gold_asp_sents = gold_aspect_map.get(sid, {})
 
-        # Stage predictions
-        sp = tr.get("stage_predictions", {})
-        y_t = {tuple(p) for p in sp.get("Y_T", tr.get("text_only", {}).get("pairs", []))}
-        y_tv = {tuple(p) for p in sp.get("Y_TV", tr.get("text_visual_global", {}).get("pairs", []))}
-        y_final = {tuple(p) for p in sp.get("Y_final", tr.get("final_pairs", []))}
+        # Predictions
+        y_ha = {tuple(p) for p in tr.get("text_anchor", {}).get("pairs", tr.get("text_only", {}).get("pairs", []))}
+        y_final = {tuple(p) for p in tr.get("final_pairs", tr.get("text_baseline", {}).get("pairs", []))}
 
-        is_t_correct = (y_t == gold)
-        is_tv_correct = (y_tv == gold)
-        is_final_correct = (y_final == gold)
+        # Baseline at step 0
+        y_hb0 = y_ha  # In BACR-v3, H_B(0) == H_A
 
-        if is_t_correct:
-            t_correct += 1
-        if is_tv_correct:
-            tv_correct += 1
+        is_ha_correct = (y_ha == gold_pairs)
+        is_hb0_correct = (y_hb0 == gold_pairs)
+        is_final_correct = (y_final == gold_pairs)
+
+        if is_ha_correct:
+            ha_correct += 1
+        if is_hb0_correct:
+            hb0_correct += 1
         if is_final_correct:
             final_correct += 1
 
-        # Track Anchor Corrections vs Corruptions
-        if not is_t_correct and is_final_correct:
+        # Anchor protection net gain
+        if not is_ha_correct and is_final_correct:
             anchor_corrections += 1
-        elif is_t_correct and not is_final_correct:
+        elif is_ha_correct and not is_final_correct:
             anchor_corruptions += 1
 
-        # 1. Visual Shift Rate
-        if y_t != y_tv:
-            visual_shift_count += 1
-
-        # 2. Visual Correction & Corruption (T -> TV)
-        if not is_t_correct and is_tv_correct:
-            vis_correction += 1
-        elif is_t_correct and not is_tv_correct:
-            vis_corruption += 1
-        elif is_t_correct and is_tv_correct:
-            vis_both_correct += 1
-        else:
-            vis_both_wrong += 1
-
-        # 3. Probe Utility (TV -> Final)
-        num_probes = tr.get("num_visual_probes", len(tr.get("rounds", [])))
-        probe_counts[num_probes] += 1
-        if num_probes > 0:
-            if not is_tv_correct and is_final_correct:
-                probe_recovery += 1
-            elif is_tv_correct and not is_final_correct:
-                probe_harm += 1
-
-        # Controller Actions & Reversions
-        act = tr.get("action", tr.get("initial_contrast", {}).get("action", "FINALIZE"))
+        # Controller initial action & contrast
+        act = tr.get("action", "FINALIZE")
         action_counts[act] += 1
-        for rnd in tr.get("rounds", []):
-            vdec = rnd.get("verifier_decision", {}).get("decision")
-            if vdec in ["REVERT_TEXT_BASELINE", "REVERT_ANCHOR", "REJECT_REVISION"]:
-                revert_count += 1
-
-        # Contrast types
-        c_type = tr.get("contrast_type", tr.get("initial_contrast", {}).get("contrast_type", "UNKNOWN"))
+        c_type = tr.get("contrast_type", "NO_RISK")
         contrast_types[c_type] += 1
 
-    visual_shift_rate = round(visual_shift_count / total_samples * 100, 2)
-    acc_t = round(t_correct / total_samples * 100, 2)
-    acc_tv = round(tv_correct / total_samples * 100, 2)
+        # Transition-level evaluation
+        transitions = tr.get("transitions", [])
+        if not transitions and "rounds" in tr:
+            # Reconstruct transitions from rounds if older format
+            for rnd in tr["rounds"]:
+                vdec = rnd.get("verifier_decision", {}).get("decision") or rnd.get("ct_decision", {}).get("decision", "REVERT_TEXT_BASELINE")
+                if vdec in ["REVERT_TEXT_BASELINE", "REVERT_ANCHOR", "REJECT_REVISION"]:
+                    revert_count += 1
+                verifier_decisions[vdec] += 1
+        else:
+            for t in transitions:
+                action = t.get("action")
+                vdec = t.get("verifier_decision", "REVERT_TEXT_BASELINE")
+                verifier_decisions[vdec] += 1
+                if vdec in ["REVERT_TEXT_BASELINE", "REVERT_ANCHOR"]:
+                    revert_count += 1
+
+                # Aspect-level marginal utility calculation
+                aid = t.get("aspect_id")
+                pre = t.get("pre_sentiment")
+                post = t.get("post_sentiment")
+                gold_sent = gold_asp_sents.get(aid)
+
+                if gold_sent:
+                    was_correct = (pre == gold_sent)
+                    now_correct = (post == gold_sent)
+
+                    if action == "TEXT_RETHINK":
+                        if not was_correct and now_correct:
+                            recover_t += 1
+                        elif was_correct and not now_correct:
+                            harm_t += 1
+                    elif action == "VISION_PROBE":
+                        if not was_correct and now_correct:
+                            recover_v += 1
+                        elif was_correct and not now_correct:
+                            harm_v += 1
+
+    acc_ha = round(ha_correct / total_samples * 100, 2)
+    acc_hb0 = round(hb0_correct / total_samples * 100, 2)
     acc_final = round(final_correct / total_samples * 100, 2)
+
+    mu_t = recover_t - harm_t
+    mu_v = recover_v - harm_v
 
     return {
         "total_samples": total_samples,
-        "acc_t0": acc_t,
-        "acc_tv": acc_tv,
+        "acc_ha": acc_ha,
+        "acc_hb0": acc_hb0,
         "acc_final": acc_final,
-        "delta_tv_over_t0": round(acc_tv - acc_t, 2),
-        "delta_final_over_t0": round(acc_final - acc_t, 2),
-        "visual_shift_rate": visual_shift_rate,
-        "visual_correction": vis_correction,
-        "visual_corruption": vis_corruption,
-        "visual_net_gain": vis_correction - vis_corruption,
-        "probe_recovery": probe_recovery,
-        "probe_harm": probe_harm,
-        "probe_net_gain": probe_recovery - probe_harm,
+        "acc_t0": acc_ha,  # Backward compatibility key
+        "delta_final_over_ha": round(acc_final - acc_ha, 2),
+        "marginal_utility_text": {
+            "recover": recover_t,
+            "harm": harm_t,
+            "mu_t": mu_t
+        },
+        "marginal_utility_vision": {
+            "recover": recover_v,
+            "harm": harm_v,
+            "mu_v": mu_v
+        },
         "anchor_corrections": anchor_corrections,
         "anchor_corruptions": anchor_corruptions,
         "anchor_net_gain": anchor_corrections - anchor_corruptions,
         "action_distribution": dict(action_counts),
+        "verifier_decisions": dict(verifier_decisions),
         "revert_count": revert_count,
-        "contrast_distribution": dict(contrast_types),
-        "probe_frequency": dict(probe_counts)
+        "contrast_distribution": dict(contrast_types)
     }
 
 
 def print_v3_evaluation_report(r: Dict[str, Any]):
     print("\n" + "=" * 78)
-    print("      BACR-v3 META-CONTROL & VERIFICATION EVALUATION REPORT")
+    print("      BACR-v3 TRANSITION MARGINAL UTILITY & GOVERNANCE REPORT")
     print("=" * 78)
-    print(f"Total Evaluated Samples      : {r.get('total_samples')}")
+    print(f"Total Evaluated Samples         : {r.get('total_samples')}")
     print("-" * 78)
-    print("1. PROGRESSIVE STAGE ACCURACY:")
-    print(f"  Text Anchor Baseline (H_A)   : {r.get('acc_t0')}%")
-    print(f"  Pre-Verification Candidate   : {r.get('acc_tv')}% (Δ: {r.get('delta_tv_over_t0'):+0.2f}%)")
-    print(f"  Final System Accuracy (Y_F)  : {r.get('acc_final')}% (Δ: {r.get('delta_final_over_t0'):+0.2f}%)")
+    print("1. PROGRESSIVE BASELINE ACCURACY:")
+    print(f"  Text Anchor Baseline (H_A)      : {r.get('acc_ha')}%")
+    print(f"  Verified Baseline (H_B[0])      : {r.get('acc_hb0')}%")
+    print(f"  Final System Accuracy (Y_final) : {r.get('acc_final')}% (Δ: {r.get('delta_final_over_ha'):+0.2f}%)")
     print("-" * 78)
-    print("2. ANCHOR PROTECTION & NET GAIN:")
-    print(f"  Anchor Corrections (H_A wrong -> Y_F correct): {r.get('anchor_corrections')} samples")
-    print(f"  Anchor Corruptions (H_A correct -> Y_F wrong): {r.get('anchor_corruptions')} samples")
-    print(f"  System Net Gain (Corrections - Corruptions)  : {r.get('anchor_net_gain'):+d} samples")
+    print("2. MARGINAL UTILITIES (PRE -> POST TRANSITIONS):")
+    mu_t = r.get("marginal_utility_text", {})
+    print(f"  Text Rethink (MU_T)             : {mu_t.get('mu_t', 0):+d} (Recover: {mu_t.get('recover', 0)}, Harm: {mu_t.get('harm', 0)})")
+    mu_v = r.get("marginal_utility_vision", {})
+    print(f"  Vision Probe (MU_V)             : {mu_v.get('mu_v', 0):+d} (Recover: {mu_v.get('recover', 0)}, Harm: {mu_v.get('harm', 0)})")
     print("-" * 78)
-    print("3. CONTROLLER ACTIONS & SAFEGUARD REVERSIONS:")
-    print(f"  Controller Actions Allocated : {r.get('action_distribution')}")
-    print(f"  Safeguard Reversions (REVERT): {r.get('revert_count')} times")
-    print(f"  Probe Depth Frequency        : {r.get('probe_frequency')}")
+    print("3. ANCHOR PROTECTION & SYSTEM NET GAIN:")
+    print(f"  Anchor Corrections (H_A wrong -> Y_final correct): {r.get('anchor_corrections')}")
+    print(f"  Anchor Corruptions (H_A correct -> Y_final wrong): {r.get('anchor_corruptions')}")
+    print(f"  System Net Gain (Corrections - Corruptions)     : {r.get('anchor_net_gain'):+d}")
+    print("-" * 78)
+    print("4. CONTROLLER ACTIONS & VERIFIER AUDITS:")
+    print(f"  Controller Actions Allocated    : {r.get('action_distribution')}")
+    print(f"  Verifier Decisions              : {r.get('verifier_decisions')}")
+    print(f"  Safeguard Reversions (REVERT)   : {r.get('revert_count')} times")
     print("=" * 78 + "\n")
 
 

@@ -52,26 +52,6 @@ class TextReasoner:
                     reason = a.get("reason", a.get("rationale", "Canonical text reason."))
                     ev_spans = a.get("evidence_spans", [asp_text])
                     
-                    # Compute risk profile heuristic based on sentence patterns
-                    text_lower = text.lower()
-                    is_short = len(text.split()) <= 12
-                    has_photo_words = any(w in text_lower for w in ["selfie", "shot", "photo", "pic", "at", "way to"])
-                    missing_aff = "high" if (is_short and has_photo_words and sent == "NEU") else "low"
-                    spillover = "high" if (any(w in text_lower for w in ["#", "!", "party", "win", "great", "love"]) and sent != "NEU") else "low"
-                    reporting = "high" if any(w in text_lower for w in ["report", "accuse", "cover-up", "debate", "focus", "embattled"]) else "low"
-                    pragmatic = "high" if any(w in text_lower for w in ["retire", "leave", "farewell", "died", "memorial"]) else "low"
-                    
-                    # Standardized Risk Items
-                    risks = []
-                    if missing_aff == "high":
-                        risks.append({"type": "MISSING_AFFECT", "level": "HIGH", "basis": "Minimalist factual tweet with no evaluative modifiers."})
-                    if spillover == "high":
-                        risks.append({"type": "AFFECT_SPILLOVER", "level": "HIGH", "basis": "General excitement or hashtag in tweet that may not attach to target aspect."})
-                    if reporting == "high":
-                        risks.append({"type": "REPORTING_FRAME", "level": "HIGH", "basis": "Journalistic report framing; entity is subject of report rather than speaker emotion."})
-                    if pragmatic == "high":
-                        risks.append({"type": "PRAGMATIC_AFFECT", "level": "HIGH", "basis": "Pragmatic farewell, retirement, or career milestone."})
-
                     adapted_aspects.append({
                         "aspect_id": aid,
                         "text": asp_text,
@@ -79,16 +59,9 @@ class TextReasoner:
                         "sentiment": sent,
                         "text_evidence": ev_spans,
                         "rationale": reason,
-                        "assumptions": ["Utterance is literal and informational."],
-                        "uncertainties": ["Affect may depend on visual context if minimalist."],
-                        "risks": risks,
-                        "risk_profile": {
-                            "affect_spillover": spillover,
-                            "missing_affect": missing_aff,
-                            "reporting_frame": reporting,
-                            "pragmatic_blindness": pragmatic,
-                            "irony_conflict": "low"
-                        }
+                        "assumptions": a.get("assumptions", ["Utterance is literal and informational."]),
+                        "uncertainties": a.get("uncertainties", []),
+                        "risks": []
                     })
                     
                 pairs_clean = [[a["text"], a["sentiment"]] for a in adapted_aspects]
@@ -157,10 +130,10 @@ class TextReasoner:
         for aid, baseline in baseline_map.items():
             if aid in res_map and (target_aspect_id is None or aid == target_aspect_id):
                 item = res_map[aid]
-                item["text"] = baseline["text"]
-                item["span"] = baseline["span"]
+                item["text"] = baseline.get("text", "")
+                item["span"] = baseline.get("span", [0, 0])
                 if item.get("sentiment") not in ["POS", "NEG", "NEU"]:
-                    item["sentiment"] = baseline["sentiment"]
+                    item["sentiment"] = baseline.get("sentiment", "NEU")
                 enforced_aspects.append(item)
             else:
                 # Isolate non-target aspects from cross-aspect affect drift
@@ -204,10 +177,10 @@ class TextReasoner:
         for aid, baseline in baseline_map.items():
             if aid in res_map and (target_aspect_id is None or aid == target_aspect_id):
                 item = res_map[aid]
-                item["text"] = baseline["text"]
-                item["span"] = baseline["span"]
+                item["text"] = baseline.get("text", "")
+                item["span"] = baseline.get("span", [0, 0])
                 if item.get("sentiment") not in ["POS", "NEG", "NEU"]:
-                    item["sentiment"] = baseline["sentiment"]
+                    item["sentiment"] = baseline.get("sentiment", "NEU")
                 enforced_aspects.append(item)
             else:
                 # Isolate non-target aspects from cross-aspect affect drift

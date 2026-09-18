@@ -18,10 +18,29 @@ from PIL import Image
 import io
 import requests
 
-DEFAULT_API_KEY = os.environ.get("GEMINI_API_KEY", "sk-8155e3017561267e-0a40fe-db0a138d")
-DEFAULT_BASE_URL = os.environ.get("GEMINI_BASE_URL", "http://10.60.80.119:20128")
+# Lightweight .env loader to avoid external dependencies
+def _load_env_file():
+    env_paths = [
+        os.path.join(os.getcwd(), ".env"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+    ]
+    for p in env_paths:
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8-sig") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        k = k.strip()
+                        v = v.strip().strip("'\"")
+                        if k not in os.environ:
+                            os.environ[k] = v
+            break
+
+_load_env_file()
+
 PRIMARY_MODEL = os.environ.get("GEMINI_MODEL", "gemini_3.8")
-FALLBACK_MODEL = "antigravity/gemini-3.8-flash-tiered"
+FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini_3.8")
 
 
 def clean_json_response(content: str) -> str:
@@ -79,8 +98,17 @@ class GeminiClient(BaseClient):
         allow_fallback: bool = False,
         timeout: int = 90
     ):
-        self.api_key = api_key or DEFAULT_API_KEY
-        self.base_url = (base_url or DEFAULT_BASE_URL).rstrip("/")
+        self.api_key = api_key or os.environ.get("GEMINI_API_KEY", "")
+        if not self.api_key:
+            raise ValueError(
+                "Missing Gemini API Key. Please set GEMINI_API_KEY in your environment or in a .env file."
+            )
+        resolved_base_url = base_url or os.environ.get("GEMINI_BASE_URL", "")
+        if not resolved_base_url:
+            raise ValueError(
+                "Missing Gemini Base URL. Please set GEMINI_BASE_URL in your environment or in a .env file."
+            )
+        self.base_url = resolved_base_url.rstrip("/")
         self.model = model or PRIMARY_MODEL
         self.thinking_level = thinking_level
         self.temperature = temperature

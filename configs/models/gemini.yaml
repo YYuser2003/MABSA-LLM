@@ -1,7 +1,7 @@
 model:
   provider: gemini
   name: gemini_3.8
-  base_url: http://10.60.80.119:20128
+  base_url: ${GEMINI_BASE_URL}
   thinking_level: high
   temperature: 0.1
   allow_fallback: false

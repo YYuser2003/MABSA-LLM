@@ -18,6 +18,7 @@ import random
 import argparse
 import logging
 import threading
+import re
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Any, List, Optional, Set
@@ -39,7 +40,9 @@ from bacr.evaluator import (
 
 def load_yaml(path: str) -> Dict[str, Any]:
     with open(path, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
+        content = f.read()
+    content = re.sub(r"\$\{([^}]+)\}", lambda m: os.environ.get(m.group(1), ""), content)
+    return yaml.safe_load(content)
 
 
 def setup_logger(log_file: str) -> logging.Logger:
@@ -72,6 +75,7 @@ def main():
     parser.add_argument("--tag", type=str, default=None, help="Custom run tag.")
     parser.add_argument("--seed", type=int, default=42, help="Random seed.")
     parser.add_argument("--resume", type=str, default=None, help="Resume run from existing run directory or run ID.")
+    parser.add_argument("--allow-partial-eval", action="store_true", help="Allow evaluation even if some samples failed.")
     args = parser.parse_args()
 
     # 1. Load experiment config
@@ -139,23 +143,18 @@ def main():
     manifest_prefix = ds_config.get("dataset", {}).get("manifest_prefix", "tw15")
     manifest_file = os.path.join(PROJECT_ROOT, "data", "manifests", f"{manifest_prefix}_{split}.jsonl")
 
-    # Load canonical caches if enabled
+    # Load canonical caches independently
     t0_cache = {}
     v0_cache = {}
-    use_canonical = exp_config.get("experiment", {}).get("canonical_t0", False)
-    if use_canonical:
+    use_canonical_t0 = exp_config.get("experiment", {}).get("canonical_t0", False)
+    use_canonical_v0 = exp_config.get("experiment", {}).get("canonical_v0", False)
+
+    if use_canonical_t0:
         t0_candidates = [
             os.path.join(PROJECT_ROOT, "data", "cache", "canonical_t0", f"{manifest_prefix}_{split}.jsonl"),
             os.path.join(PROJECT_ROOT, "data", "cache", "canonical_t0", f"{dataset_name}_{split}.jsonl")
         ]
         t0_path = next((p for p in t0_candidates if os.path.exists(p)), t0_candidates[0])
-
-        v0_candidates = [
-            os.path.join(PROJECT_ROOT, "data", "cache", "canonical_v0", f"{manifest_prefix}_{split}.jsonl"),
-            os.path.join(PROJECT_ROOT, "data", "cache", "canonical_v0", f"{dataset_name}_{split}.jsonl")
-        ]
-        v0_path = next((p for p in v0_candidates if os.path.exists(p)), v0_candidates[0])
-
         if os.path.exists(t0_path):
             with open(t0_path, "r", encoding="utf-8") as f:
                 for line in f:
@@ -163,6 +162,13 @@ def main():
                         d = json.loads(line)
                         t0_cache[d["sample_id"]] = d
             logger.info(f"Loaded {len(t0_cache)} canonical T0 initial records from {os.path.basename(t0_path)}.")
+
+    if use_canonical_v0:
+        v0_candidates = [
+            os.path.join(PROJECT_ROOT, "data", "cache", "canonical_v0", f"{manifest_prefix}_{split}.jsonl"),
+            os.path.join(PROJECT_ROOT, "data", "cache", "canonical_v0", f"{dataset_name}_{split}.jsonl")
+        ]
+        v0_path = next((p for p in v0_candidates if os.path.exists(p)), v0_candidates[0])
         if os.path.exists(v0_path):
             with open(v0_path, "r", encoding="utf-8") as f:
                 for line in f:
@@ -253,10 +259,12 @@ def main():
         exp_ver = exp_config.get("experiment", {}).get("version", "") or exp_config.get("experiment", {}).get("type", "")
         is_v3 = (exp_ver == "bacr_v3" or "v3" in exp_name.lower())
 
+        failures_file = os.path.join(run_dir, "failures.jsonl")
+
         if is_v3:
-            max_v_probes = exp_config.get("experiment", {}).get("max_visual_probes", 2)
-            pipeline = BACRPipelineV3(client=client, run_id=run_id, max_visual_probes=max_v_probes)
-            logger.info(f"Initialized BACRPipelineV3 (Text Anchor + Risk Diagnosis + Evidence Firewall, Max Probes={max_v_probes})")
+            max_deep_actions = exp_config.get("experiment", {}).get("budget", {}).get("max_deep_actions", exp_config.get("experiment", {}).get("max_visual_probes", 2))
+            pipeline = BACRPipelineV3(client=client, run_id=run_id, max_visual_probes=max_deep_actions)
+            logger.info(f"Initialized BACRPipelineV3 (Text Anchor + Risk Diagnosis + Evidence Firewall, Max Deep Actions={max_deep_actions})")
         else:
             controller_sees_raw = exp_config.get("experiment", {}).get("controller", {}).get("controller_sees_raw_modalities", False)
             pipeline = BACRPipeline(client=client, controller_sees_raw_modalities=controller_sees_raw)
@@ -284,7 +292,7 @@ def main():
                     record = pipeline.run_sample(
                         sample=sample_copy,
                         image_base_dir=PROJECT_ROOT,
-                        max_visual_probes=max_v_probes
+                        max_visual_probes=max_deep_actions
                     )
                 else:
                     record = pipeline.run_sample(
@@ -321,6 +329,9 @@ def main():
                 return True
             except Exception as e:
                 logger.error(f"[ERROR] Failed {sid}: {e}")
+                with file_lock:
+                    with open(failures_file, "a", encoding="utf-8") as f_fail:
+                        f_fail.write(json.dumps({"sample_id": sid, "error": str(e)}, ensure_ascii=False) + "\n")
                 return False
 
         if samples_to_run:
@@ -331,6 +342,17 @@ def main():
                     fut.result()
         else:
             logger.info("All target samples already processed!")
+
+        # Failure check
+        failures = []
+        if os.path.exists(failures_file):
+            with open(failures_file, "r", encoding="utf-8") as f_fail:
+                for line in f_fail:
+                    if line.strip():
+                        failures.append(json.loads(line))
+        if failures and not getattr(args, "allow_partial_eval", False):
+            logger.error(f"INCOMPLETE RUN: {len(failures)} samples failed. Evaluation blocked. Pass --allow-partial-eval to override.")
+            sys.exit(1)
 
     if os.path.exists(traj_file) and os.path.getsize(traj_file) > 0:
         # Deduplicate trajectories by sample_id keeping latest entry
