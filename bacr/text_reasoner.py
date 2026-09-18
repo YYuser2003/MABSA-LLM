@@ -72,8 +72,10 @@ class TextReasoner:
 
         # Otherwise call model dynamically
         user_prompt = f'Raw Tweet Text: "{text}"'
-        if target_aspects:
+        if target_aspects is not None and len(target_aspects) > 0:
             user_prompt += f'\nFocus specifically on extracting and evaluating these target aspects: {json.dumps(target_aspects, ensure_ascii=False)}'
+        else:
+            user_prompt += '\nExtract all target aspect entities mentioned in the tweet and classify sentiment (POS/NEG/NEU) for each.'
         user_prompt += "\nOutput your Structured Text Anchor Ledger in valid JSON."
 
         res, usage, lat = self.client.call_text(
@@ -154,10 +156,11 @@ class TextReasoner:
         """TF: Evidence Fusion Reasoner incorporating verified visual evidence E~.
         Enforces Aspect Lock and Multi-Aspect Isolation against h_baseline.
         """
+        ev_payload = verified_evidence.model_dump() if hasattr(verified_evidence, "model_dump") else verified_evidence
         user_prompt = (
             f'Raw Tweet Text: "{text}"\n\n'
             f'Current Verified Text Baseline (H_B):\n{json.dumps(h_baseline, ensure_ascii=False, indent=2)}\n\n'
-            f'Verified Visual Proof from Firewall ({step_ref}):\n{json.dumps(verified_evidence, ensure_ascii=False, indent=2)}\n\n'
+            f'Verified Visual Proof from Firewall ({step_ref}):\n{json.dumps(ev_payload, ensure_ascii=False, indent=2)}\n\n'
             f'Target Aspect Focus: {target_aspect_id or "All Aspects"}\n\n'
             f'Re-examine the sentiment hypothesis in light of verified visual proof and output your updated Structured Reasoning Ledger in valid JSON.'
         )

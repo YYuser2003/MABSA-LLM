@@ -1,18 +1,20 @@
 """BACR-v3 Schemas and Validation Module using Pydantic v2.
 
 Defines strict schemas for:
-1. ControllerAction, RiskType, Decision Enums.
-2. RiskItem, AspectState for Aspect-level MDP.
-3. RiskDecision (CD) with strict validation.
-4. EvidenceFirewallOutput (CE) with fail-closed guarantee.
-5. TextRevisionAuditOutput (CT) supporting ESCALATE_TO_VISION.
-6. RevisionVerifierOutput (CV) anchored to HB.
-7. TransitionRecord for RL / SFT serialization.
+1. ControllerAction, RiskType, Decision, Sentiment, TaskMode Enums.
+2. TextRiskItem, VisualOpportunityItem for Decoupled Control.
+3. RiskDecision (CD) with strict validation & action prerequisite checks.
+4. EvidenceProbeItem & EvidenceBundle for multi-turn structured evidence governance.
+5. EvidenceFirewallOutput (CE) with fail-closed guarantee.
+6. TextRevisionAuditOutput (CT) supporting ESCALATE_TO_VISION.
+7. RevisionVerifierOutput (CV) anchored to HB.
+8. BudgetState for action masking and compute allocation accounting.
+9. TransitionRecord for RL / SFT serialization with aspect_text & aspect_span.
 """
 
 from enum import Enum
 from typing import Dict, Any, List, Optional, Tuple, Union
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 # ============================================================================
@@ -23,6 +25,17 @@ class ControllerAction(str, Enum):
     FINALIZE = "FINALIZE"
     TEXT_RETHINK = "TEXT_RETHINK"
     VISION_PROBE = "VISION_PROBE"
+
+
+class Sentiment(str, Enum):
+    POS = "POS"
+    NEG = "NEG"
+    NEU = "NEU"
+
+
+class TaskMode(str, Enum):
+    TARGET_GUIDED = "target_guided"
+    OPEN_JOINT = "open_joint"
 
 
 class RiskType(str, Enum):
@@ -102,17 +115,34 @@ class AspectLedgerItem(BaseModel):
     aspect_id: str
     text: str
     span: List[int] = Field(default_factory=lambda: [0, 0])
-    sentiment: str  # POS, NEG, NEU
-    text_evidence: List[str] = Field(default_factory=list)
+    sentiment: str = "NEU"
+    evidence_text: List[str] = Field(default_factory=list)
     rationale: str = ""
     assumptions: List[str] = Field(default_factory=list)
     uncertainties: List[str] = Field(default_factory=list)
     risks: Optional[List[RiskItem]] = None
 
+    @field_validator("sentiment", mode="before")
+    @classmethod
+    def normalize_sentiment(cls, v: Any) -> str:
+        s = str(v).upper().strip()
+        if s in ["POS", "POSITIVE"]:
+            return "POS"
+        elif s in ["NEG", "NEGATIVE"]:
+            return "NEG"
+        return "NEU"
+
 
 class TextAnchorLedger(BaseModel):
     aspects: List[AspectLedgerItem]
     pairs: List[List[str]] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def sync_pairs(self) -> "TextAnchorLedger":
+        expected_pairs = [[a.text, a.sentiment] for a in self.aspects]
+        if not self.pairs:
+            self.pairs = expected_pairs
+        return self
 
 
 # Alias
@@ -123,6 +153,7 @@ class AspectState(BaseModel):
     aspect_id: str
     text: str
     span: List[int] = Field(default_factory=lambda: [0, 0])
+    aspect_uid: Optional[str] = None
     anchor_sentiment: str = "NEU"
     baseline_sentiment: str = "NEU"
     current_candidate: Optional[str] = None
@@ -132,12 +163,24 @@ class AspectState(BaseModel):
     status: str = "ACTIVE"  # ACTIVE, VERIFIED, FINALIZED
 
 
+class TextRiskItem(BaseModel):
+    type: str = "NO_RISK"
+    basis: str = ""  # Purely textual / syntactic ground (no visual cues)
+
+
+class VisualOpportunityItem(BaseModel):
+    type: str = "NO_OPPORTUNITY"
+    basis_code: str = ""  # e.g. TARGET_VISIBLE, FACE_PRESENT, SCENE_CONTEXT
+
+
 class RiskDiagnosisDetail(BaseModel):
     risk_type: str = "NO_RISK"
     risk_description: str = ""
 
 
 class RiskDecision(BaseModel):
+    text_risk: TextRiskItem = Field(default_factory=TextRiskItem)
+    visual_opportunity: VisualOpportunityItem = Field(default_factory=VisualOpportunityItem)
     risk_diagnosis: RiskDiagnosisDetail = Field(default_factory=RiskDiagnosisDetail)
     action: ControllerAction = ControllerAction.FINALIZE
     target_aspect_id: Optional[str] = None
@@ -147,27 +190,60 @@ class RiskDecision(BaseModel):
 
     @classmethod
     def validate_or_fallback(cls, data: Any) -> "RiskDecision":
-        """Strict validation with safe FINALIZE fallback."""
+        """Strict validation with safe FINALIZE fallback and action prerequisite checking."""
         if not isinstance(data, dict):
             return cls(action=ControllerAction.FINALIZE, decision_reason="Invalid payload type; finalized.")
         try:
             act = str(data.get("action", "FINALIZE")).upper().strip()
             if act not in [a.value for a in ControllerAction]:
                 act = ControllerAction.FINALIZE.value
-            
+
+            # Parse decoupled text_risk and visual_opportunity
+            t_risk_dict = data.get("text_risk", {})
+            if not isinstance(t_risk_dict, dict):
+                t_risk_dict = {"type": str(t_risk_dict), "basis": ""}
+            text_risk = TextRiskItem(
+                type=t_risk_dict.get("type", "NO_RISK"),
+                basis=t_risk_dict.get("basis", "")
+            )
+
+            v_opp_dict = data.get("visual_opportunity", {})
+            if not isinstance(v_opp_dict, dict):
+                v_opp_dict = {"type": str(v_opp_dict), "basis_code": ""}
+            visual_opp = VisualOpportunityItem(
+                type=v_opp_dict.get("type", "NO_OPPORTUNITY"),
+                basis_code=v_opp_dict.get("basis_code", "")
+            )
+
+            # Backward compatibility for risk_diagnosis
             diag_dict = data.get("risk_diagnosis", {})
             if not isinstance(diag_dict, dict):
                 diag_dict = {"risk_type": str(diag_dict), "risk_description": ""}
-            
+            risk_diag = RiskDiagnosisDetail(
+                risk_type=diag_dict.get("risk_type", text_risk.type),
+                risk_description=diag_dict.get("risk_description", text_risk.basis)
+            )
+
+            target_aid = data.get("target_aspect_id")
+            critique = data.get("critique_for_text")
+            q_vision = data.get("question_for_vision") or data.get("question")
+
+            # Enforce action prerequisites
+            if act == ControllerAction.TEXT_RETHINK.value and not target_aid:
+                act = ControllerAction.FINALIZE.value
+                data["decision_reason"] = "TEXT_RETHINK requested without target_aspect_id; falling back to FINALIZE."
+            elif act == ControllerAction.VISION_PROBE.value and not target_aid:
+                act = ControllerAction.FINALIZE.value
+                data["decision_reason"] = "VISION_PROBE requested without target_aspect_id; falling back to FINALIZE."
+
             return cls(
-                risk_diagnosis=RiskDiagnosisDetail(
-                    risk_type=diag_dict.get("risk_type", "NO_RISK"),
-                    risk_description=diag_dict.get("risk_description", "")
-                ),
+                text_risk=text_risk,
+                visual_opportunity=visual_opp,
+                risk_diagnosis=risk_diag,
                 action=ControllerAction(act),
-                target_aspect_id=data.get("target_aspect_id"),
-                critique_for_text=data.get("critique_for_text"),
-                question_for_vision=data.get("question_for_vision") or data.get("question"),
+                target_aspect_id=target_aid,
+                critique_for_text=critique,
+                question_for_vision=q_vision,
                 decision_reason=data.get("decision_reason", "")
             )
         except Exception:
@@ -202,7 +278,7 @@ class EvidenceFirewallOutput(BaseModel):
             st = str(data.get("status", data.get("evidence_status", ""))).upper().strip()
             if st not in [s.value for s in EvidenceStatus]:
                 return fail_closed_default
-            
+
             ev = data.get("usable_evidence")
             if not isinstance(ev, list):
                 return fail_closed_default
@@ -238,6 +314,28 @@ class EvidenceFirewallOutput(BaseModel):
             )
         except Exception:
             return fail_closed_default
+
+
+class EvidenceProbeItem(BaseModel):
+    probe_id: str
+    question: str
+    status: EvidenceStatus = EvidenceStatus.INVALID
+    target_binding: TargetBinding = TargetBinding.UNBOUND
+    relevance: RelevanceLevel = RelevanceLevel.LOW
+    facts: List[str] = Field(default_factory=list)
+    revision_support: RevisionSupport = RevisionSupport.NON_DECISIVE
+    verification_notes: str = ""
+
+
+class EvidenceBundle(BaseModel):
+    probes: List[EvidenceProbeItem] = Field(default_factory=list)
+    accepted_facts: List[Dict[str, str]] = Field(default_factory=list)  # [{"ref": "probe_1", "content": "..."}]
+    usable_evidence: List[str] = Field(default_factory=list)
+    combined_support: RevisionSupport = RevisionSupport.NON_DECISIVE
+    revision_support: RevisionSupport = RevisionSupport.NON_DECISIVE
+    status: EvidenceStatus = EvidenceStatus.VALID
+    target_binding: TargetBinding = TargetBinding.DIRECT
+    target_aspect_id: Optional[str] = None
 
 
 class TextRevisionAuditOutput(BaseModel):
@@ -316,9 +414,39 @@ class RevisionVerifierOutput(BaseModel):
             return fail_safe
 
 
+class BudgetState(BaseModel):
+    max_deep_actions: int = 2
+    max_text_rethinks: int = 1
+    max_visual_probes: int = 2
+    deep_remaining: int = 2
+    text_remaining: int = 1
+    vision_remaining: int = 2
+
+    def consume_text(self):
+        self.deep_remaining = max(0, self.deep_remaining - 1)
+        self.text_remaining = max(0, self.text_remaining - 1)
+
+    def consume_vision(self):
+        self.deep_remaining = max(0, self.deep_remaining - 1)
+        self.vision_remaining = max(0, self.vision_remaining - 1)
+
+    def get_valid_actions(self) -> List[str]:
+        if self.deep_remaining <= 0:
+            return [ControllerAction.FINALIZE.value]
+        valid = [ControllerAction.FINALIZE.value]
+        if self.text_remaining > 0:
+            valid.append(ControllerAction.TEXT_RETHINK.value)
+        if self.vision_remaining > 0:
+            valid.append(ControllerAction.VISION_PROBE.value)
+        return valid
+
+
 class TransitionRecord(BaseModel):
     sample_id: str
     aspect_id: Optional[str] = None
+    aspect_text: Optional[str] = None
+    aspect_span: Optional[List[int]] = None
+    aspect_uid: Optional[str] = None
     step: int
     pre_sentiment: str
     action: str

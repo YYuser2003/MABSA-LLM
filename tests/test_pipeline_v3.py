@@ -34,7 +34,9 @@ from bacr.schemas_v3 import (
     TextRevisionAuditOutput,
     RevisionVerifierOutput,
     AspectState,
-    TransitionRecord
+    TransitionRecord,
+    TaskMode,
+    BudgetState
 )
 from bacr.text_reasoner import TextReasoner
 from bacr.meta_controller import MetaController
@@ -42,6 +44,7 @@ from bacr.vision_sensor import VisionSensor
 from bacr.pipeline_v3 import BACRPipelineV3
 from bacr.evaluator import evaluate_v3_trajectories
 from bacr.env import BACREnv
+from bacr.policies.base import GeminiTeacherPolicy, RulePolicy, RandomPolicy
 
 
 class MockClient:
@@ -422,10 +425,11 @@ def test_v3_transition_diagnostics_calculation(tmp_path: pathlib.Path):
     gold_file = str(tmp_path / "gold.jsonl")
     traj_file = str(tmp_path / "traj.jsonl")
 
+    # Realistic aspect names: Trump, Obama, Biden
     gold_data = [
-        {"sample_id": "s1", "pairs": [["A", "POS"]]},
-        {"sample_id": "s2", "pairs": [["B", "NEU"]]},
-        {"sample_id": "s3", "pairs": [["C", "NEU"]]}
+        {"sample_id": "s1", "pairs": [["Trump", "POS"]]},
+        {"sample_id": "s2", "pairs": [["Obama", "NEU"]]},
+        {"sample_id": "s3", "pairs": [["Biden", "NEU"]]}
     ]
     with open(gold_file, "w", encoding="utf-8") as f:
         for g in gold_data:
@@ -436,23 +440,25 @@ def test_v3_transition_diagnostics_calculation(tmp_path: pathlib.Path):
             "sample_id": "s1",
             "action": "FINALIZE",
             "contrast_type": "NO_RISK",
-            "text_anchor": {"pairs": [["A", "POS"]]},
-            "text_baseline": {"pairs": [["A", "POS"]]},
-            "final_pairs": [["A", "POS"]],
+            "text_anchor": {"pairs": [["Trump", "POS"]]},
+            "text_baseline": {"pairs": [["Trump", "POS"]]},
+            "final_pairs": [["Trump", "POS"]],
             "transitions": []
         },
         {
             "sample_id": "s2",
             "action": "TEXT_RETHINK",
             "contrast_type": "AFFECT_SPILLOVER",
-            "text_anchor": {"pairs": [["B", "POS"]]},  # H_A wrong
-            "text_baseline": {"pairs": [["B", "NEU"]]}, # H_B corrected
-            "final_pairs": [["B", "NEU"]],
+            "text_anchor": {"pairs": [["Obama", "POS"]]},  # H_A wrong
+            "text_baseline": {"pairs": [["Obama", "NEU"]]}, # H_B corrected
+            "final_pairs": [["Obama", "NEU"]],
             "transitions": [
                 {
                     "step": 1,
                     "action": "TEXT_RETHINK",
-                    "aspect_id": "B",
+                    "aspect_id": "a_01",
+                    "aspect_text": "Obama",
+                    "aspect_span": [0, 5],
                     "pre_sentiment": "POS",
                     "candidate_sentiment": "NEU",
                     "verifier_decision": "ACCEPT_TEXT_REVISION",
@@ -464,14 +470,16 @@ def test_v3_transition_diagnostics_calculation(tmp_path: pathlib.Path):
             "sample_id": "s3",
             "action": "VISION_PROBE",
             "contrast_type": "MISSING_AFFECT",
-            "text_anchor": {"pairs": [["C", "NEU"]]},
-            "text_baseline": {"pairs": [["C", "NEU"]]},
-            "final_pairs": [["C", "NEU"]],
+            "text_anchor": {"pairs": [["Biden", "NEU"]]},
+            "text_baseline": {"pairs": [["Biden", "NEU"]]},
+            "final_pairs": [["Biden", "NEU"]],
             "transitions": [
                 {
                     "step": 1,
                     "action": "VISION_PROBE",
-                    "aspect_id": "C",
+                    "aspect_id": "a_02",
+                    "aspect_text": "Biden",
+                    "aspect_span": [0, 5],
                     "pre_sentiment": "NEU",
                     "candidate_sentiment": "POS",
                     "verifier_decision": "REVERT_TEXT_BASELINE",
@@ -492,6 +500,7 @@ def test_v3_transition_diagnostics_calculation(tmp_path: pathlib.Path):
     assert diag["anchor_corruptions"] == 0
     assert diag["anchor_net_gain"] == 1
     assert diag["revert_count"] == 1
+    # Verify MU_T recovered 1 Obama aspect despite aspect_id='a_01'
     assert diag["marginal_utility_text"]["recover"] == 1
     assert diag["marginal_utility_text"]["harm"] == 0
     assert diag["marginal_utility_text"]["mu_t"] == 1
@@ -501,7 +510,7 @@ def test_v3_transition_diagnostics_calculation(tmp_path: pathlib.Path):
 def test_bacr_env_gym_interface():
     print("--- Running test_bacr_env_gym_interface ---")
     client = MockClient(rethink_sentiment="NEU")
-    env = BACREnv(client=client, max_budget=2)
+    env = BACREnv(client=client, budget_config={"max_deep_actions": 2, "max_text_rethinks": 1, "max_visual_probes": 2})
 
     sample = {
         "sample_id": "env_test_01",
@@ -513,6 +522,7 @@ def test_bacr_env_gym_interface():
     assert state["budget"] == 2
     assert state["done"] is False
     assert "a_01" in state["aspect_states"]
+    assert "Obama" == state["aspect_states"]["a_01"]["text"]
 
     # Step 1: TEXT_RETHINK
     action_1 = {
@@ -521,7 +531,8 @@ def test_bacr_env_gym_interface():
     }
     next_state, reward, done, info = env.step(action_1)
     assert next_state["budget"] == 1
-    assert reward == 1.0  # Transitioned from POS (wrong) to NEU (correct) = +1 reward!
+    # Transitioned from POS (wrong) to NEU (correct) with TEXT cost = +1.0 - 0.05 = 0.95!
+    assert reward == 0.95
     assert len(next_state["policy_history"]) == 1
 
     # Step 2: FINALIZE
@@ -530,6 +541,122 @@ def test_bacr_env_gym_interface():
     assert done is True
     assert final_r == 1.0  # Final task exact match reward!
     print("Passed test_bacr_env_gym_interface!")
+
+
+def test_open_joint_sequestration():
+    print("--- Running test_open_joint_sequestration ---")
+    client = MockClient()
+    env = BACREnv(client=client, task_mode=TaskMode.OPEN_JOINT)
+    sample = {
+        "sample_id": "test_oj_01",
+        "text": "Obama gives speech",
+        "image": "dummy.jpg",
+        "pairs": [["Obama", "NEU"]]  # Gold pairs must not be visible to agent
+    }
+    state = env.reset(sample)
+    # Observable state S_t MUST NOT contain 'pairs' or 'gold_pairs'!
+    assert "pairs" not in state
+    assert "gold_pairs" not in state
+    assert "Obama" in state["aspect_states"]["a_01"]["text"]
+
+    # Ensure TA prompt did not receive gold aspects hint
+    ta_calls = [item[1] for item in client.call_history if len(item) >= 2 and "Structured Text Anchor Ledger" in item[1]]
+    assert len(ta_calls) > 0
+    assert "Focus specifically on extracting and evaluating these target aspects" not in ta_calls[-1]
+    print("Passed test_open_joint_sequestration!")
+
+
+def test_monotonic_step_counter():
+    print("--- Running test_monotonic_step_counter ---")
+    client = MockClient()
+    client.step_action_sequence = ["TEXT_RETHINK"]
+
+    orig_call_text = client.call_text
+    def custom_call_text(system_prompt: str = "", user_prompt: str = "", **kwargs):
+        if "(CT) Prompt" in system_prompt or "Audit whether the linguistic revision" in user_prompt:
+            return {
+                "decision": "ESCALATE_TO_VISION",
+                "visual_gap": "Check physical facial cues for Obama",
+                "target_aspect_id": "a_01"
+            }, {"total_tokens": 15}, 0.05
+        return orig_call_text(system_prompt=system_prompt, user_prompt=user_prompt, **kwargs)
+    client.call_text = custom_call_text
+
+    pipeline = BACRPipelineV3(client=client, max_visual_probes=2)
+    sample = {
+        "sample_id": "test_mono_step",
+        "text": "Obama farewell event",
+        "image": "dummy.jpg",
+        "pairs": [["Obama", "POS"]]
+    }
+    record = pipeline.run_sample(sample)
+    transitions = record["transitions"]
+    assert len(transitions) >= 2, f"Expected >=2 transitions, got {len(transitions)}"
+    steps = [t["step"] for t in transitions]
+    assert steps == sorted(steps), f"Steps not monotonically increasing: {steps}"
+    assert len(steps) == len(set(steps)), f"Steps not strictly unique: {steps}"
+    assert transitions[0]["action"] == "TEXT_RETHINK"
+    assert transitions[0]["step"] == 1
+    assert transitions[1]["action"] == "VISION_PROBE"
+    assert transitions[1]["step"] == 2
+    print("Passed test_monotonic_step_counter!")
+
+
+def test_budget_state_action_mask():
+    print("--- Running test_budget_state_action_mask ---")
+    b = BudgetState(
+        max_deep_actions=2,
+        max_text_rethinks=1,
+        max_visual_probes=2,
+        deep_remaining=2,
+        text_remaining=1,
+        vision_remaining=2
+    )
+    assert set(b.get_valid_actions()) == {"FINALIZE", "TEXT_RETHINK", "VISION_PROBE"}
+
+    # Consume text
+    b.consume_text()
+    assert b.text_remaining == 0
+    assert b.deep_remaining == 1
+    assert "TEXT_RETHINK" not in b.get_valid_actions()
+    assert set(b.get_valid_actions()) == {"FINALIZE", "VISION_PROBE"}
+
+    # Consume vision
+    b.consume_vision()
+    assert b.deep_remaining == 0
+    assert b.get_valid_actions() == ["FINALIZE"]
+    print("Passed test_budget_state_action_mask!")
+
+
+def test_isomorphic_pipeline_and_env():
+    print("--- Running test_isomorphic_pipeline_and_env ---")
+    client_pipe = MockClient(rethink_sentiment="NEU")
+    client_env = MockClient(rethink_sentiment="NEU")
+
+    sample = {
+        "sample_id": "test_iso_01",
+        "text": "Obama delivers speech",
+        "image": "dummy.jpg",
+        "pairs": [["Obama", "NEU"]]
+    }
+
+    # Pipeline run
+    pipe = BACRPipelineV3(client=client_pipe, max_visual_probes=2)
+    pipe_record = pipe.run_sample(sample)
+
+    # Manual Env run
+    env = BACREnv(client=client_env, budget_config={"max_deep_actions": 2, "max_text_rethinks": 1, "max_visual_probes": 2})
+    state = env.reset(sample)
+    policy = GeminiTeacherPolicy(client=client_env)
+    while not env.done:
+        act = policy.act(state)
+        state, r, done, info = env.step(act)
+    env_record = env.export_trajectory()
+
+    assert pipe_record["final_pairs"] == env_record["final_pairs"]
+    assert len(pipe_record["transitions"]) == len(env_record["transitions"])
+    assert pipe_record["contrast_type"] == env_record["contrast_type"]
+    print("Passed test_isomorphic_pipeline_and_env!")
 
 
 if __name__ == "__main__":
@@ -542,6 +669,11 @@ if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as td:
         test_v3_transition_diagnostics_calculation(pathlib.Path(td))
     test_bacr_env_gym_interface()
+    test_open_joint_sequestration()
+    test_monotonic_step_counter()
+    test_budget_state_action_mask()
+    test_isomorphic_pipeline_and_env()
     print("\n==========================================================================")
-    print("  ALL 8 COMPREHENSIVE BACR-v3 ENGINEERING HARDENING TESTS PASSED 100%!")
+    print("  ALL 12 COMPREHENSIVE BACR-v3 HARDENING & ISOMORPHISM TESTS PASSED 100%!")
     print("==========================================================================")
+

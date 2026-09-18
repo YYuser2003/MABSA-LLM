@@ -576,9 +576,20 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
 
                 # Aspect-level marginal utility calculation
                 aid = t.get("aspect_id")
+                asp_text = t.get("aspect_text")
                 pre = t.get("pre_sentiment")
                 post = t.get("post_sentiment")
-                gold_sent = gold_asp_sents.get(aid)
+
+                gold_sent = None
+                if asp_text and asp_text in gold_asp_sents:
+                    gold_sent = gold_asp_sents[asp_text]
+                elif aid and aid in gold_asp_sents:
+                    gold_sent = gold_asp_sents[aid]
+                elif asp_text:
+                    for g_k, g_v in gold_asp_sents.items():
+                        if g_k.strip().lower() == asp_text.strip().lower():
+                            gold_sent = g_v
+                            break
 
                 if gold_sent:
                     was_correct = (pre == gold_sent)

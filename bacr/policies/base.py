@@ -1,17 +1,24 @@
-"""Controller Policy Abstractions for BACR-v3.
+"""Controller Policy and Query Generator Abstractions for BACR-v3.
 
-Decouples policy decision-making from environment execution:
-- BaseControllerPolicy (ABC)
-- GeminiTeacherPolicy (LLM Teacher Policy via MetaController)
+Decouples routing from query generation for tractable RL credit assignment:
+- RouterPolicy: pi_R(S_t) -> (action: FINALIZE | TEXT_RETHINK | VISION_PROBE, target_aspect_id)
+- TextCritiqueGenerator: q_t^T = C_Q^T(H_B, text_risk) (Frozen / Decoupled)
+- VisualQuestionGenerator: q_t^V = C_Q^V(H_B, V_0, aspect) (Frozen / Decoupled)
+
+Policies:
+- GeminiTeacherPolicy (Full teacher policy via MetaController)
+- RouterControllerPolicy (Modular policy combining Router + Generators)
 - RulePolicy (Deterministic heuristic policy)
-- RandomPolicy (Uniform random exploratory baseline)
+- RandomPolicy (Uniform exploratory policy respecting action_mask)
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple, List
 import random
+import json
 
 from bacr.schemas_v3 import ControllerAction, RiskDecision
+from bacr.client import BaseClient
 
 
 class BaseControllerPolicy(ABC):
@@ -19,14 +26,54 @@ class BaseControllerPolicy(ABC):
     def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Selects action given the current environment state.
         Returns dict with keys: 'action' (FINALIZE, TEXT_RETHINK, VISION_PROBE),
-        'target_aspect_id', and optional metadata.
+        'target_aspect_id', and optional queries.
         """
         pass
 
 
-class GeminiTeacherPolicy(BaseControllerPolicy):
+class BaseRouterPolicy(ABC):
+    @abstractmethod
+    def select_route(self, state: Dict[str, Any]) -> Tuple[str, Optional[str]]:
+        """Outputs (action, target_aspect_id) respecting state['action_mask']."""
+        pass
+
+
+class TextCritiqueGenerator:
+    """Generates targeted linguistic critique without visual access."""
     def __init__(self, meta_controller):
         self.meta_controller = meta_controller
+
+    def generate(self, h_b: Dict[str, Any], text_risk: Any, target_aid: str, target_text: str) -> str:
+        critique, _, _ = self.meta_controller.generate_text_critique(
+            h_b=h_b,
+            risk_diagnosis=text_risk,
+            target_aspect_id=target_aid,
+            target_aspect_text=target_text
+        )
+        return critique
+
+
+class VisualQuestionGenerator:
+    """Generates focused visual inquiry given target aspect and V0 opportunities."""
+    def __init__(self, client: Optional[BaseClient] = None):
+        self.client = client
+
+    def generate(self, h_b: Dict[str, Any], v_0: Dict[str, Any], target_aid: str, target_text: str) -> str:
+        # Default targeted heuristic query
+        return f"Examine physical facial expressions, gestures, and clothing text for {target_text}."
+
+
+class GeminiTeacherPolicy(BaseControllerPolicy):
+    """Full LLM Teacher Policy executing Risk Diagnosis via MetaController."""
+
+    def __init__(self, meta_controller=None, client: Optional[BaseClient] = None):
+        if meta_controller is not None:
+            self.meta_controller = meta_controller
+        elif client is not None:
+            from bacr.meta_controller import MetaController
+            self.meta_controller = MetaController(client)
+        else:
+            raise ValueError("GeminiTeacherPolicy requires either meta_controller or client.")
 
     def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
         h_a = state.get("h_a", {})
@@ -35,6 +82,7 @@ class GeminiTeacherPolicy(BaseControllerPolicy):
         aspect_states = state.get("aspect_states", {})
         policy_history = state.get("policy_history", [])
         budget = state.get("budget", 2)
+        action_mask = state.get("action_mask", [a.value for a in ControllerAction])
 
         c_d, usage, lat = self.meta_controller.diagnose_risk(
             h_a=h_a,
@@ -44,46 +92,61 @@ class GeminiTeacherPolicy(BaseControllerPolicy):
             history=policy_history,
             budget=budget
         )
+
+        # Enforce action mask
+        if c_d.get("action") not in action_mask:
+            c_d["action"] = ControllerAction.FINALIZE.value
+
         return c_d
 
 
 class RulePolicy(BaseControllerPolicy):
-    """Rule-based baseline: probes vision if missing affect, otherwise finalizes."""
-    def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        aspect_states = state.get("aspect_states", {})
-        budget = state.get("budget", 0)
-        if budget <= 0 or not aspect_states:
-            return {"action": ControllerAction.FINALIZE.value}
+    """Rule-based baseline: probes vision for active neutral aspects, otherwise finalizes."""
 
-        # Find first active neutral aspect
-        for aid, asp in aspect_states.items():
-            if asp.get("baseline_sentiment") == "NEU" and asp.get("status") != "VERIFIED":
-                return {
-                    "action": ControllerAction.VISION_PROBE.value,
-                    "target_aspect_id": aid,
-                    "question_for_vision": f"What physical cues or facial expression are visible for {asp.get('text', 'the aspect')}?"
-                }
+    def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        action_mask = state.get("action_mask", [ControllerAction.FINALIZE.value])
+        aspect_states = state.get("aspect_states", {})
+
+        if ControllerAction.VISION_PROBE.value in action_mask and aspect_states:
+            # Probe first active neutral aspect
+            for aid, asp in aspect_states.items():
+                if asp.get("baseline_sentiment") == "NEU" and asp.get("status") != "VERIFIED":
+                    return {
+                        "action": ControllerAction.VISION_PROBE.value,
+                        "target_aspect_id": aid,
+                        "question_for_vision": f"What physical cues or facial expression are visible for {asp.get('text', 'the aspect')}?"
+                    }
+
+        if ControllerAction.TEXT_RETHINK.value in action_mask and aspect_states:
+            # Rethink first non-neutral aspect that has not been rethought
+            for aid, asp in aspect_states.items():
+                if asp.get("baseline_sentiment") in ["POS", "NEG"] and asp.get("status") != "VERIFIED":
+                    return {
+                        "action": ControllerAction.TEXT_RETHINK.value,
+                        "target_aspect_id": aid,
+                        "critique_for_text": f"Re-evaluate whether {asp.get('text')} is directly modified by sentiment or is reporting frame."
+                    }
 
         return {"action": ControllerAction.FINALIZE.value}
 
 
 class RandomPolicy(BaseControllerPolicy):
-    """Uniform random baseline for exploration / sanity checks."""
+    """Uniform random baseline respecting action mask."""
+
     def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        budget = state.get("budget", 0)
+        action_mask = state.get("action_mask", [ControllerAction.FINALIZE.value])
         aspect_states = state.get("aspect_states", {})
-        if budget <= 0 or not aspect_states:
+
+        chosen_act = random.choice(action_mask)
+        if chosen_act == ControllerAction.FINALIZE.value or not aspect_states:
             return {"action": ControllerAction.FINALIZE.value}
 
-        actions = [ControllerAction.FINALIZE.value, ControllerAction.TEXT_RETHINK.value, ControllerAction.VISION_PROBE.value]
-        chosen_act = random.choice(actions)
-        if chosen_act == ControllerAction.FINALIZE.value:
-            return {"action": chosen_act}
-
         target_aid = random.choice(list(aspect_states.keys()))
+        target_text = aspect_states[target_aid].get("text", "the aspect")
+
         return {
             "action": chosen_act,
             "target_aspect_id": target_aid,
-            "critique_for_text": "Re-examine linguistic context." if chosen_act == "TEXT_RETHINK" else None,
-            "question_for_vision": "Examine visual scene." if chosen_act == "VISION_PROBE" else None
+            "critique_for_text": f"Re-examine linguistic context for {target_text}." if chosen_act == "TEXT_RETHINK" else None,
+            "question_for_vision": f"Examine visual scene for {target_text}." if chosen_act == "VISION_PROBE" else None
         }

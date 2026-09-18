@@ -21,6 +21,7 @@ venv/
 # Temporary logs & checkpoints
 *.log
 .DS_Store
+outputs/
 
 # Raw Image Dataset
 IJCAI2019_data/

@@ -236,34 +236,143 @@ class GeminiClient(BaseClient):
         raise RuntimeError(f"Exhausted {max_retries} retries for model {target_model}")
 
 
-class QwenClient(BaseClient):
-    """Stub / Interface for Local Qwen3-VL-8B (HuggingFace / vLLM)."""
+class OpenAICompatibleClient(BaseClient):
+    """Universal OpenAI-compatible Client for vLLM, Qwen3-VL, Ollama, or Local Gateways."""
 
     def __init__(
         self,
-        model_path: str = "/data2/models/Qwen3-VL-8B-Instruct",
-        device: str = "cuda:0",
-        temperature: float = 0.1
+        base_url: Optional[str] = None,
+        api_key: Optional[str] = None,
+        model: str = "Qwen3-VL-8B-Instruct",
+        temperature: float = 0.1,
+        timeout: int = 90
     ):
-        self.model_path = model_path
-        self.device = device
+        self.api_key = api_key or os.environ.get("OPENAI_API_KEY", "EMPTY")
+        raw_url = base_url or os.environ.get("OPENAI_BASE_URL", "http://127.0.0.1:8000/v1")
+        self.base_url = raw_url.rstrip("/")
+        self.endpoint = f"{self.base_url}/chat/completions"
+        self.model = model
         self.temperature = temperature
-        self._model = None
-        self._processor = None
+        self.timeout = timeout
+        self.headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+
+    def encode_image(self, image_path: str) -> str:
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(f"Image not found at {image_path}")
+        with Image.open(image_path) as img:
+            rgb_img = img.convert("RGB")
+            buf = io.BytesIO()
+            rgb_img.save(buf, format="JPEG", quality=90)
+            buf.seek(0)
+            b64_str = base64.b64encode(buf.read()).decode("utf-8")
+            return f"data:image/jpeg;base64,{b64_str}"
 
     def call_text(
         self,
         system_prompt: str,
         user_prompt: str,
-        max_retries: int = 3
+        max_retries: int = 5
     ) -> Tuple[Dict[str, Any], Dict[str, int], float]:
-        raise NotImplementedError("Local QwenClient text inference is active during Stage C SFT.")
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+        return self._call_api_with_retry(messages, max_retries=max_retries)
 
     def call_vision(
         self,
         system_prompt: str,
         user_prompt: str,
         image_path: str,
-        max_retries: int = 3
+        max_retries: int = 5
     ) -> Tuple[Dict[str, Any], Dict[str, int], float]:
-        raise NotImplementedError("Local QwenClient vision inference is active during Stage C SFT.")
+        image_data_url = self.encode_image(image_path)
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": user_prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": image_data_url}
+                    }
+                ]
+            }
+        ]
+        return self._call_api_with_retry(messages, max_retries=max_retries)
+
+    def _call_api_with_retry(
+        self,
+        messages: List[Dict[str, Any]],
+        max_retries: int = 5
+    ) -> Tuple[Dict[str, Any], Dict[str, int], float]:
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": self.temperature,
+            "response_format": {"type": "json_object"}
+        }
+
+        attempt = 0
+        backoff = 1.0
+        while attempt < max_retries:
+            attempt += 1
+            t0 = time.time()
+            try:
+                resp = requests.post(
+                    self.endpoint,
+                    headers=self.headers,
+                    json=payload,
+                    timeout=self.timeout
+                )
+                latency_ms = (time.time() - t0) * 1000
+                if resp.status_code == 200:
+                    resp_json = resp.json()
+                    choice = resp_json.get("choices", [{}])[0]
+                    raw_content = choice.get("message", {}).get("content", "")
+                    cleaned_content = clean_json_response(raw_content)
+                    parsed = json.loads(cleaned_content)
+
+                    usage = resp_json.get("usage", {})
+                    metrics = {
+                        "input_tokens": usage.get("prompt_tokens", 0),
+                        "output_tokens": usage.get("completion_tokens", 0),
+                        "total_tokens": usage.get("total_tokens", 0)
+                    }
+                    return parsed, metrics, latency_ms
+                elif resp.status_code in [429, 500, 502, 503, 504]:
+                    time.sleep(backoff + random.uniform(0.2, 1.0))
+                    backoff = min(backoff * 1.5, 30.0)
+                else:
+                    time.sleep(backoff)
+                    backoff = min(backoff * 1.5, 30.0)
+            except Exception:
+                time.sleep(backoff)
+                backoff = min(backoff * 1.5, 30.0)
+
+        raise RuntimeError(f"Exhausted {max_retries} retries calling {self.endpoint}")
+
+
+class QwenClient(OpenAICompatibleClient):
+    """Local Qwen3-VL-8B client connected via vLLM / OpenAI-compatible server."""
+
+    def __init__(
+        self,
+        base_url: str = "http://127.0.0.1:8000/v1",
+        api_key: str = "EMPTY",
+        model: str = "Qwen3-VL-8B-Instruct",
+        temperature: float = 0.1,
+        timeout: int = 90
+    ):
+        super().__init__(
+            base_url=base_url,
+            api_key=api_key,
+            model=model,
+            temperature=temperature,
+            timeout=timeout
+        )
+

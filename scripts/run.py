@@ -207,7 +207,7 @@ def main():
             logger.info(f"Found {len(existing_sample_ids)} already processed samples in {os.path.basename(traj_file)}.")
 
     exp_type = exp_config.get("experiment", {}).get("type", "")
-    if exp_type == "text_only" and use_canonical:
+    if exp_type == "text_only" and use_canonical_t0:
         logger.info("Executing G0 / T0 Text Initial Reasoner evaluation from Canonical T0 cache (0 API calls)...")
         for sample in samples:
             sid = sample.get("sample_id", "unknown")
@@ -262,9 +262,17 @@ def main():
         failures_file = os.path.join(run_dir, "failures.jsonl")
 
         if is_v3:
-            max_deep_actions = exp_config.get("experiment", {}).get("budget", {}).get("max_deep_actions", exp_config.get("experiment", {}).get("max_visual_probes", 2))
-            pipeline = BACRPipelineV3(client=client, run_id=run_id, max_visual_probes=max_deep_actions)
-            logger.info(f"Initialized BACRPipelineV3 (Text Anchor + Risk Diagnosis + Evidence Firewall, Max Deep Actions={max_deep_actions})")
+            budget_cfg = exp_config.get("experiment", {}).get("budget", {})
+            max_deep_actions = budget_cfg.get("max_deep_actions", exp_config.get("experiment", {}).get("max_visual_probes", 2))
+            task_mode = exp_config.get("experiment", {}).get("task", {}).get("mode", "target_guided")
+            pipeline = BACRPipelineV3(
+                client=client,
+                run_id=run_id,
+                max_visual_probes=max_deep_actions,
+                budget_config=budget_cfg,
+                task_mode=task_mode
+            )
+            logger.info(f"Initialized BACRPipelineV3 (Task Mode={task_mode}, Budget={budget_cfg})")
         else:
             controller_sees_raw = exp_config.get("experiment", {}).get("controller", {}).get("controller_sees_raw_modalities", False)
             pipeline = BACRPipeline(client=client, controller_sees_raw_modalities=controller_sees_raw)

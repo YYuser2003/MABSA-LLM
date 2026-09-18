@@ -45,9 +45,13 @@ Any visual contamination in `critique_for_text` is an architectural violation!
 Output strictly as a valid JSON object matching this schema:
 ```json
 {
-  "risk_diagnosis": {
-    "risk_type": "NO_RISK|OVER_POLARIZATION|UNDER_POLARIZATION|PRAGMATIC_UNCERTAINTY|CROSS_MODAL_CONFLICT",
-    "risk_description": "Precise explanation of the potential error failure mode."
+  "text_risk": {
+    "type": "NO_RISK|OVER_POLARIZATION|UNDER_POLARIZATION|REPORTING_FRAME|AFFECT_SPILLOVER",
+    "basis": "Precise textual/syntactic error mechanism observed in H_B."
+  },
+  "visual_opportunity": {
+    "type": "NO_OPPORTUNITY|TARGET_VISIBLE|FACIAL_EXPRESSION|ACTION_SCENE",
+    "basis_code": "TARGET_PRESENT|FACE_SMILING|OBJECT_CLEAR|GENERIC_DECORATIVE"
   },
   "action": "FINALIZE|TEXT_RETHINK|VISION_PROBE",
   "target_aspect_id": "a_01|null",

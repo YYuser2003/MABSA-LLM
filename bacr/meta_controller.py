@@ -10,15 +10,20 @@ Executes Risk-Aware Diagnosis and Evidence Governance without raw modality expos
 
 import os
 import json
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Tuple, Union
 
 from bacr.client import BaseClient
 from bacr.schemas_v3 import (
     ControllerAction,
     RiskDecision,
+    TextRiskItem,
+    VisualOpportunityItem,
     EvidenceFirewallOutput,
+    EvidenceProbeItem,
+    EvidenceBundle,
     EvidenceStatus,
     TargetBinding,
+    RelevanceLevel,
     RevisionSupport,
     TextRevisionAuditOutput,
     CTDecision,
@@ -104,17 +109,43 @@ class MetaController:
     def generate_text_critique(
         self,
         h_b: Dict[str, Any],
-        risk_diagnosis: Dict[str, Any],
+        risk_diagnosis: Union[Dict[str, Any], TextRiskItem],
         target_aspect_id: Optional[str] = None,
         target_aspect_text: Optional[str] = None
     ) -> Tuple[str, Dict[str, int], float]:
         """C_Q^T: Generates a purely linguistic critique for text re-deliberation (T_R).
-        STRICT PHYSICAL FIREWALL: Receives ONLY H_B and diagnosed risk; V0 is physically excluded.
+        STRICT PHYSICAL FIREWALL: Receives ONLY H_B and diagnosed textual risk; V0 is physically excluded.
         """
+        # Ensure purely textual risk payload
+        if isinstance(risk_diagnosis, TextRiskItem):
+            clean_risk = {"type": risk_diagnosis.type, "basis": risk_diagnosis.basis}
+        elif isinstance(risk_diagnosis, dict):
+            if "text_risk" in risk_diagnosis and isinstance(risk_diagnosis["text_risk"], dict):
+                clean_risk = {
+                    "type": risk_diagnosis["text_risk"].get("type", "NO_RISK"),
+                    "basis": risk_diagnosis["text_risk"].get("basis", "")
+                }
+            else:
+                clean_risk = {
+                    "type": risk_diagnosis.get("type", risk_diagnosis.get("risk_type", "NO_RISK")),
+                    "basis": risk_diagnosis.get("basis", risk_diagnosis.get("risk_description", ""))
+                }
+        else:
+            clean_risk = {"type": "NO_RISK", "basis": ""}
+
+        # Sanitize any accidental visual terms in basis
+        visual_leak_words = [
+            "image", "photo", "picture", "visual", "smiling", "smile", 
+            "facial", "expression", "wearing", "background", "depicts", "shown"
+        ]
+        b_str = clean_risk.get("basis", "").lower()
+        if any(w in b_str for w in visual_leak_words):
+            clean_risk["basis"] = "Re-evaluate linguistic modifier attachment and syntactic scope neutrality."
+
         user_prompt = (
             f'Current Verified Text Baseline (H_B):\n{json.dumps(h_b, ensure_ascii=False, indent=2)}\n\n'
             f'Target Aspect: "{target_aspect_text or "Target"}" (ID: {target_aspect_id or "a_01"})\n\n'
-            f'Diagnosed Textual Risk: {json.dumps(risk_diagnosis, ensure_ascii=False, indent=2)}\n\n'
+            f'Diagnosed Textual Risk: {json.dumps(clean_risk, ensure_ascii=False, indent=2)}\n\n'
             f'Generate a concise, purely linguistic critique instructing the Text Reasoner how to re-evaluate '
             f'syntactic dependency, modifier attachment, or reporting frame neutrality. '
             f'Do NOT mention any images or visual cues. Output valid JSON: {{"critique": "..."}}'
@@ -135,6 +166,67 @@ class MetaController:
         if not critique:
             critique = f"Re-evaluate whether {target_aspect_text or 'the target aspect'} is modified by evaluative sentiment words or is merely a neutral reporting entity."
         return critique, usage, lat
+
+    def aggregate_evidence_bundle(
+        self,
+        probes: List[Dict[str, Any]],
+        target_aspect_id: Optional[str] = None
+    ) -> EvidenceBundle:
+        """C_A: Deterministic Evidence Aggregator compiling multi-turn probe results into an EvidenceBundle with provenance citations."""
+        probe_items: List[EvidenceProbeItem] = []
+        accepted_facts: List[Dict[str, str]] = []
+        has_support = False
+        has_contradict = False
+
+        for idx, p in enumerate(probes):
+            p_id = p.get("probe_id") or f"probe_{idx + 1}"
+            facts = p.get("usable_evidence", p.get("facts", []))
+            st = str(p.get("status", p.get("evidence_status", "INVALID"))).upper().strip()
+            tb = str(p.get("target_binding", "UNBOUND")).upper().strip()
+            rel = str(p.get("relevance", "LOW")).upper().strip()
+            rs = str(p.get("revision_support", "NON_DECISIVE")).upper().strip()
+
+            item = EvidenceProbeItem(
+                probe_id=p_id,
+                question=p.get("question", ""),
+                status=EvidenceStatus(st) if st in [s.value for s in EvidenceStatus] else EvidenceStatus.INVALID,
+                target_binding=TargetBinding(tb) if tb in [b.value for b in TargetBinding] else TargetBinding.UNBOUND,
+                relevance=RelevanceLevel(rel) if rel in [r.value for r in RelevanceLevel] else RelevanceLevel.LOW,
+                facts=facts,
+                revision_support=RevisionSupport(rs) if rs in [s.value for s in RevisionSupport] else RevisionSupport.NON_DECISIVE,
+                verification_notes=p.get("verification_notes", "")
+            )
+            probe_items.append(item)
+
+            if item.status == EvidenceStatus.VALID and item.target_binding == TargetBinding.DIRECT:
+                for f in facts:
+                    if f and not any(af["content"] == f for af in accepted_facts):
+                        accepted_facts.append({"ref": p_id, "content": f})
+
+            if item.revision_support == RevisionSupport.SUPPORTS_REVISION:
+                has_support = True
+            elif item.revision_support == RevisionSupport.CONTRADICTS_REVISION:
+                has_contradict = True
+
+        combined_support = RevisionSupport.NON_DECISIVE
+        if has_support and not has_contradict:
+            combined_support = RevisionSupport.SUPPORTS_REVISION
+        elif has_contradict:
+            combined_support = RevisionSupport.CONTRADICTS_REVISION
+
+        usable_list = [f["content"] for f in accepted_facts]
+        overall_status = EvidenceStatus.VALID if accepted_facts else EvidenceStatus.INVALID
+        overall_binding = TargetBinding.DIRECT if accepted_facts else TargetBinding.UNBOUND
+        return EvidenceBundle(
+            probes=probe_items,
+            accepted_facts=accepted_facts,
+            usable_evidence=usable_list,
+            combined_support=combined_support,
+            revision_support=combined_support,
+            status=overall_status,
+            target_binding=overall_binding,
+            target_aspect_id=target_aspect_id
+        )
 
     def audit_text_revision(
         self,
@@ -230,23 +322,24 @@ class MetaController:
         # Hard Rule Safeguard: If verified evidence is INSUFFICIENT, INVALID, UNBOUND, or NON_DECISIVE/CONTRADICTS, force REVERT_TEXT_BASELINE
         ev_status = verified_evidence.get("status") or verified_evidence.get("evidence_status")
         ev_binding = verified_evidence.get("target_binding")
-        usable_ev = verified_evidence.get("usable_evidence", [])
-        rev_sup = verified_evidence.get("revision_support", "NON_DECISIVE")
-        
+        usable_ev = verified_evidence.get("usable_evidence")
+        if usable_ev is None:
+            usable_ev = [f["content"] for f in verified_evidence.get("accepted_facts", [])]
+        rev_sup = verified_evidence.get("revision_support") or verified_evidence.get("combined_support", "NON_DECISIVE")
+
         is_evidence_invalid = (
             ev_status in ["INSUFFICIENT", "INVALID"]
             or ev_binding == "UNBOUND"
             or not usable_ev
             or rev_sup in ["CONTRADICTS_REVISION", "NON_DECISIVE"]
         )
-        if is_evidence_invalid:
-            if decision not in ["REVERT_TEXT_BASELINE", "REVERT_ANCHOR", "REJECT_REVISION"]:
-                res_dict["decision"] = "REVERT_TEXT_BASELINE"
-                res_dict["audit_rationale"] = (
-                    res_dict.get("audit_rationale", "") + 
-                    " [Safeguard Activated: Evidence was insufficient/unbound/contradictory/non-decisive; automatically reverted to Text Baseline H_B.]"
-                ).strip()
-                decision = "REVERT_TEXT_BASELINE"
+        if decision == "ACCEPT_REVISION" and is_evidence_invalid:
+            res_dict["decision"] = "REVERT_TEXT_BASELINE"
+            res_dict["audit_rationale"] = (
+                res_dict.get("audit_rationale", "") + 
+                " [Safeguard Activated: Evidence was insufficient/unbound/contradictory/non-decisive; automatically reverted to Text Baseline H_B.]"
+            ).strip()
+            decision = "REVERT_TEXT_BASELINE"
 
         if decision == "QUERY_AGAIN" and budget <= 0:
             res_dict["decision"] = "REVERT_TEXT_BASELINE"
