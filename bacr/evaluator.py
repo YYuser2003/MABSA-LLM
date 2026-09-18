@@ -30,11 +30,25 @@ from collections import Counter
 from typing import Dict, Any, List, Set, Tuple
 
 
-def normalize_pair(pair: List[str]) -> Tuple[str, str]:
-    """Normalizes aspect text and sentiment polarity."""
-    aspect = str(pair[0]).strip().lower()
-    sentiment = str(pair[1]).strip().upper()
-    return (aspect, sentiment)
+def normalize_pair(pair: Any) -> Tuple[str, str]:
+    """Normalizes aspect text and sentiment polarity.
+    Safely handles [aspect, sentiment] pairs, dicts, single-element lists, and bare aspect strings.
+    """
+    if isinstance(pair, (list, tuple)):
+        if len(pair) >= 2:
+            aspect = str(pair[0]).strip().lower()
+            sentiment = str(pair[1]).strip().upper()
+            return (aspect, sentiment)
+        elif len(pair) == 1:
+            return (str(pair[0]).strip().lower(), "NEU")
+        else:
+            return ("", "NEU")
+    elif isinstance(pair, dict):
+        aspect = str(pair.get("aspect", pair.get("text", ""))).strip().lower()
+        sentiment = str(pair.get("sentiment", "NEU")).strip().upper()
+        return (aspect, sentiment)
+    else:
+        return (str(pair).strip().lower(), "NEU")
 
 
 def evaluate_pair_set(
@@ -52,12 +66,19 @@ def evaluate_pair_set(
 
 
 def evaluate_aspect_set(
-    pred_pairs_raw: List[List[str]],
-    gold_pairs_raw: List[List[str]]
+    pred_pairs_raw: List[Any],
+    gold_pairs_raw: List[Any]
 ) -> Tuple[int, int, int]:
     """Computes TP, FP, FN for aspect term extraction only using multiset Counter matching."""
-    pred_counter = Counter(normalize_pair(p)[0] for p in pred_pairs_raw)
-    gold_counter = Counter(normalize_pair(p)[0] for p in gold_pairs_raw)
+    def _extract_aspect_str(p: Any) -> str:
+        if isinstance(p, (list, tuple)) and len(p) > 0:
+            return str(p[0]).strip().lower()
+        elif isinstance(p, dict):
+            return str(p.get("aspect", p.get("text", ""))).strip().lower()
+        return str(p).strip().lower()
+
+    pred_counter = Counter(_extract_aspect_str(p) for p in pred_pairs_raw)
+    gold_counter = Counter(_extract_aspect_str(p) for p in gold_pairs_raw)
 
     tp = sum((pred_counter & gold_counter).values())
     fp = sum((pred_counter - gold_counter).values())
