@@ -1,0 +1,22 @@
+experiment:
+  name: bacr_v3
+  version: bacr_v3
+  type: bacr_v3
+  description: "BACR-v3: Text Anchor + Risk Diagnosis + Evidence Firewall + Selective Deliberation"
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  max_visual_probes: 2
+  aspect_lock: true
+  controller:
+    risk_diagnosis: true
+    evidence_firewall: true
+    revision_verifier: true
+  vision:
+    global_always_on: true
+    deep_probe: adaptive
+  text:
+    long_reasoning: true
+    structured_ledger: true
+  canonical_t0: true
+  canonical_v0: true
+  concurrency: 6

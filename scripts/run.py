@@ -28,7 +28,13 @@ if PROJECT_ROOT not in sys.path:
 
 from bacr.client import GeminiClient
 from bacr.pipeline import BACRPipeline, G3Pipeline
-from bacr.evaluator import BACREvaluator, print_evaluation_report
+from bacr.pipeline_v3 import BACRPipelineV3
+from bacr.evaluator import (
+    BACREvaluator,
+    print_evaluation_report,
+    evaluate_v3_trajectories,
+    print_v3_evaluation_report
+)
 
 
 def load_yaml(path: str) -> Dict[str, Any]:
@@ -244,8 +250,17 @@ def main():
             temperature=float(m_info.get("temperature", 0.1)),
             allow_fallback=m_info.get("allow_fallback", False)
         )
-        controller_sees_raw = exp_config.get("experiment", {}).get("controller", {}).get("controller_sees_raw_modalities", False)
-        pipeline = BACRPipeline(client=client, controller_sees_raw_modalities=controller_sees_raw)
+        exp_ver = exp_config.get("experiment", {}).get("version", "") or exp_config.get("experiment", {}).get("type", "")
+        is_v3 = (exp_ver == "bacr_v3" or "v3" in exp_name.lower())
+
+        if is_v3:
+            max_v_probes = exp_config.get("experiment", {}).get("max_visual_probes", 2)
+            pipeline = BACRPipelineV3(client=client, run_id=run_id, max_visual_probes=max_v_probes)
+            logger.info(f"Initialized BACRPipelineV3 (Text Anchor + Risk Diagnosis + Evidence Firewall, Max Probes={max_v_probes})")
+        else:
+            controller_sees_raw = exp_config.get("experiment", {}).get("controller", {}).get("controller_sees_raw_modalities", False)
+            pipeline = BACRPipeline(client=client, controller_sees_raw_modalities=controller_sees_raw)
+            logger.info(f"Initialized BACRPipeline (Controller Sees Raw={controller_sees_raw})")
 
         file_lock = threading.Lock()
         processed_count = len(existing_sample_ids)
@@ -265,31 +280,44 @@ def main():
                 sample_copy["image_initial_cached"] = v0_cache[sid]
 
             try:
-                record = pipeline.run_sample(
-                    sample=sample_copy,
-                    image_base_dir=PROJECT_ROOT,
-                    max_queries=max_queries,
-                    allowed_directions=allowed_directions
-                )
+                if is_v3:
+                    record = pipeline.run_sample(
+                        sample=sample_copy,
+                        image_base_dir=PROJECT_ROOT,
+                        max_visual_probes=max_v_probes
+                    )
+                else:
+                    record = pipeline.run_sample(
+                        sample=sample_copy,
+                        image_base_dir=PROJECT_ROOT,
+                        max_queries=max_queries,
+                        allowed_directions=allowed_directions
+                    )
                 with file_lock:
                     with open(traj_file, "a", encoding="utf-8") as f_traj:
                         f_traj.write(json.dumps(record, ensure_ascii=False) + "\n")
 
                     # Format predictions
+                    num_v = record.get("num_visual_probes", record.get("num_visual_queries", 0))
+                    num_t = record.get("num_text_queries", 0)
                     pred_entry = {
                         "sample_id": sid,
                         "predictions": record.get("final_pairs", []),
-                        "stop_type": record.get("stop_type", "natural_stop"),
-                        "num_visual_queries": record.get("num_visual_queries", 0),
-                        "num_text_queries": record.get("num_text_queries", 0),
-                        "num_queries_total": record.get("num_queries_total", 0)
+                        "stop_type": record.get("initial_contrast", {}).get("action", record.get("stop_type", "natural_stop")),
+                        "num_visual_queries": num_v,
+                        "num_text_queries": num_t,
+                        "num_queries_total": num_v + num_t
                     }
                     with open(pred_file, "a", encoding="utf-8") as f_pred:
                         f_pred.write(json.dumps(pred_entry, ensure_ascii=False) + "\n")
 
                     processed_count += 1
                     elapsed = time.time() - start_time
-                    logger.info(f"[{processed_count}/{total_count}] Success: {sid} (Queries: V={record.get('num_visual_queries', 0)}/T={record.get('num_text_queries', 0)}, Elapsed: {elapsed:.1f}s)")
+                    if is_v3:
+                        c_type = record.get("contrast_type", "UNKNOWN")
+                        logger.info(f"[{processed_count}/{total_count}] Success: {sid} (Contrast={c_type}, Probes={num_v}, Elapsed: {elapsed:.1f}s)")
+                    else:
+                        logger.info(f"[{processed_count}/{total_count}] Success: {sid} (Queries: V={num_v}/T={num_t}, Elapsed: {elapsed:.1f}s)")
                 return True
             except Exception as e:
                 logger.error(f"[ERROR] Failed {sid}: {e}")
@@ -342,6 +370,14 @@ def main():
         evaluator = BACREvaluator(gold_file=data_file)
         metrics = evaluator.evaluate_predictions(pred_file=traj_file)
         print_evaluation_report(metrics)
+
+        # If v3, also compute and display dual-hypothesis contrast diagnostics
+        if is_v3:
+            v3_diag = evaluate_v3_trajectories(traj_file=traj_file, gold_file=data_file)
+            print_v3_evaluation_report(v3_diag)
+            v3_diag_path = os.path.join(run_dir, "v3_diagnostics.json")
+            with open(v3_diag_path, "w", encoding="utf-8") as f_v3:
+                json.dump(v3_diag, f_v3, indent=2, ensure_ascii=False)
 
         # Save metrics
         metrics_path = os.path.join(run_dir, "metrics.json")

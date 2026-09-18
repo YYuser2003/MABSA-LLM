@@ -1,0 +1,674 @@
+{"sample_id": "twitter2015_test_0005", "predictions": [["Cleopatra", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0001", "predictions": [["Lydia", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0000", "predictions": [["Oklahoma", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0002", "predictions": [["Barbara Hepworth", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0004", "predictions": [["Rachael Speirs", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0007", "predictions": [["Heathrow", "NEU"], ["Bangkok", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0003", "predictions": [["Jessica Fortner", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0010", "predictions": [["west Valley Circle K", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0013", "predictions": [["Malta", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0012", "predictions": [["National Mall", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0009", "predictions": [["Nate", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0006", "predictions": [["Nene", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0008", "predictions": [["White House Demo Day", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0015", "predictions": [["Bath Maine", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0014", "predictions": [["# LFC", "NEU"], ["Steven Gerrard", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0017", "predictions": [["# SDCC", "POS"], ["# milloux", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0011", "predictions": [["Michael Jackson", "NEU"], ["Baltimore", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0018", "predictions": [["Metro", "NEU"], ["Dan Johnson", "NEG"], ["John Witt", "NEU"], ["# Louisville", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0022", "predictions": [["WILD Women", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0020", "predictions": [["Hamas", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0021", "predictions": [["Chris Sale", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0024", "predictions": [["Martin", "NEU"], ["National Hockey League", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0016", "predictions": [["Kill Devil Hills", "POS"], ["North Carolina", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0019", "predictions": [["Santiago", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0028", "predictions": [["Kent", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0026", "predictions": [["John Lennon", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0030", "predictions": [["Will Smith", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0029", "predictions": [["Joyce Njuguna", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0025", "predictions": [["Bob Marley", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0023", "predictions": [["Harriette", "NEG"], ["Chicago", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0027", "predictions": [["Alexander", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0033", "predictions": [["Japan", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0032", "predictions": [["Galbuts", "NEU"], ["Bessie Galbut", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0031", "predictions": [["Oscar", "NEU"], ["JK Simmons", "POS"], ["MIND BLOWN", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0034", "predictions": [["John McCain", "NEU"], ["Loretta Lynch", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0036", "predictions": [["Charlotte", "NEU"], ["# Greensboro", "NEU"], ["D - League", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0035", "predictions": [["New Year", "POS"], ["San", "NEU"], ["Riverside County", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0039", "predictions": [["Coretta Scott King", "NEU"], ["Robert", "NEU"], ["Ethel Kennedy", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0040", "predictions": [["Georgina Hermitage", "POS"], ["400m T37", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0041", "predictions": [["Julius Yego", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0045", "predictions": [["DC", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0044", "predictions": [["Boston", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0042", "predictions": [["Harry Potter Studios", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0043", "predictions": [["Tecumseh Ontario", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0037", "predictions": [["Eduard Gordeev", "POS"], ["# Russia", "NEU"], ["# CGE", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0046", "predictions": [["Sanji", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0048", "predictions": [["Bulaire Leber", "POS"], ["ADSS Global", "NEU"], ["Haiti", "NEU"], ["Bulaire", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0050", "predictions": [["Jurassic World", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0038", "predictions": [["MOD", "NEU"], ["Aaron Rudderham", "POS"], ["Travis Sabine", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0049", "predictions": [["PM", "NEU"], ["Hazel Grove", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0047", "predictions": [["Clinton", "NEU"], ["America", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0054", "predictions": [["# Sintra", "POS"], ["Portugal", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0052", "predictions": [["LeBron James", "POS"], ["Lauren Hill", "POS"], ["Twitter", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0051", "predictions": [["Sean Harris", "POS"], ["Leading Actor award", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0055", "predictions": [["Cape Town", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0053", "predictions": [["LTTE", "NEG"], ["Kilinochchi", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0058", "predictions": [["Bruce", "POS"], ["Diana Rauner", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0057", "predictions": [["Knoxville", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0060", "predictions": [["MACEDONIA", "NEU"], ["Serbia", "NEU"], ["Gevgelija", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0056", "predictions": [["Supreme Fabulettes", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0062", "predictions": [["Miss Colombia", "POS"], ["Paulina Vega", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0064", "predictions": [["Bill Harrelson", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0061", "predictions": [["Bob Taylor", "NEG"], ["Ferndale", "NEU"], ["Ferndale City Glass", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0066", "predictions": [["IP", "NEU"], ["Food for Thought", "NEU"], ["Asya Calixto", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0059", "predictions": [["Tarkovsky", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0067", "predictions": [["Millennium Falcon", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0063", "predictions": [["Rio", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0068", "predictions": [["Cabinet Office", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0069", "predictions": [["Rolf Harris", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0070", "predictions": [["Spokane", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0072", "predictions": [["Pilar Alessandra", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0071", "predictions": [["Martinez", "POS"], ["CA", "POS"], ["Buenos Dias", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0065", "predictions": [["KFC", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0075", "predictions": [["Jin", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0077", "predictions": [["Caribbean", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0073", "predictions": [["Moultrie - Douglas County Fair", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0079", "predictions": [["Fruitvale Station", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0080", "predictions": [["London Bridge Studio", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0078", "predictions": [["POMPEII", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0076", "predictions": [["Kanye West", "POS"], ["Yeezus tour", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0081", "predictions": [["Afghanistan", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0082", "predictions": [["# Germany", "NEU"], ["Leopard", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0074", "predictions": [["Maine Angels", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0083", "predictions": [["Perrie Malik", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0084", "predictions": [["Karma", "POS"], ["Cercie", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0087", "predictions": [["Florida ANG", "NEU"], ["F - 15C", "NEU"], ["Leeuwarden AB", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0085", "predictions": [["CS Lewis", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0089", "predictions": [["Cheltenham", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0086", "predictions": [["Arizona", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0088", "predictions": [["Hillary", "NEU"], ["Ted Cruz", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0090", "predictions": [["# henna", "POS"], ["# UAE", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0093", "predictions": [["Peoria", "NEU"], ["# peoria", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0092", "predictions": [["Eddie", "POS"], ["Pearl Jam", "POS"], ["Buenos Aires", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0091", "predictions": [["Jimmy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0095", "predictions": [["Margaret Christman", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0097", "predictions": [["Chula Vista", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0098", "predictions": [["Kardashians", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0096", "predictions": [["Academy of Football", "POS"], ["Joe Cole", "POS"], ["West Ham United", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0099", "predictions": [["Bayer", "NEU"], ["aspirin", "NEU"], ["Germany", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0094", "predictions": [["Tyrion Lannister", "POS"], ["Peter Dinklage", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0100", "predictions": [["Jean Marmoreo", "POS"], ["# stwm", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0102", "predictions": [["Harold Russell", "POS"], ["THE BEST YEARS OF OUR LIVES", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0101", "predictions": [["New York City", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0106", "predictions": [["Nintendo", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0103", "predictions": [["Jinja", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0105", "predictions": [["David Evans", "NEU"], ["WHO", "NEU"], ["global health 2035", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0108", "predictions": [["Toni Harp", "POS"], ["# NHV", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0110", "predictions": [["Presidential Medal of Freedom", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0109", "predictions": [["Kisii County", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0111", "predictions": [["Snapchat", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0114", "predictions": [["Essex", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0113", "predictions": [["Vornado", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0104", "predictions": [["Parks and Recreation", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0112", "predictions": [["Yehya", "NEU"], ["Lebanon", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0107", "predictions": [["Lil Cowan", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0115", "predictions": [["United Center", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0116", "predictions": [["Haiti", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0117", "predictions": [["Handle Life Draft", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0118", "predictions": [["Jan van Eyck", "POS"], ["Saint Barbara", "POS"], ["Antwerp", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0119", "predictions": [["# Blackhawks", "POS"], ["Brandon Saad", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0121", "predictions": [["Romania", "POS"], ["Eduard Gutescu", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0124", "predictions": [["Niall Horan", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0125", "predictions": [["Alligator River NWR", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0123", "predictions": [["Syracuse", "POS"], ["# syracuse", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0126", "predictions": [["Gordon Tardio", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0129", "predictions": [["The Seth Leibsohn Show", "NEU"], ["Steve Hayward", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0130", "predictions": [["Caras Ionut", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0122", "predictions": [["Barnard Castle", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0131", "predictions": [["University in # Berkeley", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0128", "predictions": [["PayPal", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0120", "predictions": [["Timothy", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0132", "predictions": [["Virtustream", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0134", "predictions": [["Cleveland Cavaliers", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0136", "predictions": [["Rachel McAdams", "NEU"], ["Taylor Kitsch", "NEU"], ["True Detective", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0127", "predictions": [["Siri", "POS"], ["Totoro", "POS"], ["# totoro", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0140", "predictions": [["Denver", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0138", "predictions": [["Nigga", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0139", "predictions": [["Emma Watson", "NEU"], ["Jennifer Lawrence", "NEU"], ["Shailene Woodley", "NEU"], ["Lily Collins", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0133", "predictions": [["Olli", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0141", "predictions": [["Hudson", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0135", "predictions": [["3D bookbag", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0142", "predictions": [["Elks Memorial", "NEU"], ["Lincoln Park", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0137", "predictions": [["Stony Stratford", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0143", "predictions": [["Friday the 13th", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0144", "predictions": [["Orion", "POS"], ["NASA", "POS"], ["Matt Damon", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0148", "predictions": [["Liam Neeson", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0145", "predictions": [["Henry", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0147", "predictions": [["i40", "NEG"], ["Sandy Ridge Road", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0150", "predictions": [["Nina Davuluri", "POS"], ["Orlando", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0151", "predictions": [["Mary Catherine Bateson", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0153", "predictions": [["Doug Ducey", "NEU"], ["will", "NEU"], ["Will Humble", "NEU"], ["Arizona Department of Public Health", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0155", "predictions": [["Knysna", "POS"], ["# knysna", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0146", "predictions": [["Maiduguri", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0149", "predictions": [["Danny Green", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0154", "predictions": [["Paralympic", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0156", "predictions": [["Boston", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0158", "predictions": [["Kissimmee", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0152", "predictions": [["Orange is the New Black", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0159", "predictions": [["Ravens", "NEU"], ["Justin Tucker", "POS"], ["Matthew McConaughey", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0157", "predictions": [["Bowie", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0160", "predictions": [["Iran", "NEG"], ["US", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0161", "predictions": [["San Francisco City Hall", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0162", "predictions": [["Isis", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0163", "predictions": [["Madonna", "NEG"], ["# Poldark", "POS"], ["# Demelza", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0167", "predictions": [["Houston", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0166", "predictions": [["# olympic", "NEU"], ["# Taekwondo", "NEU"], ["# Bonn", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0168", "predictions": [["Brickabrack Hall", "NEU"], ["David Eveleigh", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0164", "predictions": [["David Moyes", "NEU"], ["Van Gaal", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0172", "predictions": [["DETROIT", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0173", "predictions": [["# Sammy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0174", "predictions": [["Alshon Jeffrey", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0175", "predictions": [["Centraal Beheer", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0176", "predictions": [["Absa Cape Epic", "POS"], ["Oak Valley", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0169", "predictions": [["Marian Pledger", "POS"], ["# CTTT", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0171", "predictions": [["Mayweather", "NEU"], ["Pacquiao", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0165", "predictions": [["Netherlands Navy", "POS"], ["Somalia", "NEU"], ["Johan de Witt", "POS"], ["# Seychelles", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0170", "predictions": [["Malaysia Airlines", "NEG"], ["Grabovo", "NEU"], ["Donetsk", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0178", "predictions": [["# NASCAR", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0179", "predictions": [["Fowey", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0180", "predictions": [["UNC", "POS"], ["Dean Smith", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0177", "predictions": [["DONBASS", "NEU"], ["CRIMEA", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0182", "predictions": [["Luis Sanchis", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0184", "predictions": [["Finchley", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0183", "predictions": [["Todd", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0187", "predictions": [["LeBron James", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0186", "predictions": [["Kelantan", "NEU"], ["Malaysia", "NEU"], ["Gasing shows", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0185", "predictions": [["Mark Hamill", "POS"], ["Zizek", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0188", "predictions": [["Shayanna Jenkins", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0192", "predictions": [["EMC Community Network", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0190", "predictions": [["Boston Marathon", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0191", "predictions": [["World War I", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0189", "predictions": [["ESPN", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0181", "predictions": [["Joe Maddon", "POS"], ["Jason Motte", "NEU"], ["Jon Lester", "NEU"], ["Mesa", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0197", "predictions": [["Pixar", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0198", "predictions": [["Pinterest", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0196", "predictions": [["Yanukovych", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0195", "predictions": [["Caribbean", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0193", "predictions": [["# Blackhawks", "POS"], ["the Wild", "NEU"], ["the", "NEU"], ["United Center", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0194", "predictions": [["Katie", "POS"], ["Matilda", "POS"], ["Liz", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0201", "predictions": [["# Oscars", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0199", "predictions": [["Shelby County", "NEU"], ["Bill Oldham", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0202", "predictions": [["Pearl Beach", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0203", "predictions": [["# mclean", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0200", "predictions": [["Josh Bleill", "POS"], ["# USA", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0204", "predictions": [["LSU", "NEU"], ["Heath Ledger", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0206", "predictions": [["FSU", "NEG"], ["Jameis Winston", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0205", "predictions": [["IKEA", "NEU"], ["IKEA", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0208", "predictions": [["Kiwi", "POS"], ["iOS 8", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0211", "predictions": [["Tallinn", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0213", "predictions": [["Summit County", "POS"], ["Colorado", "POS"], ["USA", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0215", "predictions": [["Dominique Ward", "POS"], ["Delmar", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0210", "predictions": [["Philippines", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0216", "predictions": [["Greater Cincinnati", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0207", "predictions": [["Tim Tebow", "POS"], ["NFL", "POS"], ["# NFL", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0217", "predictions": [["MTN", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0214", "predictions": [["Penrhyn Castle", "POS"], ["# Gwynedd", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0209", "predictions": [["San Mateo", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0220", "predictions": [["Tidy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0218", "predictions": [["Ottawa", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0212", "predictions": [["Raeside", "POS"], ["Victoria TC", "NEG"], ["# kamloops", "POS"], ["AM News", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0219", "predictions": [["North Central", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0221", "predictions": [["Oscars", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0224", "predictions": [["Stonebriar Mall", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0223", "predictions": [["Louis Tomlinson", "NEU"], ["Dave Franco", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0222", "predictions": [["Orange Carpet", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0226", "predictions": [["Bill Cosby", "NEU"], ["Bill Cosby", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0225", "predictions": [["Maitland", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0227", "predictions": [["Pacific Rim", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0228", "predictions": [["Gotye", "POS"], ["Grammys", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0230", "predictions": [["Ceres", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0229", "predictions": [["Amber", "NEU"], ["Chyna", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0233", "predictions": [["Chicago", "NEU"], ["Austin", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0231", "predictions": [["American Sniper", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0232", "predictions": [["Kyoto", "NEG"], ["mayor", "POS"], ["Mayor Kadokawa", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0234", "predictions": [["Alexandria wall", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0240", "predictions": [["Mexico", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0237", "predictions": [["Delaware", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0238", "predictions": [["Amina", "NEU"], ["# Afghanistan", "NEU"], ["# Austria", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0241", "predictions": [["Burger King", "POS"], ["Tim", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0242", "predictions": [["Britain", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0235", "predictions": [["LEGO Birds", "POS"], ["Thomas Poulsom", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0236", "predictions": [["Ellery Yates", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0243", "predictions": [["Carolina Blue", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0244", "predictions": [["# Canon A - 1", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0239", "predictions": [["Brb", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0245", "predictions": [["Bhumi Pednekar", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0248", "predictions": [["Jesus Christ", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0247", "predictions": [["Poland", "POS"], ["Ukraine", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0246", "predictions": [["USA Archer", "POS"], ["Michelle Gilbert", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0249", "predictions": [["Leicester", "NEU"], ["Gokhan Inler", "NEU"], ["Napoli", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0251", "predictions": [["Rihanna", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0256", "predictions": [["Iran", "NEU"], ["Asia", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0253", "predictions": [["Ang Lee", "POS"], ["Oscars", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0250", "predictions": [["Scully", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0254", "predictions": [["Skype", "POS"], ["PSPA competition", "POS"], ["Oprah Magazine", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0258", "predictions": [["JK Rowling", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0255", "predictions": [["BSM", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0259", "predictions": [["David Denholm", "POS"], ["Kellogg", "POS"], ["DC", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0260", "predictions": [["Canada", "NEU"], ["Kremlin", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0252", "predictions": [["Joanne Stiger", "POS"], ["Melissa Keller", "POS"], ["Broward", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0262", "predictions": [["Kate Hudson", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0257", "predictions": [["Kevin Hanaway", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0261", "predictions": [["Trayvon Martin", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0263", "predictions": [["Adnan Januzaj", "NEG"], ["Man United", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0268", "predictions": [["Strauss - Kahn", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0266", "predictions": [["Jimmy Fallon", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0265", "predictions": [["AMSTERDAM", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0269", "predictions": [["Cuyahoga County", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0267", "predictions": [["volunteers week", "POS"], ["Maureen", "POS"], ["volunteers", "POS"], ["Farnborough Centre", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0264", "predictions": [["Simon Sinek", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0271", "predictions": [["Oklahoma city", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0272", "predictions": [["America", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0274", "predictions": [["Marc Coudron", "NEU"], ["BE", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0275", "predictions": [["grammy", "POS"], ["grammy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0276", "predictions": [["# Seahawks", "POS"], ["Steven Bisig", "NEU"], ["USA Today Sports", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0278", "predictions": [["UVA", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0270", "predictions": [["Rick Smith", "NEU"], ["Scorpion", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0273", "predictions": [["Emojified", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0281", "predictions": [["Data Protection Suite", "POS"], ["Data Domain", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0282", "predictions": [["Louis Sullivan", "NEU"], ["Auditorium Building", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0283", "predictions": [["Russia", "NEG"], ["INTERPOL", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0280", "predictions": [["Roy", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0284", "predictions": [["HNLMS Tromp", "POS"], ["HNLMS Van", "POS"], ["Plymouth Sound", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0285", "predictions": [["Yellowstone", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0279", "predictions": [["Montoya", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0286", "predictions": [["Cassi", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0290", "predictions": [["Paoay Church", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0289", "predictions": [["Pat Tillman", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0287", "predictions": [["Sean Astin", "POS"], ["Rudy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0293", "predictions": [["Justin Bieber", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0292", "predictions": [["Calories", "NEU"], ["National Ice Cream Day", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0288", "predictions": [["DoodleBob", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0295", "predictions": [["Eighth day", "POS"], ["Brighton", "NEU"], ["MI", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0291", "predictions": [["Tamir Rice", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0296", "predictions": [["Shulk", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0297", "predictions": [["Pablo Picasso", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0294", "predictions": [["Abu Dhabi", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0298", "predictions": [["Crawford", "POS"], ["Stamkos", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0277", "predictions": [["Israel", "NEG"], ["Iran Nuke deal", "NEU"], ["Middle East", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0301", "predictions": [["Pussy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0299", "predictions": [["kenye", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0303", "predictions": [["Jared Padalecki", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0305", "predictions": [["Distinguished Service Award", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0304", "predictions": [["Tecumseh", "NEU"], ["Ontario", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0300", "predictions": [["# Aleppo", "NEG"], ["# Syria", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0302", "predictions": [["Irving Park", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0306", "predictions": [["Sandestin", "POS"], ["FL", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0308", "predictions": [["Meek Mill", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0309", "predictions": [["FiOS1", "NEU"], ["Mike Freidman", "NEU"], ["HV", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0311", "predictions": [["Luther College", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0312", "predictions": [["Obama", "NEU"], ["Confederate flags", "NEU"], ["Nashville", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0313", "predictions": [["Brian Grubb", "POS"], ["National Geographic", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0310", "predictions": [["Stratford", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0314", "predictions": [["Lauryn Hill", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0307", "predictions": [["Changi Airport", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0315", "predictions": [["Gush Etzion", "NEU"], ["West Bank", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0317", "predictions": [["Egypt", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0320", "predictions": [["Syrian", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0316", "predictions": [["Brooklyn", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0318", "predictions": [["Meerkat", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0319", "predictions": [["Witek", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0321", "predictions": [["LAPD", "NEG"], ["# LAPD", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0325", "predictions": [["Nike", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0323", "predictions": [["Marcia Preston", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0326", "predictions": [["Scooby Doo", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0322", "predictions": [["Brandon Carr", "NEU"], ["Dallas Cowboys", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0330", "predictions": [["Data Lake Foundation", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0329", "predictions": [["Justina Pelletier", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0324", "predictions": [["MN", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0332", "predictions": [["Parcel Motel", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0333", "predictions": [["HNLMS Evertsen", "NEU"], ["United Nations", "NEU"], ["# Korea", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0327", "predictions": [["Rays", "POS"], ["Wrigley", "POS"], ["# rays", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0331", "predictions": [["Boris Johnson", "NEG"], ["London", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0334", "predictions": [["George Stinney", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0328", "predictions": [["Double Chocolate Brownies", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0339", "predictions": [["Fenway", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0336", "predictions": [["Eunhyuk", "NEU"], ["Donghae", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0340", "predictions": [["Chelsea Flea Market", "NEU"], ["Bruce", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0337", "predictions": [["Chicago", "POS"], ["Lawndale", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0341", "predictions": [["Brighton", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0342", "predictions": [["Marie", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0338", "predictions": [["Dez Bryant", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0343", "predictions": [["New York Fashion Week", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0344", "predictions": [["Trump", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0335", "predictions": [["Puget Sound", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0348", "predictions": [["Parent EdCamp", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0345", "predictions": [["Oliver Kahn", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0347", "predictions": [["Latvia", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0346", "predictions": [["Islamic State", "NEU"], ["Libya", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0350", "predictions": [["Vogue", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0353", "predictions": [["Tim Howard", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0352", "predictions": [["Catherine Williams", "NEU"], ["London", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0351", "predictions": [["Buffalo Bills", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0355", "predictions": [["John McNab", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0354", "predictions": [["Prespa", "POS"], ["Namangan", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0359", "predictions": [["Boul Mich bridge", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0349", "predictions": [["Silver Falls", "POS"], ["Oregon", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0356", "predictions": [["Tornado Warning", "NEU"], ["Morris County NJ", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0357", "predictions": [["Kentucky Derby", "NEU"], ["American Pharoah", "POS"], ["Preakness Stakes", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0360", "predictions": [["Diyatha Uyana", "POS"], ["Mahinda Chintana Vision", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0364", "predictions": [["Prof Ali Mazrui", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0363", "predictions": [["# Preds", "NEU"], ["Ellis", "NEU"], ["Volchenkov", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0361", "predictions": [["McShay", "NEU"], ["Kevin White", "NEU"], ["Alshon Jeffrey", "POS"], ["Kevin White", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0367", "predictions": [["The Boston", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0368", "predictions": [["Colgate", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0366", "predictions": [["# Baltimore", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0358", "predictions": [["# Philippines", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0365", "predictions": [["Letroy Guion", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0362", "predictions": [["Tomas Havel", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0371", "predictions": [["RCMP", "NEU"], ["Juniper", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0373", "predictions": [["United States Army", "POS"], ["America", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0369", "predictions": [["Vin Diesel", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0374", "predictions": [["Virginia TV", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0377", "predictions": [["Nasi Bujang", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0375", "predictions": [["NRA", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0372", "predictions": [["Avan Jogia", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0376", "predictions": [["Portugal", "NEU"], ["Serbia", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0379", "predictions": [["Public Works Authority", "NEU"], ["Shamal Road", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0370", "predictions": [["Peace Love", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0383", "predictions": [["Kate", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0384", "predictions": [["Jiley", "POS"], ["Justin Bieber", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0382", "predictions": [["Dublin", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0386", "predictions": [["Jeb", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0385", "predictions": [["# Toyota", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0381", "predictions": [["Union Pacific", "NEG"], ["Gilbert", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0380", "predictions": [["Ashton", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0387", "predictions": [["Sun", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0378", "predictions": [["Joliet", "NEU"], ["Illinois", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0390", "predictions": [["UN", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0388", "predictions": [["Hillary", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0392", "predictions": [["Malindi", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0391", "predictions": [["Brevard County", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0389", "predictions": [["Kendall", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0396", "predictions": [["The UK", "NEU"], ["Maggie Simpson", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0393", "predictions": [["Jessica Soffer", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0398", "predictions": [["BCMS", "POS"], ["Clara", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0397", "predictions": [["Jerry", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0399", "predictions": [["Louisiana", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0395", "predictions": [["John Moravec", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0401", "predictions": [["Nebraska high school", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0400", "predictions": [["Beit", "NEU"], ["Tel Aviv", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0394", "predictions": [["Kingston", "POS"], ["Glen Eira", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0402", "predictions": [["Glass Cliff Walk", "POS"], ["Yunyang Longgang", "POS"], ["# Chongqing", "POS"], ["# China", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0404", "predictions": [["Eurogroup", "POS"], ["President Jeroen", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0405", "predictions": [["TMRW", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0407", "predictions": [["Scott Walker", "NEG"], ["America", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0408", "predictions": [["rihanna", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0406", "predictions": [["Scottsdale", "POS"], ["Scottsdale", "POS"], ["AZ", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0413", "predictions": [["Pia Mannikko", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0403", "predictions": [["People - to - People Programs", "POS"], ["Cuba", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0412", "predictions": [["America", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0415", "predictions": [["NTL", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0414", "predictions": [["BO2", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0411", "predictions": [["Kenya", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0409", "predictions": [["Johnny Depp", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0416", "predictions": [["UEFA Cup", "POS"], ["Scudetto", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0420", "predictions": [["Disney Princesses", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0418", "predictions": [["Gabriela Mistral", "POS"], ["Google", "NEU"], ["# chile", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0410", "predictions": [["Charlotte", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0423", "predictions": [["Anacortes", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0422", "predictions": [["Stourhead", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0424", "predictions": [["Mr Jiang", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0419", "predictions": [["Kanye", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0417", "predictions": [["Shane", "POS"], ["Goring", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0425", "predictions": [["Noumeda Carbone", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0421", "predictions": [["Fiat 500", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0426", "predictions": [["ADVENTURES OF ROBIN HOOD", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0427", "predictions": [["Dublin", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0431", "predictions": [["Jenni", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0430", "predictions": [["Martha Kent", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0433", "predictions": [["Little Romo", "POS"], ["Marianne Hale", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0434", "predictions": [["Provincial Traffic", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0428", "predictions": [["Lebron James", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0435", "predictions": [["USA", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0429", "predictions": [["Michael H Weber", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0437", "predictions": [["Germany", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0436", "predictions": [["Jimmy Murphy Young Player of the Year award", "NEU"], ["James Wilson", "POS"], ["# MUFC", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0432", "predictions": [["Dane Pup", "POS"], ["Lab Pup", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0440", "predictions": [["Henry Ford", "POS"], ["Getty Images", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0441", "predictions": [["Pope Francis", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0443", "predictions": [["Microsoft", "POS"], ["Google", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0442", "predictions": [["Mandera County", "POS"], ["Gadudia", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0439", "predictions": [["Brocken", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0438", "predictions": [["Mario", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0445", "predictions": [["Quincy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0447", "predictions": [["Rik", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0448", "predictions": [["England", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0444", "predictions": [["Ford Otosan", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0449", "predictions": [["Ghostbusters", "NEU"], ["Paul Feig", "NEU"], ["Ecto - 1", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0453", "predictions": [["United States", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0451", "predictions": [["Dikgacoi", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0452", "predictions": [["Carter Reynolds", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0454", "predictions": [["Adams Morgan", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0456", "predictions": [["Kevin Durant", "POS"], ["NBA", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0450", "predictions": [["Africa", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0446", "predictions": [["YouTube", "POS"], ["Facebook", "NEU"], ["Google", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0457", "predictions": [["Addison Russell", "NEU"], ["Soler", "NEU"], ["Schwarber", "NEU"], ["Baez", "NEU"], ["Mesa", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0460", "predictions": [["# Barnstable Harbor", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0459", "predictions": [["Rahm Emanuel", "POS"], ["Union Hall", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0461", "predictions": [["Westport Road", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0462", "predictions": [["Lupin", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0455", "predictions": [["Trump", "POS"], ["Senate", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0464", "predictions": [["Chip Conley", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0466", "predictions": [["Baltimore", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0465", "predictions": [["# Bali", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0463", "predictions": [["Joe Flacco", "POS"], ["Mickey Mouse", "POS"], ["Magic Kingdom", "POS"], ["# ravens", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0458", "predictions": [["Israel", "POS"], ["Tel Aviv", "POS"], ["Jaffa", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0470", "predictions": [["@ TIME", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0467", "predictions": [["Tokyo", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0469", "predictions": [["Bruce Jenner", "NEU"], ["Nabs", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0472", "predictions": [["Buchanan St", "NEU"], ["Glasgow", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0473", "predictions": [["Lathrop", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0475", "predictions": [["Bella", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0476", "predictions": [["Bob Marley", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0468", "predictions": [["BBQ Garden Party", "POS"], ["deafPLUS", "NEU"], ["Trinity Centre", "NEU"], ["London", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0477", "predictions": [["# Knoxville", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0478", "predictions": [["President Eisenhower", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0471", "predictions": [["Star Wars", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0480", "predictions": [["Elevate Life Worship", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0479", "predictions": [["Pablo Neruda", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0481", "predictions": [["HAL", "NEU"], ["BrahMos", "NEU"], ["Su - 30", "NEU"], ["IAF", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0474", "predictions": [["Harold Washington Library", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0485", "predictions": [["Tennant Truck Lines", "POS"], ["Colona", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0483", "predictions": [["Flash Flood Warning", "NEU"], ["Sussex", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0484", "predictions": [["Kenya Airways", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0482", "predictions": [["Mayor Sims", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0487", "predictions": [["Gdynia", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0488", "predictions": [["Phil Mickelson", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0486", "predictions": [["Andre Ayew", "POS"], ["Premier League", "NEU"], ["# Swans", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0491", "predictions": [["Donna", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0489", "predictions": [["Kelan Philip Cohran", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0490", "predictions": [["Nelwyn", "POS"], ["Daniel", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0493", "predictions": [["South Carolina House", "NEU"], ["Confederate flag", "NEU"], ["Capitol", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0494", "predictions": [["Pluto", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0495", "predictions": [["Jenner", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0496", "predictions": [["Ethan", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0497", "predictions": [["# NewYork", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0498", "predictions": [["Verona", "POS"], ["Italy", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0492", "predictions": [["Riga", "POS"], ["Latvia", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0503", "predictions": [["Valencia College", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0502", "predictions": [["German", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0499", "predictions": [["Shimba", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0506", "predictions": [["Mayor Carcetti", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0500", "predictions": [["Jango Fett", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0501", "predictions": [["Joey Badass", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0504", "predictions": [["Lara Croft", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0511", "predictions": [["Akron", "NEU"], ["Avant Garde Craft Show", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0509", "predictions": [["Teresa Freitas", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0508", "predictions": [["BALTIMORE", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0505", "predictions": [["Shawn", "POS"], ["Ohio", "NEU"], ["Cleveland", "NEU"], ["OH", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0512", "predictions": [["Roger Federer", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0507", "predictions": [["Naomi Campbell", "POS"], ["Michael Jackson", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0514", "predictions": [["Behouden Huys", "NEU"], ["Nova Zembla", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0515", "predictions": [["Facebook", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0517", "predictions": [["Bill Gates", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0518", "predictions": [["Craig", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0513", "predictions": [["Gordeev", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0519", "predictions": [["Starlin Castro", "POS"], ["Alexei Ramirez", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0520", "predictions": [["Lou Reed", "NEU"], ["Mick Jagger", "NEU"], ["David Bowie", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0516", "predictions": [["Peter", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0523", "predictions": [["Korea", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0524", "predictions": [["Justin beiber", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0522", "predictions": [["tumblr", "POS"], ["JUSTIN", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0521", "predictions": [["Niall", "POS"], ["Louis", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0525", "predictions": [["Kim Davis", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0526", "predictions": [["Tim Burton", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0528", "predictions": [["maxwell New Mexico", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0527", "predictions": [["Florida", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0529", "predictions": [["Akron", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0533", "predictions": [["Santa", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0530", "predictions": [["White Sox", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0532", "predictions": [["# Blackhawks", "NEU"], ["# Ducks", "NEU"], ["Southern California", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0536", "predictions": [["Barry Allen", "POS"], ["Bruce Wayne", "POS"], ["Oliver Queen", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0535", "predictions": [["Democrats", "POS"], ["# GOTV", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0537", "predictions": [["Flash Flood Warning", "NEU"], ["Suffolk", "NEU"], ["Nassau", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0539", "predictions": [["Lionel Messi", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0531", "predictions": [["London Guarantee Building", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0540", "predictions": [["Rocky", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0542", "predictions": [["Royal Bahamas Defence Force", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0534", "predictions": [["Marquette 1", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0541", "predictions": [["The Economist", "NEU"], ["Africa", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0545", "predictions": [["Shark Club", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0546", "predictions": [["Javier Vasquez", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0538", "predictions": [["New Year", "POS"], ["Washington", "POS"], ["# NYE", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0543", "predictions": [["David Carr", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0549", "predictions": [["Samsung Galaxy J1", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0550", "predictions": [["Joe", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0548", "predictions": [["Kaepernick", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0547", "predictions": [["Warren", "NEU"], ["Scott Brown", "NEG"], ["Sarah Palin", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0544", "predictions": [["Donald Trump", "NEG"], ["New York", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0552", "predictions": [["Stanley Elkin", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0553", "predictions": [["MTV Music Awards", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0551", "predictions": [["John", "POS"], ["Roosevelt University", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0558", "predictions": [["George Lucas", "NEU"], ["R2D2", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0555", "predictions": [["# Ferguson", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0556", "predictions": [["Zach Randolph", "POS"], ["Warriors", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0560", "predictions": [["Martin Kimani", "NEU"], ["National Counter Terrorism Centre", "NEU"], ["Isaac Ochieng", "NEU"], ["Kenya", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0557", "predictions": [["T - Mobile", "NEG"], ["911", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0562", "predictions": [["Ferrari", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0559", "predictions": [["Bulls", "POS"], ["Magic", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0564", "predictions": [["Ray Bradbury", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0554", "predictions": [["2PM WORLD TOUR GO CRAZY", "POS"], ["JAKARTA", "NEU"], ["Istora Senayan", "NEU"], ["Komplek Gelora Bung Karno", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0561", "predictions": [["Maria Ihekwaba", "POS"], ["Rahm Emanuel", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0567", "predictions": [["Aston Villa", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0566", "predictions": [["Indianapolis", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0568", "predictions": [["Ocean City", "NEU"], ["MD", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0565", "predictions": [["Dgph Diego", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0563", "predictions": [["Mexico", "POS"], ["Martin Garrix", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0570", "predictions": [["Soo", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0571", "predictions": [["Ruby", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0573", "predictions": [["Magaliesberg", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0569", "predictions": [["Mary McGrory", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0575", "predictions": [["Forbes Magazine", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0574", "predictions": [["Candace Wheeler", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0572", "predictions": [["UKIP", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0577", "predictions": [["B2", "NEU"], ["UK", "NEU"], ["NATO", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0576", "predictions": [["Harrods Hotel Kuala Lumpur", "NEU"], ["# Malaysia", "NEU"], ["# Harrods", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0579", "predictions": [["Ninkovich", "POS"], ["Jake Long", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0580", "predictions": [["jason", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0583", "predictions": [["Hawai", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0581", "predictions": [["Berlin Wall", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0582", "predictions": [["Mayor Walsh", "NEU"], ["Belfast Beanpot", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0578", "predictions": [["MERS", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0586", "predictions": [["Loren", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0587", "predictions": [["David Cameron", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0510", "predictions": [["Elvis", "POS"], ["Priscilla", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0585", "predictions": [["Navy", "NEU"], ["Glass Bowl", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0590", "predictions": [["London", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0591", "predictions": [["Rolex", "NEU"], ["NASA", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0584", "predictions": [["Cody", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0593", "predictions": [["Florence", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0594", "predictions": [["France", "NEU"], ["Imams", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0589", "predictions": [["Fernando Torres", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0595", "predictions": [["Prescott Valley", "NEU"], ["Dewey", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0592", "predictions": [["Hollywood", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0596", "predictions": [["Aylan Kurdi", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0598", "predictions": [["Kabul", "NEU"], ["Afghanistan", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0597", "predictions": [["Milan Kundera", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0599", "predictions": [["Louvre Museum", "POS"], ["# paris", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0600", "predictions": [["Walmart", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0602", "predictions": [["Burlington High School", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0603", "predictions": [["LeBron James", "NEU"], ["Greg Oden", "NEU"], ["Heat", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0601", "predictions": [["Facebook", "POS"], ["Wal - Mart", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0606", "predictions": [["# Giants", "NEU"], ["TE Daniel Fells", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0608", "predictions": [["Pittsburgh", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0588", "predictions": [["FA Cup", "NEU"], ["Arsenal", "NEU"], ["Aston Villa", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0605", "predictions": [["# mufc", "POS"], ["Southampton", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0607", "predictions": [["Roberto", "NEU"], ["RIO 2", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0610", "predictions": [["Davos", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0611", "predictions": [["Tignes", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0609", "predictions": [["Dean", "POS"], ["Dean Smith", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0613", "predictions": [["LA", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0604", "predictions": [["Bandar Seri Begawan", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0615", "predictions": [["South Africa", "NEU"], ["UK", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0617", "predictions": [["Frisco Fire Dept", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0614", "predictions": [["John Paul DeJoria", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0612", "predictions": [["Kim Davis", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0618", "predictions": [["Zac", "POS"], ["Dave", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0619", "predictions": [["Harry Gulliver", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0622", "predictions": [["Bologna University", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0620", "predictions": [["Jordan", "POS"], ["# x1", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0624", "predictions": [["Cuba", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0623", "predictions": [["Trump", "NEG"], ["Corbyn", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0621", "predictions": [["Congo", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0625", "predictions": [["Robert Cailliau", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0626", "predictions": [["Bletchley Park", "POS"], ["FM", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0628", "predictions": [["Pitbull", "POS"], ["Donald Trump", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0629", "predictions": [["Lelisa Desisa", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0616", "predictions": [["CO2", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0631", "predictions": [["# Facebook", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0633", "predictions": [["Jermon Bushrod", "NEG"], ["# Bears", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0630", "predictions": [["The Percy Jackson", "POS"], ["the", "POS"], ["Parthenon", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0627", "predictions": [["Puebla", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0634", "predictions": [["NBK", "NEU"], ["Mumias", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0632", "predictions": [["Pete Carroll", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0636", "predictions": [["Niklas Hjmarlsson", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0637", "predictions": [["University of Swat", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0639", "predictions": [["New Delhi Railway station", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0638", "predictions": [["Laurel", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0641", "predictions": [["Silver City", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0643", "predictions": [["Export - Import Bank", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0644", "predictions": [["Zaatari", "POS"], ["# Syria", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0647", "predictions": [["Northern California", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0645", "predictions": [["US Navy", "NEU"], ["China", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0640", "predictions": [["Chris Davis", "POS"], ["Alabama", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0635", "predictions": [["Kentucky", "NEU"], ["Kim Davis", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0642", "predictions": [["Little farmer", "POS"], ["Tatyana Tomsickova", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0648", "predictions": [["Dayton", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0650", "predictions": [["Ronald McDonald", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0649", "predictions": [["Harry Reid", "NEU"], ["McConnell", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0651", "predictions": [["Tornado Warning", "NEU"], ["Salem County", "NEU"], ["Southern NJ", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0646", "predictions": [["Minneapolis", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0652", "predictions": [["Tokyo", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0655", "predictions": [["Madea", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0653", "predictions": [["ALQ - 76", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0657", "predictions": [["HTC One Max", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0656", "predictions": [["Reed", "NEG"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0658", "predictions": [["LGA", "NEU"], ["Skopje", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0661", "predictions": [["Yellowknife", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0663", "predictions": [["NW", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0665", "predictions": [["Arrowhead stadium", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0654", "predictions": [["Manarola", "POS"], ["# Italy", "POS"], ["Lars Kehrel", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0664", "predictions": [["# Bears", "POS"], ["John Fox", "POS"], ["Dolphins", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0662", "predictions": [["Drake", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0669", "predictions": [["CARTER", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0660", "predictions": [["National Public Works Week", "POS"], ["# Shakopee", "NEU"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0659", "predictions": [["Elizabeth Warren", "POS"], ["Washington", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0667", "predictions": [["Rick Pitino", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0666", "predictions": [["Dallas", "NEG"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0670", "predictions": [["Rwandan Parliament", "NEU"], ["Amahoro Stadium", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0668", "predictions": [["Equine Therapy", "POS"]], "stop_type": "QUERY_VISION", "num_visual_queries": 1, "num_text_queries": 0, "num_queries_total": 1}
+{"sample_id": "twitter2015_test_0672", "predictions": [["America", "POS"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0671", "predictions": [["Dream Team", "POS"], ["Barcelona Olympics", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}
+{"sample_id": "twitter2015_test_0673", "predictions": [["Bruce Rauner", "NEU"], ["Edgar", "NEU"], ["Bill Daley", "NEU"], ["Meeks", "NEU"]], "stop_type": "CERTIFY", "num_visual_queries": 0, "num_text_queries": 0, "num_queries_total": 0}

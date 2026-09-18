@@ -1,0 +1,25 @@
+{
+  "total_samples": 674,
+  "acc_t0": 64.09,
+  "acc_tv": 56.23,
+  "acc_final": 56.53,
+  "delta_tv_over_t0": -7.86,
+  "delta_final_over_t0": -7.56,
+  "visual_shift_rate": 17.8,
+  "visual_correction": 30,
+  "visual_corruption": 83,
+  "visual_net_gain": -53,
+  "probe_recovery": 3,
+  "probe_harm": 1,
+  "probe_net_gain": 2,
+  "contrast_distribution": {
+    "SUPPORTED": 552,
+    "VISUAL_SHIFT": 116,
+    "VISUAL_AMBIGUITY": 5,
+    "STABLE": 1
+  },
+  "probe_frequency": {
+    "0": 553,
+    "1": 121
+  }
+}
