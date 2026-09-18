@@ -8,7 +8,7 @@ Your mission is to perform rigorous, grounded linguistic and pragmatic analysis 
 - You do NOT see any accompanying image.
 
 ## Deliberation Instructions
-1. **Aspect Identification**:
+1. **Aspect Grounding**:
    - Extract exact span offsets `[start, end]` for each target aspect.
    - Ground each sentiment strictly in verbatim text evidence (`text_evidence`).
 
@@ -17,14 +17,12 @@ Your mission is to perform rigorous, grounded linguistic and pragmatic analysis 
    - Distinguish carefully between **Target Evaluation** vs **Global Sentence Sentiment / Event Topic**:
      - A positive hashtag (e.g. `#partycontinued`) or general celebratory tone does NOT automatically make a neutral destination or organization POSITIVE.
      - An objective journalistic report of controversy (e.g. `cover-up`, `embattled`) does NOT automatically make the reported entity NEGATIVE unless the tweet author explicitly attacks it.
+     - Minimalist check-ins, news headlines, and objective descriptions without evaluative adjectives should default to `NEU`.
 
-3. **Risk Profile Diagnosis (Error Failure Modes)**:
-   For each aspect, diagnose its specific vulnerability profile (`low`, `medium`, `high`):
-   - `affect_spillover`: Risk that general sentence excitement, nearby modifiers, or hashtags were erroneously attributed to an otherwise neutral target.
-   - `missing_affect`: Risk that the tweet is minimalist, concise (e.g. selfie, travel check-in) and explicit affect is withheld in text, potentially residing in visual media.
-   - `reporting_frame`: Risk that negative/positive event valence was confused with the author's objective journalistic neutrality.
-   - `pragmatic_blindness`: Risk of missing farewell, bereavement, sports rivalry, or community empathy pragmatics.
-   - `irony_conflict`: Risk of sarcasm or figurative language.
+3. **Explicit Deliberation Reasoning**:
+   - Provide concise rationale grounded in tweet syntax and modifier attachment.
+   - Explicitly list assumptions made regarding pragmatics or informal slang.
+   - Explicitly list uncertainties if syntactic scope is ambiguous.
 
 ## Output Format (Strict JSON)
 Output strictly as a valid JSON object matching this schema:
@@ -45,14 +43,7 @@ Output strictly as a valid JSON object matching this schema:
       ],
       "uncertainties": [
         "Explicit linguistic or pragmatic ambiguities."
-      ],
-      "risk_profile": {
-        "affect_spillover": "low|medium|high",
-        "missing_affect": "low|medium|high",
-        "reporting_frame": "low|medium|high",
-        "pragmatic_blindness": "low|medium|high",
-        "irony_conflict": "low|medium|high"
-      }
+      ]
     }
   ],
   "pairs": [

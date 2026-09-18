@@ -28,7 +28,12 @@ from bacr.schemas_v3 import (
     TextRevisionAuditOutput,
     CTDecision,
     RevisionVerifierOutput,
-    CVDecision
+    CVDecision,
+    TextRiskAssessment,
+    VisualOpportunityAssessment,
+    RouteDecision,
+    RiskType,
+    RiskLevel
 )
 
 PROMPTS_DIR = os.path.join(os.path.dirname(__file__), "prompts", "v3")
@@ -44,9 +49,144 @@ class MetaController:
     def __init__(self, client: BaseClient):
         self.client = client
         self.prompt_diagnosis = load_prompt("controller_diagnosis.md")
+        self.prompt_text_risk = load_prompt("controller_text_risk.md")
+        self.prompt_visual_opportunity = load_prompt("controller_visual_opportunity.md")
+        self.prompt_router = load_prompt("controller_router.md")
         self.prompt_text_verifier = load_prompt("controller_text_verifier.md")
         self.prompt_firewall = load_prompt("controller_evidence_firewall.md")
         self.prompt_verifier = load_prompt("controller_revision_verifier.md")
+
+    def diagnose_text_risk(
+        self,
+        h_a: Dict[str, Any],
+        h_b: Optional[Dict[str, Any]] = None,
+        target_aspect_text: Optional[str] = None,
+        target_aspect_id: Optional[str] = None
+    ) -> Tuple[Dict[str, Any], Dict[str, int], float]:
+        """C_T^risk: Purely textual risk diagnosis without any visual cues (strictly physically decoupled)."""
+        current_baseline = h_b or h_a
+        target_label = target_aspect_text or target_aspect_id or "Target Aspect"
+        user_prompt = (
+            f'Target Aspect: "{target_label}"\n\n'
+            f'Text Anchor Hypothesis (H_A):\n{json.dumps(h_a, ensure_ascii=False, indent=2)}\n\n'
+            f'Current Text Baseline (H_B):\n{json.dumps(current_baseline, ensure_ascii=False, indent=2)}\n\n'
+            f'Diagnose linguistic and syntactic error risks for "{target_label}" and output valid JSON.'
+        )
+        res, usage, lat = self.client.call_text(
+            system_prompt=self.prompt_text_risk,
+            user_prompt=user_prompt
+        )
+        if not isinstance(res, dict):
+            res = {}
+        risk_type_str = str(res.get("risk_type", "NO_RISK")).upper().strip()
+        risk_level_str = str(res.get("risk_level", "LOW")).upper().strip()
+        basis_str = str(res.get("basis", ""))
+
+        valid_types = [r.value for r in RiskType]
+        if risk_type_str not in valid_types:
+            risk_type_str = "UNKNOWN"
+        valid_levels = [r.value for r in RiskLevel]
+        if risk_level_str not in valid_levels:
+            risk_level_str = "LOW"
+
+        assessment = TextRiskAssessment(
+            risk_type=RiskType(risk_type_str),
+            risk_level=RiskLevel(risk_level_str),
+            basis=basis_str
+        )
+        return assessment.model_dump(), usage, lat
+
+    def assess_visual_opportunity(
+        self,
+        target_aspect_text: str,
+        v_0: Dict[str, Any]
+    ) -> Tuple[Dict[str, Any], Dict[str, int], float]:
+        """C_V^opp: Physical visual opportunity assessment without sentiment hypotheses."""
+        user_prompt = (
+            f'Target Aspect: "{target_aspect_text}"\n\n'
+            f'Global Visual Sketch (V_0):\n{json.dumps(v_0, ensure_ascii=False, indent=2)}\n\n'
+            f'Assess physical visual opportunity for "{target_aspect_text}" and output valid JSON.'
+        )
+        res, usage, lat = self.client.call_text(
+            system_prompt=self.prompt_visual_opportunity,
+            user_prompt=user_prompt
+        )
+        if not isinstance(res, dict):
+            res = {}
+        opp_type = str(res.get("opportunity_type", "NO_OPPORTUNITY")).upper().strip()
+        tgt_vis = bool(res.get("target_visible", False))
+        basis_code = str(res.get("basis_code", "GENERIC_DECORATIVE")).upper().strip()
+
+        assessment = VisualOpportunityAssessment(
+            opportunity_type=opp_type,
+            target_visible=tgt_vis,
+            basis_code=basis_code
+        )
+        return assessment.model_dump(), usage, lat
+
+    def route_action(
+        self,
+        text_risk: Dict[str, Any],
+        visual_opportunity: Dict[str, Any],
+        history: Optional[List[Dict[str, Any]]] = None,
+        budget: int = 2,
+        action_mask: Optional[List[str]] = None,
+        pending_visual_gap: Optional[str] = None
+    ) -> Tuple[Dict[str, Any], Dict[str, int], float]:
+        """C_R: Discrete routing given decoupled risk, opportunity, history, and budget."""
+        valid_actions = action_mask or [a.value for a in ControllerAction]
+        hist_str = json.dumps(history, ensure_ascii=False, indent=2) if history else "None (Round 0)"
+        gap_str = f'Pending Visual Gap: "{pending_visual_gap}"' if pending_visual_gap else "Pending Visual Gap: None"
+
+        user_prompt = (
+            f'Textual Risk Assessment (R_T):\n{json.dumps(text_risk, ensure_ascii=False, indent=2)}\n\n'
+            f'Visual Opportunity Assessment (O_V):\n{json.dumps(visual_opportunity, ensure_ascii=False, indent=2)}\n\n'
+            f'{gap_str}\n\n'
+            f'Interaction History:\n{hist_str}\n\n'
+            f'Remaining Budget: {budget}\n'
+            f'Action Mask (Permitted Actions): {valid_actions}\n\n'
+            f'Select discrete action and output valid JSON.'
+        )
+        res, usage, lat = self.client.call_text(
+            system_prompt=self.prompt_router,
+            user_prompt=user_prompt
+        )
+        if not isinstance(res, dict):
+            res = {}
+        act_str = str(res.get("action", "FINALIZE")).upper().strip()
+        if act_str not in valid_actions or budget <= 0:
+            act_str = ControllerAction.FINALIZE.value
+
+        decision = RouteDecision(
+            action=ControllerAction(act_str),
+            rationale=str(res.get("rationale", ""))
+        )
+        res_dict = decision.model_dump()
+        res_dict["action"] = decision.action.value
+        res_dict["query_type"] = res.get("query_type")
+        return res_dict, usage, lat
+
+    def generate_visual_question(
+        self,
+        target_aspect_text: str,
+        v_0: Optional[Dict[str, Any]] = None,
+        pending_gap: Optional[str] = None,
+        query_type: Optional[str] = None
+    ) -> str:
+        """Generates neutral, non-leading visual question grounded in the query_type taxonomy."""
+        if pending_gap:
+            return pending_gap
+        q_type = str(query_type or "FACIAL_EXPRESSION").upper().strip()
+        if "FACE" in q_type or "EXPRESSION" in q_type:
+            return f"What specific facial expression or emotion is displayed by {target_aspect_text}?"
+        elif "ACTION" in q_type or "GESTURE" in q_type:
+            return f"What physical action, pose, or interaction is {target_aspect_text} performing?"
+        elif "TEXT" in q_type or "SIGN" in q_type:
+            return f"What exact text, slogan, or logo associated with {target_aspect_text} is visible?"
+        elif "OBJECT" in q_type or "PRESENCE" in q_type:
+            return f"What is the physical condition and state of {target_aspect_text} in the scene?"
+        else:
+            return f"Describe the verifiable physical visual details and setting of {target_aspect_text}."
 
     def diagnose_risk(
         self,

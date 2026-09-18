@@ -248,14 +248,34 @@ def main():
         logger.info(f"Target samples remaining to process: {len(samples_to_run)} / {len(samples)}")
 
         # Initialize client & pipeline
-        m_info = model_config.get("model", {})
-        client = GeminiClient(
-            model=m_info.get("name", "gemini_3.8"),
-            base_url=m_info.get("base_url"),
-            thinking_level=m_info.get("thinking_level", "high"),
-            temperature=float(m_info.get("temperature", 0.1)),
-            allow_fallback=m_info.get("allow_fallback", False)
-        )
+        def create_client(cfg: Dict[str, Any]):
+            m_info = cfg.get("model", cfg)
+            provider = cfg.get("provider", m_info.get("provider", "gemini")).lower()
+            if provider in ["qwen", "openai", "vllm"]:
+                from bacr.client import OpenAICompatibleClient
+                return OpenAICompatibleClient(
+                    model=m_info.get("name", "Qwen/Qwen2.5-VL-7B-Instruct"),
+                    base_url=m_info.get("base_url", "http://localhost:8000/v1"),
+                    api_key=m_info.get("api_key", "EMPTY"),
+                    temperature=float(m_info.get("temperature", 0.1))
+                )
+            else:
+                return GeminiClient(
+                    model=m_info.get("name", "gemini_3.8"),
+                    base_url=m_info.get("base_url"),
+                    thinking_level=m_info.get("thinking_level", "high"),
+                    temperature=float(m_info.get("temperature", 0.1)),
+                    allow_fallback=m_info.get("allow_fallback", False)
+                )
+
+        client = create_client(model_config)
+
+        # Check for role-specific clients (e.g. Qwen for controller, Gemini for text)
+        roles_cfg = exp_config.get("experiment", {}).get("roles", {})
+        text_client = create_client(roles_cfg["text"]) if "text" in roles_cfg else client
+        controller_client = create_client(roles_cfg["controller"]) if "controller" in roles_cfg else client
+        vision_client = create_client(roles_cfg["vision"]) if "vision" in roles_cfg else client
+
         exp_ver = exp_config.get("experiment", {}).get("version", "") or exp_config.get("experiment", {}).get("type", "")
         is_v3 = (exp_ver == "bacr_v3" or "v3" in exp_name.lower())
 
@@ -270,7 +290,10 @@ def main():
                 run_id=run_id,
                 max_visual_probes=max_deep_actions,
                 budget_config=budget_cfg,
-                task_mode=task_mode
+                task_mode=task_mode,
+                text_client=text_client,
+                controller_client=controller_client,
+                vision_client=vision_client
             )
             logger.info(f"Initialized BACRPipelineV3 (Task Mode={task_mode}, Budget={budget_cfg})")
         else:

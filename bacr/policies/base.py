@@ -76,13 +76,27 @@ class GeminiTeacherPolicy(BaseControllerPolicy):
             raise ValueError("GeminiTeacherPolicy requires either meta_controller or client.")
 
     def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        action_mask = state.get("action_mask", [a.value for a in ControllerAction])
+        target_aid = state.get("target_aspect_id")
+
+        # 1. Check for pending escalation or query-again recommendations from previous verifier turn
+        rec_action = state.get("recommended_next_action")
+        if rec_action and rec_action in action_mask:
+            q_gap = state.get("pending_visual_gap")
+            return {
+                "action": rec_action,
+                "target_aspect_id": target_aid,
+                "question_for_vision": q_gap,
+                "decision_reason": f"Following verifier recommendation: {rec_action}"
+            }
+
+        # 2. Standard risk diagnosis
         h_a = state.get("h_a", {})
         h_b = state.get("h_b", {})
         v0 = state.get("v_0", {})
         aspect_states = state.get("aspect_states", {})
         policy_history = state.get("policy_history", [])
         budget = state.get("budget", 2)
-        action_mask = state.get("action_mask", [a.value for a in ControllerAction])
 
         c_d, usage, lat = self.meta_controller.diagnose_risk(
             h_a=h_a,
@@ -100,12 +114,106 @@ class GeminiTeacherPolicy(BaseControllerPolicy):
         return c_d
 
 
+class DecoupledTeacherPolicy(BaseControllerPolicy):
+    """Teacher Policy executing Decoupled 3-stage control:
+    C_T^risk(H_A, H_B) -> C_V^opp(a, V_0) -> C_R(R_T, O_V, History, Budget)
+    """
+
+    def __init__(self, meta_controller=None, client: Optional[BaseClient] = None):
+        if meta_controller is not None:
+            self.meta_controller = meta_controller
+        elif client is not None:
+            from bacr.meta_controller import MetaController
+            self.meta_controller = MetaController(client)
+        else:
+            raise ValueError("DecoupledTeacherPolicy requires either meta_controller or client.")
+
+    def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        action_mask = state.get("action_mask", [a.value for a in ControllerAction])
+        target_aid = state.get("target_aspect_id")
+        target_asp = state.get("target_aspect", {})
+        target_text = target_asp.get("text", "") if isinstance(target_asp, dict) else str(target_asp)
+
+        # 1. Check for pending escalation recommendation
+        rec_action = state.get("recommended_next_action")
+        if rec_action and rec_action in action_mask:
+            q_gap = state.get("pending_visual_gap")
+            return {
+                "action": rec_action,
+                "target_aspect_id": target_aid,
+                "question_for_vision": q_gap,
+                "decision_reason": f"Following verifier recommendation: {rec_action}"
+            }
+
+        # 2. Decoupled Stage A: Purely Textual Risk Diagnosis (zero visual access)
+        h_a = state.get("h_a", {})
+        h_b = state.get("h_b", {})
+        text_risk, _, _ = self.meta_controller.diagnose_text_risk(
+            h_a=h_a,
+            h_b=h_b,
+            target_aspect_text=target_text,
+            target_aspect_id=target_aid
+        )
+
+        # 3. Decoupled Stage B: Physical Visual Opportunity (zero text hypotheses)
+        v0 = state.get("v_0", {})
+        visual_opp, _, _ = self.meta_controller.assess_visual_opportunity(
+            target_aspect_text=target_text,
+            v_0=v0
+        )
+
+        # 4. Decoupled Stage C: Discrete Routing
+        policy_history = state.get("policy_history", [])
+        budget = state.get("budget", 2)
+        pending_gap = state.get("pending_visual_gap")
+        route_dec, _, _ = self.meta_controller.route_action(
+            text_risk=text_risk,
+            visual_opportunity=visual_opp,
+            history=policy_history,
+            budget=budget,
+            action_mask=action_mask,
+            pending_visual_gap=pending_gap
+        )
+
+        chosen_action = route_dec.get("action", ControllerAction.FINALIZE.value)
+        out_dict = {
+            "action": chosen_action,
+            "target_aspect_id": target_aid,
+            "text_risk": text_risk,
+            "visual_opportunity": visual_opp,
+            "decision_reason": route_dec.get("rationale", "")
+        }
+
+        if chosen_action == ControllerAction.TEXT_RETHINK.value:
+            out_dict["critique_for_text"] = None  # Will be generated or populated
+        elif chosen_action == ControllerAction.VISION_PROBE.value:
+            out_dict["query_type"] = route_dec.get("query_type")
+            out_dict["question_for_vision"] = self.meta_controller.generate_visual_question(
+                target_aspect_text=target_text,
+                v_0=v0,
+                pending_gap=pending_gap,
+                query_type=route_dec.get("query_type")
+            )
+
+        return out_dict
+
+
 class RulePolicy(BaseControllerPolicy):
     """Rule-based baseline: probes vision for active neutral aspects, otherwise finalizes."""
 
     def act(self, state: Dict[str, Any]) -> Dict[str, Any]:
         action_mask = state.get("action_mask", [ControllerAction.FINALIZE.value])
         aspect_states = state.get("aspect_states", {})
+        target_aid = state.get("target_aspect_id") or (list(aspect_states.keys())[0] if aspect_states else "a_01")
+
+        rec_action = state.get("recommended_next_action")
+        if rec_action and rec_action in action_mask:
+            return {
+                "action": rec_action,
+                "target_aspect_id": target_aid,
+                "question_for_vision": state.get("pending_visual_gap"),
+                "decision_reason": f"Following recommendation: {rec_action}"
+            }
 
         if ControllerAction.VISION_PROBE.value in action_mask and aspect_states:
             # Probe first active neutral aspect

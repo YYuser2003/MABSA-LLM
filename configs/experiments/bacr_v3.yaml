@@ -3,6 +3,10 @@ experiment:
   version: bacr_v3
   type: bacr_v3
   description: "BACR-v3: Text Anchor + Risk Diagnosis + Evidence Firewall + Selective Deliberation"
+  task:
+    mode: target_guided
+    gold_aspects: true
+    single_aspect: true
   model_config: configs/models/gemini.yaml
   dataset_config: configs/datasets/twitter15.yaml
   budget:

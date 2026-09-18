@@ -69,7 +69,8 @@ class CTDecision(str, Enum):
 class CVDecision(str, Enum):
     ACCEPT_REVISION = "ACCEPT_REVISION"
     REVERT_TEXT_BASELINE = "REVERT_TEXT_BASELINE"
-    QUERY_AGAIN = "QUERY_AGAIN"
+    NEED_MORE_EVIDENCE = "NEED_MORE_EVIDENCE"
+    QUERY_AGAIN = "NEED_MORE_EVIDENCE"
     # Legacy aliases
     REVERT_ANCHOR = "REVERT_TEXT_BASELINE"
     REJECT_REVISION = "REVERT_TEXT_BASELINE"
@@ -147,6 +148,43 @@ class TextAnchorLedger(BaseModel):
 
 # Alias
 StructuredReasoningLedger = TextAnchorLedger
+
+
+class TargetAspect(BaseModel):
+    aspect_uid: str
+    text: str
+    span: List[int] = Field(default_factory=lambda: [0, 0])
+
+
+class TextRiskAssessment(BaseModel):
+    risk_type: RiskType = RiskType.NO_RISK
+    risk_level: RiskLevel = RiskLevel.LOW
+    basis: str = ""  # Purely textual/syntactic error mechanism (zero visual cues)
+
+
+class VisualOpportunityAssessment(BaseModel):
+    opportunity_type: str = "NO_OPPORTUNITY"
+    target_visible: bool = False
+    basis_code: str = ""  # TARGET_PRESENT, FACE_SMILING, OBJECT_CLEAR, GENERIC_DECORATIVE
+
+
+class RouteDecision(BaseModel):
+    action: ControllerAction = ControllerAction.FINALIZE
+    rationale: str = ""
+    target_aspect_id: Optional[str] = None
+
+
+class AspectEpisodeState(BaseModel):
+    sample_id: str
+    target_aspect: TargetAspect
+    anchor_sentiment: str = "NEU"
+    baseline_sentiment: str = "NEU"
+    current_candidate: Optional[str] = None
+    accepted_evidence: List[str] = Field(default_factory=list)
+    pending_visual_gap: Optional[str] = None
+    recommended_next_action: Optional[str] = None
+    action_history: List[str] = Field(default_factory=list)
+    status: str = "ACTIVE"  # ACTIVE, VERIFIED, FINALIZED
 
 
 class AspectState(BaseModel):
@@ -319,6 +357,7 @@ class EvidenceFirewallOutput(BaseModel):
 class EvidenceProbeItem(BaseModel):
     probe_id: str
     question: str
+    query_type: str = "GENERAL"  # FACIAL_EXPRESSION, ACTION_STATE, OBJECT_PRESENCE, SCENE_CONTEXT
     status: EvidenceStatus = EvidenceStatus.INVALID
     target_binding: TargetBinding = TargetBinding.UNBOUND
     relevance: RelevanceLevel = RelevanceLevel.LOW
@@ -399,8 +438,8 @@ class RevisionVerifierOutput(BaseModel):
             raw_dec = str(data.get("decision", "")).upper().strip()
             if raw_dec in ["ACCEPT_REVISION", "CERTIFY", "ACCEPT"]:
                 dec = CVDecision.ACCEPT_REVISION
-            elif raw_dec == "QUERY_AGAIN":
-                dec = CVDecision.QUERY_AGAIN
+            elif raw_dec in ["NEED_MORE_EVIDENCE", "QUERY_AGAIN"]:
+                dec = CVDecision.NEED_MORE_EVIDENCE
             else:
                 dec = CVDecision.REVERT_TEXT_BASELINE
 

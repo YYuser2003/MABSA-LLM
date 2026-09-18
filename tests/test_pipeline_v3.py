@@ -36,7 +36,9 @@ from bacr.schemas_v3 import (
     AspectState,
     TransitionRecord,
     TaskMode,
-    BudgetState
+    BudgetState,
+    TargetAspect,
+    AspectEpisodeState
 )
 from bacr.text_reasoner import TextReasoner
 from bacr.meta_controller import MetaController
@@ -44,7 +46,12 @@ from bacr.vision_sensor import VisionSensor
 from bacr.pipeline_v3 import BACRPipelineV3
 from bacr.evaluator import evaluate_v3_trajectories
 from bacr.env import BACREnv
-from bacr.policies.base import GeminiTeacherPolicy, RulePolicy, RandomPolicy
+from bacr.policies.base import (
+    GeminiTeacherPolicy,
+    DecoupledTeacherPolicy,
+    RulePolicy,
+    RandomPolicy
+)
 
 
 class MockClient:
@@ -131,6 +138,31 @@ class MockClient:
                     "question_for_vision": "Is Obama smiling or showing celebration in the photo?",
                     "decision_reason": "Visual inspection allocated."
                 }, {"total_tokens": 20}, 0.05
+
+        # 2B. Decoupled C_T^risk Text Risk Auditor
+        elif "Textual Risk Auditor" in system_prompt or "Diagnose linguistic and syntactic error risks" in user_prompt:
+            return {
+                "risk_type": "AFFECT_SPILLOVER",
+                "risk_level": "MEDIUM",
+                "basis": "Sentence excitement may not attach to target aspect."
+            }, {"total_tokens": 15}, 0.05
+
+        # 2C. Decoupled C_V^opp Visual Opportunity Assessor
+        elif "Visual Opportunity Assessor" in system_prompt or "Assess physical visual opportunity" in user_prompt:
+            return {
+                "opportunity_type": "FACIAL_EXPRESSION",
+                "target_visible": True,
+                "basis_code": "FACE_SMILING"
+            }, {"total_tokens": 15}, 0.05
+
+        # 2D. Decoupled C_R Discrete Router
+        elif "Discrete Routing Controller" in system_prompt or "Select discrete action" in user_prompt:
+            action = self.step_action_sequence.pop(0) if self.step_action_sequence else self.override_action
+            return {
+                "action": action,
+                "rationale": "Selected based on decoupled risk and visual opportunity.",
+                "query_type": "FACIAL_EXPRESSION"
+            }, {"total_tokens": 15}, 0.05
 
         # 3. C_Q^T Critique Generator (Physically Decoupled)
         elif "Linguistic Auditor" in system_prompt:
@@ -659,6 +691,152 @@ def test_isomorphic_pipeline_and_env():
     print("Passed test_isomorphic_pipeline_and_env!")
 
 
+def test_single_aspect_factoring_and_aggregation():
+    print("--- Running test_single_aspect_factoring_and_aggregation ---")
+    client = MockClient()
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_multi_01",
+        "text": "Obama and Biden attend the celebration event",
+        "image": "dummy.jpg",
+        "pairs": [["Obama", "POS"], ["Biden", "NEU"]]
+    }
+    traj = pipeline.run_sample(sample)
+
+    assert "aspect_trajectories" in traj
+    assert len(traj["aspect_trajectories"]) == 2
+    assert len(traj["final_pairs"]) == 2
+    pred_map = {p[0]: p[1] for p in traj["final_pairs"]}
+    assert "Obama" in pred_map
+    assert "Biden" in pred_map
+    print("Passed test_single_aspect_factoring_and_aggregation!")
+
+
+def test_controller_physical_decoupling():
+    print("--- Running test_controller_physical_decoupling ---")
+    client = MockClient()
+    mc = MetaController(client)
+
+    # 1. diagnose_text_risk MUST NOT contain visual cues
+    h_a = {"aspects": [{"text": "Obama", "sentiment": "POS"}]}
+    h_b = {"aspects": [{"text": "Obama", "sentiment": "POS"}]}
+    t_risk, _, _ = mc.diagnose_text_risk(h_a=h_a, h_b=h_b, target_aspect_text="Obama")
+    assert "risk_type" in t_risk
+
+    t_risk_calls = [p[1] for p in client.call_history if "Textual Risk Auditor" in p[0]]
+    assert len(t_risk_calls) > 0
+    assert "Global Visual Sketch" not in t_risk_calls[0]
+    assert "V_0" not in t_risk_calls[0]
+
+    # 2. assess_visual_opportunity MUST NOT contain text sentiment hypotheses
+    v_0 = {"scene": "press conference", "objects": ["podium", "flag"]}
+    v_opp, _, _ = mc.assess_visual_opportunity(target_aspect_text="Obama", v_0=v_0)
+    assert "opportunity_type" in v_opp
+
+    v_opp_calls = [p[1] for p in client.call_history if "Visual Opportunity Assessor" in p[0]]
+    assert len(v_opp_calls) > 0
+    assert "Text Anchor" not in v_opp_calls[0]
+    assert "Text Baseline" not in v_opp_calls[0]
+    assert "H_A" not in v_opp_calls[0]
+    assert "H_B" not in v_opp_calls[0]
+
+    # 3. route_action operates on discrete decoupled inputs
+    route, _, _ = mc.route_action(
+        text_risk=t_risk,
+        visual_opportunity=v_opp,
+        budget=2,
+        action_mask=["FINALIZE", "TEXT_RETHINK", "VISION_PROBE"]
+    )
+    assert route["action"] in ["FINALIZE", "TEXT_RETHINK", "VISION_PROBE"]
+    print("Passed test_controller_physical_decoupling!")
+
+
+def test_non_cascading_transition_invariant():
+    print("--- Running test_non_cascading_transition_invariant ---")
+    client = MockClient()
+    client.call_history = []
+    env = BACREnv(client=client, budget_config={"max_deep_actions": 2, "max_text_rethinks": 1, "max_visual_probes": 2})
+
+    sample = {
+        "sample_id": "test_no_cascade",
+        "text": "Obama gave remarks at memorial",
+        "image": "dummy.jpg",
+        "pairs": [["Obama", "NEU"]]
+    }
+    state = env.reset(sample)
+
+    orig_call_text = client.call_text
+    def ct_escalate_call(system_prompt="", user_prompt="", **kwargs):
+        if "(CT) Prompt" in system_prompt or "Audit whether the linguistic revision" in user_prompt:
+            return {
+                "decision": "ESCALATE_TO_VISION",
+                "visual_gap": "Check Obama facial expressions at podium",
+                "target_aspect_id": "a_01"
+            }, {"total_tokens": 15}, 0.05
+        return orig_call_text(system_prompt=system_prompt, user_prompt=user_prompt, **kwargs)
+
+    client.call_text = ct_escalate_call
+
+    # Step 1: TEXT_RETHINK
+    vision_calls_before = env.compute["api_calls_vision"]
+    s1, r1, done1, info1 = env.step("TEXT_RETHINK")
+
+    # Invariant: Must NOT auto-cascade! env.step() returns immediately with pending_visual_gap
+    assert s1["pending_visual_gap"] == "Check Obama facial expressions at podium"
+    assert s1["recommended_next_action"] == "VISION_PROBE"
+    assert env.compute["api_calls_vision"] == vision_calls_before  # Zero vision invocations during text rethink!
+    assert len(env.transitions) == 1
+    assert env.transitions[0]["action"] == "TEXT_RETHINK"
+
+    # Step 2: Policy takes recommended VISION_PROBE
+    s2, r2, done2, info2 = env.step("VISION_PROBE")
+    assert env.compute["api_calls_vision"] > vision_calls_before  # Now vision was called
+    assert len(env.transitions) == 2
+    assert env.transitions[1]["action"] == "VISION_PROBE"
+    assert s2["pending_visual_gap"] is None  # Gap was consumed
+    print("Passed test_non_cascading_transition_invariant!")
+
+
+def test_anchor_relative_asymmetric_reward():
+    print("--- Running test_anchor_relative_asymmetric_reward ---")
+    client = MockClient()
+    env = BACREnv(client=client)
+
+    sample = {
+        "sample_id": "test_rew_01",
+        "text": "Great event # news",
+        "image": "dummy.jpg",
+        "pairs": [["Obama", "NEU"]]
+    }
+    env.reset(sample)
+
+    # 1. Rescued: anchor was POS (wrong), final is NEU (correct) -> +1.0
+    env.aspect_episode_state.anchor_sentiment = "POS"
+    env.aspect_episode_state.baseline_sentiment = "NEU"
+    r_rescue = env._calculate_final_reward()
+    assert r_rescue == 1.0, f"Expected 1.0 for rescue, got {r_rescue}"
+
+    # 2. Harmed: anchor was NEU (correct), final is POS (wrong) -> -1.5
+    env.aspect_episode_state.anchor_sentiment = "NEU"
+    env.aspect_episode_state.baseline_sentiment = "POS"
+    r_harm = env._calculate_final_reward()
+    assert r_harm == -1.5, f"Expected -1.5 for harm, got {r_harm}"
+
+    # 3. Maintained correct: anchor was NEU (correct), final is NEU (correct) -> 1.0
+    env.aspect_episode_state.anchor_sentiment = "NEU"
+    env.aspect_episode_state.baseline_sentiment = "NEU"
+    r_correct = env._calculate_final_reward()
+    assert r_correct == 1.0, f"Expected 1.0 for maintained correct, got {r_correct}"
+
+    # 4. Remained incorrect: anchor was POS (wrong), final is NEG (wrong) -> -0.5
+    env.aspect_episode_state.anchor_sentiment = "POS"
+    env.aspect_episode_state.baseline_sentiment = "NEG"
+    r_wrong = env._calculate_final_reward()
+    assert r_wrong == -0.5, f"Expected -0.5 for remained incorrect, got {r_wrong}"
+    print("Passed test_anchor_relative_asymmetric_reward!")
+
+
 if __name__ == "__main__":
     test_v3_schemas_and_fail_closed_contract()
     test_physical_and_semantic_critique_firewall()
@@ -673,7 +851,12 @@ if __name__ == "__main__":
     test_monotonic_step_counter()
     test_budget_state_action_mask()
     test_isomorphic_pipeline_and_env()
+    # New Stage 3 Invariant Tests
+    test_single_aspect_factoring_and_aggregation()
+    test_controller_physical_decoupling()
+    test_non_cascading_transition_invariant()
+    test_anchor_relative_asymmetric_reward()
     print("\n==========================================================================")
-    print("  ALL 12 COMPREHENSIVE BACR-v3 HARDENING & ISOMORPHISM TESTS PASSED 100%!")
+    print("  ALL 16 COMPREHENSIVE BACR-v3 HARDENING & STAGE 3 TESTS PASSED 100%!")
     print("==========================================================================")
 
