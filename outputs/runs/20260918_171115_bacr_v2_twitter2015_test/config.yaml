@@ -1,0 +1,56 @@
+cli_args:
+  concurrency: null
+  config: configs/experiments/bacr_v2.yaml
+  dataset: twitter2015
+  limit: null
+  resume: null
+  seed: 42
+  split: test
+  tag: null
+dataset:
+  dataset:
+    data_dir: data/processed
+    image_base_dir: .
+    manifest_prefix: tw15
+    manifests:
+      dev: data/manifests/tw15_dev.jsonl
+      test: data/manifests/tw15_test.jsonl
+    name: twitter2015
+    splits:
+      dev: data/processed/twitter2015_dev.jsonl
+      test: data/processed/twitter2015_test.jsonl
+      train: data/processed/twitter2015_train.jsonl
+date: '2026-09-18T17:11:15.125091'
+experiment:
+  experiment:
+    aspect_lock: true
+    canonical_t0: true
+    canonical_v0: true
+    concurrency: 6
+    controller:
+      controller_sees_raw_modalities: false
+      directions:
+      - VISUAL
+      - TEXT
+      - STOP
+      early_stopping: true
+      gap_diagnosis_enabled: true
+      max_queries: 2
+      policy: hierarchical_gap_diagnosis
+    dataset_config: configs/datasets/twitter15.yaml
+    description: 'BACR-v2: Decoupled Meta-Cognitive Controller observing compressed
+      cognitive sketches (R_T^sketch, R_V^sketch) with zero raw modality access and
+      hierarchical gap diagnosis.'
+    model_config: configs/models/gemini.yaml
+    name: bacr_v2
+    type: bidirectional_active_crossmodal_reasoning_v2
+model:
+  model:
+    allow_fallback: false
+    base_url: http://10.60.80.119:20128
+    name: gemini_3.8
+    provider: gemini
+    temperature: 0.1
+    thinking_level: high
+    timeout: 90
+run_id: 20260918_171115_bacr_v2_twitter2015_test

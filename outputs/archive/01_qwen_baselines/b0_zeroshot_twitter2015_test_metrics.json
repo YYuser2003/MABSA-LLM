@@ -1,0 +1,12 @@
+{
+  "pair_precision": 34.09,
+  "pair_recall": 15.91,
+  "pair_f1": 21.7,
+  "aspect_precision": 52.07,
+  "aspect_recall": 24.3,
+  "aspect_f1": 33.14,
+  "sentiment_acc_on_matched": 65.48,
+  "tp_pair": 165,
+  "fp_pair": 319,
+  "fn_pair": 872
+}

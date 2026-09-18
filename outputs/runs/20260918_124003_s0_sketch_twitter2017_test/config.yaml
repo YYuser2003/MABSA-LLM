@@ -1,0 +1,45 @@
+cli_args:
+  concurrency: 6
+  config: configs/experiments/s0_sketch.yaml
+  dataset: twitter2017
+  limit: null
+  seed: 42
+  split: test
+  tag: null
+dataset:
+  dataset:
+    data_dir: data/processed
+    image_base_dir: .
+    manifest_prefix: tw17
+    manifests:
+      dev: data/manifests/tw17_dev.jsonl
+      test: data/manifests/tw17_test.jsonl
+    name: twitter2017
+    splits:
+      dev: data/processed/twitter2017_dev.jsonl
+      test: data/processed/twitter2017_test.jsonl
+      train: data/processed/twitter2017_train.jsonl
+date: '2026-09-18T12:40:03.136787'
+experiment:
+  experiment:
+    aspect_lock: true
+    canonical_t0: true
+    canonical_v0: true
+    concurrency: 4
+    controller:
+      early_stopping: true
+      max_queries: 0
+    dataset_config: configs/datasets/twitter15.yaml
+    model_config: configs/models/gemini.yaml
+    name: s0_sketch
+    type: global_sketch_only
+model:
+  model:
+    allow_fallback: false
+    base_url: http://10.60.80.119:20128
+    name: gemini_3.8
+    provider: gemini
+    temperature: 0.1
+    thinking_level: high
+    timeout: 90
+run_id: 20260918_124003_s0_sketch_twitter2017_test

@@ -1,0 +1,69 @@
+{
+  "model_type": "b0",
+  "condition": "text_only",
+  "dataset": "twitter2017",
+  "split": "test",
+  "total_samples": 587,
+  "pair_metrics": {
+    "pair_precision": 42.06,
+    "pair_recall": 10.94,
+    "pair_f1": 17.36,
+    "aspect_precision": 57.01,
+    "aspect_recall": 14.83,
+    "aspect_f1": 23.54,
+    "sentiment_acc_on_matched": 73.77,
+    "tp_pair": 135,
+    "fp_pair": 186,
+    "fn_pair": 1099
+  },
+  "tsc_metrics": {
+    "all_gold_aspects_tsc": {
+      "accuracy": 11.05,
+      "macro_f1": 23.35,
+      "class_metrics": {
+        "POS": {
+          "precision": 84.0,
+          "recall": 17.18,
+          "f1-score": 28.52,
+          "support": 489
+        },
+        "NEG": {
+          "precision": 73.77,
+          "recall": 26.95,
+          "f1-score": 39.47,
+          "support": 167
+        },
+        "NEU": {
+          "precision": 27.27,
+          "recall": 1.06,
+          "f1-score": 2.04,
+          "support": 566
+        }
+      }
+    },
+    "matched_aspects_tsc": {
+      "accuracy": 73.77,
+      "macro_f1": 61.76,
+      "class_metrics": {
+        "POS": {
+          "precision": 84.0,
+          "recall": 86.6,
+          "f1-score": 85.28,
+          "support": 97
+        },
+        "NEG": {
+          "precision": 73.77,
+          "recall": 80.36,
+          "f1-score": 76.92,
+          "support": 56
+        },
+        "NEU": {
+          "precision": 27.27,
+          "recall": 20.0,
+          "f1-score": 23.08,
+          "support": 30
+        }
+      }
+    }
+  }
+}

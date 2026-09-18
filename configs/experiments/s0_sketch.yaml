@@ -1,0 +1,12 @@
+experiment:
+  name: s0_sketch
+  type: global_sketch_only
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  controller:
+    max_queries: 0
+    early_stopping: true
+  aspect_lock: true
+  canonical_t0: true
+  canonical_v0: true
+  concurrency: 4

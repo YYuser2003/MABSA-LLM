@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bacr"
+version = "1.2.0"
+description = "Bidirectional Active Cross-Modal Reasoning for Multimodal Aspect-Based Sentiment Analysis"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.28.0",
+    "Pillow>=9.0.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0.0"
+]
+
+[tool.setuptools.packages.find]
+include = ["bacr*", "active_visual_reasoning*"]

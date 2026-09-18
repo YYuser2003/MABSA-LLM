@@ -1,0 +1,62 @@
+{
+  "total_samples": 6,
+  "total_gold_aspects": 6,
+  "end_to_end_metrics": {
+    "pair_precision": 50.0,
+    "pair_recall": 66.67,
+    "pair_f1": 57.14,
+    "aspect_f1": 71.43,
+    "cond_sent_acc": 80.0
+  },
+  "locked_aspect_metrics": {
+    "pair_precision": 50.0,
+    "pair_recall": 80.0,
+    "pair_f1": 61.54,
+    "sent_acc_locked": 80.0
+  },
+  "initial_g0_r_metrics": {
+    "pair_precision": 50.0,
+    "pair_recall": 66.67,
+    "pair_f1": 57.14
+  },
+  "delta_f1_over_g0_r": 0.0,
+  "anq": 0.0,
+  "gpq": 0.0,
+  "bfsr_percent": 0.0,
+  "vinb_percent": 0.0,
+  "stop_type_distribution": {
+    "natural_stop": 6,
+    "budget_forced_stop": 0
+  },
+  "aspect_level_diagnostics": {
+    "err_sent_percent": 0.0,
+    "hrr_sent_percent": 0.0,
+    "vng_sent_net_gain": 0,
+    "vinb_percent": 0.0,
+    "asp_wc_recovery": 0,
+    "asp_cw_harmful": 0,
+    "asp_cc_maintained": 4,
+    "asp_ww_unresolved": 1
+  },
+  "sample_level_diagnostics": {
+    "err_sample_percent": 0.0,
+    "hrr_sample_percent": 0.0,
+    "vng_sample_net_gain": 0,
+    "sample_wc_recovery": 0,
+    "sample_cw_harmful": 0,
+    "sample_cc_maintained": 3,
+    "sample_ww_unresolved": 3
+  },
+  "compute_efficiency": {
+    "has_compute_info": true,
+    "avg_api_calls": 3.0,
+    "avg_tokens": 12793.0,
+    "avg_image_invocations": 1.0,
+    "avg_latency_s": 37.91,
+    "f1_per_api_call": 19.05,
+    "f1_per_1k_tokens": 4.47,
+    "f1_per_image_invocation": 57.14
+  },
+  "taxonomy_distribution": {},
+  "taxonomy_recoveries": {}
+}

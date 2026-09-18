@@ -1,0 +1,100 @@
+{
+  "total_samples": 587,
+  "total_gold_aspects": 1234,
+  "end_to_end_metrics": {
+    "pair_precision": 70.29,
+    "pair_recall": 70.18,
+    "pair_f1": 70.24,
+    "aspect_f1": 100.0,
+    "cond_sent_acc": 70.21
+  },
+  "locked_aspect_metrics": {
+    "pair_precision": 70.29,
+    "pair_recall": 70.18,
+    "pair_f1": 70.24,
+    "sent_acc_locked": 70.21
+  },
+  "initial_g0_r_metrics": {
+    "pair_precision": 70.29,
+    "pair_recall": 70.18,
+    "pair_f1": 70.24
+  },
+  "delta_f1_over_g0_r": 0.0,
+  "anq": 0.0,
+  "gpq": 0.0,
+  "bfsr_percent": 0.0,
+  "vinb_percent": 0.0,
+  "stop_type_distribution": {
+    "natural_stop": 587,
+    "budget_forced_stop": 0
+  },
+  "aspect_level_diagnostics": {
+    "err_sent_percent": 0.0,
+    "hrr_sent_percent": 0.0,
+    "vng_sent_net_gain": 0,
+    "vinb_percent": 0.0,
+    "asp_wc_recovery": 0,
+    "asp_cw_harmful": 0,
+    "asp_cc_maintained": 858,
+    "asp_ww_unresolved": 364
+  },
+  "sample_level_diagnostics": {
+    "err_sample_percent": 0.0,
+    "hrr_sample_percent": 0.0,
+    "vng_sample_net_gain": 0,
+    "sample_wc_recovery": 0,
+    "sample_cw_harmful": 0,
+    "sample_cc_maintained": 320,
+    "sample_ww_unresolved": 267
+  },
+  "compute_efficiency": {
+    "avg_api_calls": 0.0,
+    "avg_image_invocations": 0.0,
+    "avg_tokens": 0.0,
+    "avg_latency_s": 0.0
+  },
+  "tsc_benchmark_metrics": {
+    "accuracy_final": 70.21,
+    "macro_f1_final": 69.53,
+    "accuracy_init": 70.21,
+    "macro_f1_init": 69.53,
+    "delta_accuracy": 0.0,
+    "delta_macro_f1": 0.0,
+    "class_metrics_final": {
+      "POS": {
+        "precision": 74.88,
+        "recall": 62.78,
+        "f1-score": 68.3
+      },
+      "NEG": {
+        "precision": 74.47,
+        "recall": 62.87,
+        "f1-score": 68.18
+      },
+      "NEU": {
+        "precision": 66.47,
+        "recall": 78.8,
+        "f1-score": 72.11
+      }
+    },
+    "class_metrics_init": {
+      "POS": {
+        "precision": 74.88,
+        "recall": 62.78,
+        "f1-score": 68.3
+      },
+      "NEG": {
+        "precision": 74.47,
+        "recall": 62.87,
+        "f1-score": 68.18
+      },
+      "NEU": {
+        "precision": 66.47,
+        "recall": 78.8,
+        "f1-score": 72.11
+      }
+    }
+  },
+  "taxonomy_distribution": {},
+  "taxonomy_recoveries": {}
+}

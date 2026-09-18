@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InitialObservationSchema",
+  "description": "Schemas for Text Initial (T0 / R_T^{sketch}) and Vision Initial (V0 / R_V^{sketch}) observations.",
+  "definitions": {
+    "TextInitial": {
+      "type": "object",
+      "properties": {
+        "aspects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "aspect_id": { "type": "string" },
+              "text": { "type": "string" },
+              "span": { "type": "array", "items": { "type": "integer" } },
+              "sentiment": { "type": "string", "enum": ["POS", "NEG", "NEU"] },
+              "reason": { "type": "string" },
+              "evidence_spans": { "type": "array", "items": { "type": "string" } },
+              "linguistic_flags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "sarcasm_irony",
+                    "ambiguous_slang",
+                    "coreference",
+                    "negation_scope",
+                    "modifier_scope",
+                    "polysemy",
+                    "comparative_scope",
+                    "aspect_conflict"
+                  ]
+                }
+              },
+              "unresolved_issue": { "type": ["string", "null"] }
+            },
+            "required": ["aspect_id", "text", "span", "sentiment"]
+          }
+        },
+        "pairs": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "linguistic_flags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["aspects", "pairs"]
+    },
+    "VisionInitial": {
+      "type": "object",
+      "properties": {
+        "scene": { "type": "string" },
+        "description": { "type": "string" },
+        "possible_entities": { "type": "array" },
+        "entity_candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "support": { "type": "string" },
+              "certainty": { "type": "string", "enum": ["low", "medium", "high"] }
+            },
+            "required": ["name"]
+          }
+        },
+        "ocr": { "type": "array", "items": { "type": "string" } },
+        "salient_visual_cues": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["scene", "description", "salient_visual_cues"]
+    }
+  }
+}

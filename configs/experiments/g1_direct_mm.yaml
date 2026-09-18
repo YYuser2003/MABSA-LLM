@@ -1,0 +1,7 @@
+experiment:
+  name: g1_direct_mm
+  type: direct_multimodal
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  aspect_lock: true
+  concurrency: 4

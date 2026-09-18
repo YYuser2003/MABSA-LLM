@@ -1,0 +1,16 @@
+experiment:
+  name: bacr_fixed_tv
+  type: bidirectional_active_crossmodal_reasoning
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  controller:
+    policy: fixed_order
+    sequence:
+      - TEXT
+      - VISUAL
+    max_queries: 2
+    early_stopping: false
+  aspect_lock: true
+  canonical_t0: true
+  canonical_v0: true
+  concurrency: 4

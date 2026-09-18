@@ -1,0 +1,8 @@
+experiment:
+  name: g1_sr
+  type: compute_matched_self_refinement
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  aspect_lock: true
+  turns: 3
+  concurrency: 4

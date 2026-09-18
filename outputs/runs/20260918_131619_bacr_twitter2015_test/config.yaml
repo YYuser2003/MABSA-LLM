@@ -1,0 +1,50 @@
+cli_args:
+  concurrency: 6
+  config: configs/experiments/bacr.yaml
+  dataset: twitter2015
+  limit: null
+  seed: 42
+  split: test
+  tag: null
+dataset:
+  dataset:
+    data_dir: data/processed
+    image_base_dir: .
+    manifest_prefix: tw15
+    manifests:
+      dev: data/manifests/tw15_dev.jsonl
+      test: data/manifests/tw15_test.jsonl
+    name: twitter2015
+    splits:
+      dev: data/processed/twitter2015_dev.jsonl
+      test: data/processed/twitter2015_test.jsonl
+      train: data/processed/twitter2015_train.jsonl
+date: '2026-09-18T13:16:19.989621'
+experiment:
+  experiment:
+    aspect_lock: true
+    canonical_t0: true
+    canonical_v0: true
+    concurrency: 4
+    controller:
+      directions:
+      - VISUAL
+      - TEXT
+      - STOP
+      early_stopping: true
+      max_queries: 2
+      policy: dynamic_uncertainty
+    dataset_config: configs/datasets/twitter15.yaml
+    model_config: configs/models/gemini.yaml
+    name: bacr
+    type: bidirectional_active_crossmodal_reasoning
+model:
+  model:
+    allow_fallback: false
+    base_url: http://10.60.80.119:20128
+    name: gemini_3.8
+    provider: gemini
+    temperature: 0.1
+    thinking_level: high
+    timeout: 90
+run_id: 20260918_131619_bacr_twitter2015_test

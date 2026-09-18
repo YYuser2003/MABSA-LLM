@@ -1,0 +1,65 @@
+{
+  "total_samples": 24,
+  "total_gold_aspects": 38,
+  "end_to_end_metrics": {
+    "pair_precision": 40.0,
+    "pair_recall": 31.58,
+    "pair_f1": 35.29,
+    "aspect_f1": 50.0,
+    "cond_sent_acc": 70.59
+  },
+  "locked_aspect_metrics": {
+    "pair_precision": 40.0,
+    "pair_recall": 70.59,
+    "pair_f1": 51.06,
+    "sent_acc_locked": 70.59
+  },
+  "initial_g0_r_metrics": {
+    "pair_precision": 43.33,
+    "pair_recall": 34.21,
+    "pair_f1": 38.24
+  },
+  "delta_f1_over_g0_r": -2.95,
+  "anq": 0.12,
+  "gpq": -24.58,
+  "bfsr_percent": 0.0,
+  "vinb_percent": -2.63,
+  "stop_type_distribution": {
+    "natural_stop": 24,
+    "budget_forced_stop": 0
+  },
+  "aspect_level_diagnostics": {
+    "err_sent_percent": 0.0,
+    "hrr_sent_percent": 7.69,
+    "vng_sent_net_gain": -1,
+    "vinb_percent": -2.63,
+    "asp_wc_recovery": 0,
+    "asp_cw_harmful": 1,
+    "asp_cc_maintained": 12,
+    "asp_ww_unresolved": 4
+  },
+  "sample_level_diagnostics": {
+    "err_sample_percent": 0.0,
+    "hrr_sample_percent": 16.67,
+    "vng_sample_net_gain": -1,
+    "sample_wc_recovery": 0,
+    "sample_cw_harmful": 1,
+    "sample_cc_maintained": 5,
+    "sample_ww_unresolved": 18
+  },
+  "compute_efficiency": {
+    "has_compute_info": true,
+    "avg_api_calls": 3.25,
+    "avg_tokens": 14931.1,
+    "avg_image_invocations": 1.12,
+    "avg_latency_s": 52.72,
+    "f1_per_api_call": 10.86,
+    "f1_per_1k_tokens": 2.36,
+    "f1_per_image_invocation": 31.51
+  },
+  "taxonomy_distribution": {
+    "OCR_LOGO": 2,
+    "GENERAL": 1
+  },
+  "taxonomy_recoveries": {}
+}

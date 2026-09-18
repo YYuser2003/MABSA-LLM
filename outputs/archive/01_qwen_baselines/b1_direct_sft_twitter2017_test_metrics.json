@@ -1,0 +1,55 @@
+{
+  "pair_precision": 70.19,
+  "pair_recall": 69.45,
+  "pair_f1": 69.82,
+  "aspect_precision": 92.79,
+  "aspect_recall": 91.82,
+  "aspect_f1": 92.3,
+  "sentiment_acc_on_matched": 75.64,
+  "tp_pair": 857,
+  "fp_pair": 364,
+  "fn_pair": 377,
+  "empty_pred_count": 0,
+  "empty_pred_rate": 0.0,
+  "avg_pred_aspects": 2.08,
+  "avg_gold_aspects": 2.1,
+  "multi_aspect_breakdown": {
+    "1": {
+      "count": 188,
+      "aspect_recall": 96.28,
+      "aspect_f1": 90.5,
+      "pair_precision": 61.79,
+      "pair_recall": 69.68,
+      "pair_f1": 65.5,
+      "sentiment_acc": 72.38
+    },
+    "2": {
+      "count": 229,
+      "aspect_recall": 90.83,
+      "aspect_f1": 91.53,
+      "pair_precision": 68.96,
+      "pair_recall": 67.9,
+      "pair_f1": 68.43,
+      "sentiment_acc": 74.76
+    },
+    "3": {
+      "count": 107,
+      "aspect_recall": 92.52,
+      "aspect_f1": 94.29,
+      "pair_precision": 74.76,
+      "pair_recall": 71.96,
+      "pair_f1": 73.33,
+      "sentiment_acc": 77.78
+    },
+    ">=4": {
+      "count": 63,
+      "aspect_recall": 89.51,
+      "aspect_f1": 92.64,
+      "pair_precision": 73.9,
+      "pair_recall": 68.91,
+      "pair_f1": 71.32,
+      "sentiment_acc": 76.99
+    }
+  },
+  "delta_r_multi": 0.77
+}

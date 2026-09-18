@@ -1,0 +1,20 @@
+experiment:
+  name: bacr_v2
+  type: bidirectional_active_crossmodal_reasoning_v2
+  description: "BACR-v2: Decoupled Meta-Cognitive Controller observing compressed cognitive sketches (R_T^sketch, R_V^sketch) with zero raw modality access and hierarchical gap diagnosis."
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  controller:
+    policy: hierarchical_gap_diagnosis
+    controller_sees_raw_modalities: false
+    gap_diagnosis_enabled: true
+    directions:
+      - VISUAL
+      - TEXT
+      - STOP
+    max_queries: 2
+    early_stopping: true
+  aspect_lock: true
+  canonical_t0: true
+  canonical_v0: true
+  concurrency: 6

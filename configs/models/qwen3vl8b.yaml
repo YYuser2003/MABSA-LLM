@@ -1,0 +1,6 @@
+model:
+  provider: qwen
+  name: Qwen3-VL-8B-Instruct
+  model_path: /data2/models/Qwen3-VL-8B-Instruct
+  temperature: 0.1
+  device: cuda:0

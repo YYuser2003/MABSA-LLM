@@ -1,0 +1,17 @@
+experiment:
+  name: bacr
+  type: bidirectional_active_crossmodal_reasoning
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  controller:
+    policy: dynamic_uncertainty
+    directions:
+      - VISUAL
+      - TEXT
+      - STOP
+    max_queries: 2
+    early_stopping: true
+  aspect_lock: true
+  canonical_t0: true
+  canonical_v0: true
+  concurrency: 4

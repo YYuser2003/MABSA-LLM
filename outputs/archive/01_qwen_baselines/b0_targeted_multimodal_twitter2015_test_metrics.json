@@ -1,0 +1,33 @@
+{
+  "model_type": "b0",
+  "modality": "multimodal",
+  "setting": "targeted_given_aspects",
+  "dataset": "twitter2015",
+  "split": "test",
+  "total_samples": 674,
+  "total_aspects": 1037,
+  "accuracy": 58.15,
+  "macro_f1": 59.05,
+  "aspect_f1": 100.0,
+  "pair_f1": 58.15,
+  "class_metrics": {
+    "POS": {
+      "precision": 47.34,
+      "recall": 84.23,
+      "f1-score": 60.61,
+      "support": 317
+    },
+    "NEG": {
+      "precision": 51.15,
+      "recall": 78.76,
+      "f1-score": 62.02,
+      "support": 113
+    },
+    "NEU": {
+      "precision": 82.61,
+      "recall": 40.69,
+      "f1-score": 54.53,
+      "support": 607
+    }
+  }
+}

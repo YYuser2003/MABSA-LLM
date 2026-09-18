@@ -1,0 +1,587 @@
+{"sample_id": "twitter2017_test_0000", "predictions": [["SamHunt", "NEU"], ["Stagecoach", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0001", "predictions": [["VerticalHorizon", "POS"], ["CelebrateFFX", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0002", "predictions": [["zendaya", "POS"], ["voguemagazine", "NEU"], ["CALVIN KLEIN", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0003", "predictions": [["Anthony Kiedis", "NEG"], ["Rock on the Range festival", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0004", "predictions": [["Barcelona", "POS"], ["La Liga", "NEU"], ["Suarez", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0005", "predictions": [["Mott", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0006", "predictions": [["Barack Obama", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0007", "predictions": [["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0008", "predictions": [["NBA", "NEU"], ["curry", "NEG"], ["Westbrook", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0009", "predictions": [["Houston", "NEU"], ["Chris Paul", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0010", "predictions": [["Fifth Harmony", "POS"], ["BBMAs", "NEU"], ["Kelly Rowland", "NEU"], ["Kesha", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0011", "predictions": [["Leicester", "POS"], ["Premier League", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0012", "predictions": [["Dez Bryant", "NEU"], ["CBs", "POS"], ["Darrelle Revis", "NEU"], ["cowboys", "NEU"], ["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0013", "predictions": [["AggieBaseball", "NEU"], ["TCU", "NEU"], ["The Zone", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0014", "predictions": [["Meek Mill", "POS"], ["Drake", "NEG"], ["Kendrick Lamar", "NEG"], ["Future", "NEG"], ["Billboard Music Awards", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0015", "predictions": [["officialpepe", "NEG"], ["realmadriden", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0016", "predictions": [["Hales", "POS"], ["Shanaka", "POS"], ["England", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0017", "predictions": [["marshalls", "NEU"], ["New Rochelle", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0018", "predictions": [["paolaturbay", "NEU"], ["UNITED STATES", "NEU"], ["DONALD TRUMP", "NEU"], ["AMERICAN", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0019", "predictions": [["Bee Gees", "POS"], ["RadissonBluDoha", "NEU"], ["Doha", "NEU"], ["Qatar", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0020", "predictions": [["NFL", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0021", "predictions": [["Sarah Park", "POS"], ["Asian", "NEU"], ["Georgia", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0022", "predictions": [["U . S", "NEU"], ["John F . Kennedy", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0023", "predictions": [["Weston", "POS"], ["Jake Rudock", "POS"], ["Lions", "NEU"], ["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0024", "predictions": [["Queen", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0025", "predictions": [["Kim Jong Un", "NEU"], ["Bill Clinton", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0026", "predictions": [["Nirvana", "NEU"], ["Foos", "NEU"], ["Pat Smear", "POS"], ["GlastonburyFestival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0027", "predictions": [["Winnipeg # Jets", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0028", "predictions": [["WWE", "NEU"], ["Daniel Bryan", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0029", "predictions": [["Asquith", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0030", "predictions": [["Dragon Ball Super", "NEU"], ["dragonballchou", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0031", "predictions": [["Florida", "NEU"], ["Rick Scott", "POS"], ["Donald Trump", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0032", "predictions": [["BethHart", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0033", "predictions": [["Milos Degenek", "POS"], ["Socceroos", "NEU"], ["Greece", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0034", "predictions": [["Premier League", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0035", "predictions": [["Edinburgh", "NEG"], ["Israel", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0036", "predictions": [["NBA", "NEU"], ["Golden State Warriors", "POS"], ["Stephen Curry", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0037", "predictions": [["RepAdamSchiff", "NEG"], ["Harry Reid", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0038", "predictions": [["Manchester City", "POS"], ["Sergio Agüero", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0039", "predictions": [["Premier Leagues", "NEU"], ["ChampionsLeague", "NEU"], ["Europa", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0040", "predictions": [["Harry Potter and The Order of the Phoenix", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0041", "predictions": [["Donald Trump", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0042", "predictions": [["MLB", "NEU"], ["Mercer", "POS"], ["Pirates", "POS"], ["Rockies", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0043", "predictions": [["Obama", "NEU"], ["RutgersU", "NEU"], ["Piscataway", "NEU"], ["NJ", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0044", "predictions": [["James Franco", "POS"], ["JJ Abrams", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0045", "predictions": [["Stanley Cup", "NEU"], ["Penguins", "NEU"], ["Sharks", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0046", "predictions": [["ZachandRodney", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0047", "predictions": [["Bushfire Festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0048", "predictions": [["House", "NEU"], ["Paul Ryan", "NEU"], ["GOP", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0049", "predictions": [["MLB", "NEU"], ["Milwaukee # Brewers", "NEG"], ["Jimmy Nelson", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0050", "predictions": [["CMS", "POS"], ["ChallengerLCSD", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0051", "predictions": [["Cancun", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0052", "predictions": [["KSC", "POS"], ["Pillers1957", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0053", "predictions": [["sigurros", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0054", "predictions": [["Devolver", "NEG"], ["E3 festival", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0055", "predictions": [["Justin Bieber", "NEU"], ["Summerburst Festival", "NEU"], ["Stockholm", "NEU"], ["Sweden", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0056", "predictions": [["CHS", "NEU"], ["Newburg", "NEU"], ["St . James", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0057", "predictions": [["sid_iv", "POS"], ["Viking", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0058", "predictions": [["Shannon", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0059", "predictions": [["Front Royal", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0060", "predictions": [["LAFilmFestival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0061", "predictions": [["Shah Rukh Khan", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0062", "predictions": [["NBA", "NEU"], ["carmeloanthony", "POS"], ["lala", "POS"], ["MetGala", "NEU"], ["LaLa", "POS"], ["CarmeloAnthony", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0063", "predictions": [["Lady Gaga", "NEU"], ["TBT", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0064", "predictions": [["cambeerfest", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0065", "predictions": [["Erskine College", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0066", "predictions": [["Donald Trump", "NEU"], ["Bernie Sanders", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0067", "predictions": [["Heat", "NEU"], ["Chris Bosh", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0068", "predictions": [["suede", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0069", "predictions": [["Fullcoursemeelz", "POS"], ["Stony Brook", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0070", "predictions": [["OSUBaseball", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0071", "predictions": [["Moritz Böhringer", "NEG"], ["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0072", "predictions": [["demi lovato", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0073", "predictions": [["The Dragon Dentist", "POS"], ["Shanghai TV Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0074", "predictions": [["Mino Raiola", "NEU"], ["Mario Balotelli", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0075", "predictions": [["MCBoysSoccer765", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0076", "predictions": [["NCAA", "NEU"], ["New England", "NEU"], ["TuftsBaseball", "NEU"], ["OswegoAthletics", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0077", "predictions": [["Warriors", "POS"], ["Steph", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0078", "predictions": [["CristianoRonaldo", "NEU"], ["ManUtd", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0079", "predictions": [["Wes Morgan", "POS"], ["premier league", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0080", "predictions": [["HARRY STYLES", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0081", "predictions": [["VeranoMTV2017", "NEU"], ["Justin Bieber", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0082", "predictions": [["BiloxiShuckers", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0083", "predictions": [["blythtownbarca", "NEU"], ["Barça", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0084", "predictions": [["David Bowie", "NEU"], ["Red Square", "NEU"], ["Moscow", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0085", "predictions": [["Brazilian", "NEU"], ["Ronaldo", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0086", "predictions": [["SteveScalise", "NEG"], ["dougmckelway", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0087", "predictions": [["Ted Dimitru", "POS"], ["SA Football", "NEU"], ["eNCA", "NEG"], ["ZolaDoda", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0088", "predictions": [["David Petraeus", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0089", "predictions": [["bollywood", "NEU"], ["Salman Khan", "POS"], ["Shah Rukh Khan", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0090", "predictions": [["RaysBaseball", "POS"], ["BlueJays", "POS"], ["MacDill", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0091", "predictions": [["cowboy", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0092", "predictions": [["David Beckham", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0093", "predictions": [["Michael Young", "POS"], ["NHL", "NEU"], ["SanJoseSharks", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0094", "predictions": [["MC24H ART FESTIVAL", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0095", "predictions": [["Wilton", "POS"], ["Shelton", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0096", "predictions": [["Alfred Hitchcock", "NEU"], ["Cannes Film Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0097", "predictions": [["London", "NEU"], ["Dunbar station", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0098", "predictions": [["Ethan", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0099", "predictions": [["Mario Kart 8", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0100", "predictions": [["Rams", "NEU"], ["nfl", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0101", "predictions": [["Igor", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0102", "predictions": [["Outlook Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0103", "predictions": [["Tiger", "NEU"], ["EHS", "NEU"], ["Richard Simmons", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0104", "predictions": [["Vogue", "POS"], ["Taylor Swift", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0105", "predictions": [["WWD", "NEU"], ["Mark Ronson", "NEU"], ["Lady Gaga", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0106", "predictions": [["Cavaliers", "POS"], ["NBA", "NEU"], ["Hawks", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0107", "predictions": [["Wood", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0108", "predictions": [["Zac Efron", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0109", "predictions": [["John Miller", "NEG"], ["Donald Trump", "NEG"], ["John Baron", "NEG"], ["cnn", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0110", "predictions": [["harry styles", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0111", "predictions": [["West Hall", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0112", "predictions": [["Man Utd", "NEU"], ["Champions League", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0113", "predictions": [["Canadian Tulip Festival", "POS"], ["Ottawa", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0114", "predictions": [["Galen Rupp", "NEU"], ["Portland Track Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0115", "predictions": [["Hawks", "NEU"], ["Cavaliers", "NEG"], ["nba", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0116", "predictions": [["Hannah Doran", "POS"], ["Lady Griz", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0117", "predictions": [["WasecaBluejays", "POS"], ["Tink Larson Field", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0118", "predictions": [["Chris Paul", "NEU"], ["Clippers", "NEU"], ["Spurs", "NEU"], ["Nuggets", "NEU"], ["Rockets", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0119", "predictions": [["Harry Potter", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0120", "predictions": [["Luke", "POS"], ["Cubs", "POS"], ["sbcubs", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0121", "predictions": [["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0122", "predictions": [["John Kerry", "NEU"], ["Paris", "POS"], ["U . S", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0123", "predictions": [["Bayou Art Festival", "NEU"], ["Swartz Brothers", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0124", "predictions": [["Donald Trump", "NEU"], ["Ted Cruz", "NEU"], ["JFK", "NEU"], ["Republican", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0125", "predictions": [["HanrattyDave", "NEU"], ["Oscar Isaac", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0126", "predictions": [["Carabao Cup", "NEU"], ["English Football League", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0127", "predictions": [["Phil Knight", "NEU"], ["Stephen Colbert", "NEU"], ["Nike", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0128", "predictions": [["Nancy Ajram", "POS"], ["Beirut Cultural Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0129", "predictions": [["Michael Oher", "NEU"], ["NFL", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0130", "predictions": [["Rush", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0131", "predictions": [["Robin Hood : Prince of Thieves", "POS"], ["RobinHood", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0132", "predictions": [["Emma Watson", "NEU"], ["The Circle", "NEU"], ["Paris", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0133", "predictions": [["Yee Peng Lanna", "NEU"], ["Chiang Mai", "NEU"], ["Thailand", "NEU"], ["aijohsuke", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0134", "predictions": [["NBA", "NEU"], ["LeBron James", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0135", "predictions": [["Lakers", "NEU"], ["Lakers", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0136", "predictions": [["JD Dutka", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0137", "predictions": [["Logic301", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0138", "predictions": [["Mamata Benerjee", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0139", "predictions": [["Little Mix", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0140", "predictions": [["Jessica Lange", "POS"], ["American Horror Story", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0141", "predictions": [["Eric Church", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0142", "predictions": [["Man Utd", "POS"], ["Liverpool", "POS"], ["Premier League", "NEU"], ["Ryan Giggs", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0143", "predictions": [["Ignite Edmonton Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0144", "predictions": [["Charlie", "NEG"], ["ussoccer_ynt", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0145", "predictions": [["Dennis Bergkamp", "POS"], ["Premier League", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0146", "predictions": [["Vogue Festival", "NEU"], ["Alessandro Michele", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0147", "predictions": [["LORDEIN", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0148", "predictions": [["Barcelona", "NEU"], ["OFFF18", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0149", "predictions": [["Bell", "NEU"], ["Warriors", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0150", "predictions": [["Leonardo da Vinci", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0151", "predictions": [["Aitor Karanka", "POS"], ["Middlesbrough", "NEU"], ["Premier League", "NEU"], ["Steve Gibson", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0152", "predictions": [["Paris", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0153", "predictions": [["TubbyJacks", "NEU"], ["greatfooddrink festival", "NEU"], ["NottmCastle", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0154", "predictions": [["Louis C . K", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0155", "predictions": [["Inscoes", "POS"], ["Mayor", "POS"], ["Stimpson", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0156", "predictions": [["jakebugg", "NEU"], ["The Wiltern", "NEU"], ["Los Angeles", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0157", "predictions": [["i gotta feeling", "NEU"], ["the black eyed peas", "NEU"], ["you belong with me", "NEU"], ["taylor swift", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0158", "predictions": [["ESPN", "NEG"], ["Patriots", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0159", "predictions": [["NBA", "NEU"], ["Curry", "NEU"], ["Jordan", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0160", "predictions": [["dachejones", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0161", "predictions": [["The Hive", "POS"], ["2335 Broadeay", "NEU"], ["Oakland", "NEU"], ["My Yute", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0162", "predictions": [["Bieber", "POS"], ["ONE DIRECTION", "POS"], ["JUSTIN BIEBER", "POS"], ["JustinBieber", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0163", "predictions": [["Hillary Clinton", "NEU"], ["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0164", "predictions": [["Harry Styles", "POS"], ["Miami", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0165", "predictions": [["NBA", "NEU"], ["NIU", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0166", "predictions": [["Sheryl Underwood", "NEG"], ["James Brown", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0167", "predictions": [["yankeebean", "NEU"], ["Lady Bird Johnson", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0168", "predictions": [["mufc", "NEU"], ["Wayne Rooney", "NEU"], ["Facebook", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0169", "predictions": [["Gonzaga", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0170", "predictions": [["Grand Foyer", "NEU"], ["Paris Opera House", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0171", "predictions": [["American", "NEG"], ["DONALD TRUMP", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0172", "predictions": [["Ellie Goulding", "POS"], ["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0173", "predictions": [["HARRY POTTER AND THE HALF - BLOOD PRINCE", "POS"], ["J . K . ROWLING", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0174", "predictions": [["Xabi Alonso", "POS"], ["Europe", "NEU"], ["CIES Football", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0175", "predictions": [["Orem", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0176", "predictions": [["Barcelona", "POS"], ["Spanish", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0177", "predictions": [["PracticeFusion", "NEU"], ["Ryan Howard", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0178", "predictions": [["San Francisco Book Festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0179", "predictions": [["Leonardo DiCaprio", "POS"], ["Johnny Depp", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0180", "predictions": [["Harry Potter", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0181", "predictions": [["Gabby", "POS"], ["gpiccca", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0182", "predictions": [["Brian Eno", "NEU"], ["David Bowie", "NEU"], ["BBC", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0183", "predictions": [["Charlie Robison", "NEU"], ["bombfactory", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0184", "predictions": [["Jennifer Lawrence", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0185", "predictions": [["Bojangles1977", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0186", "predictions": [["Lorde", "NEU"], ["Frank Ocean", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0187", "predictions": [["R9", "POS"], ["ronaldo", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0188", "predictions": [["Lil Wayne", "NEU"], ["Whoopi Goldberg", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0189", "predictions": [["NFL", "NEU"], ["Ravens", "NEU"], ["Peyton", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0190", "predictions": [["Nia Long", "NEU"], ["J . Cole", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0191", "predictions": [["Barack Obama", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0192", "predictions": [["SSSF Short Film Festival", "POS"], ["St Petersburg", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0193", "predictions": [["ParisAirForum", "POS"], ["skylightsaero", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0194", "predictions": [["lady gaga", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0195", "predictions": [["Liverpool", "NEG"], ["Uefa", "NEU"], ["Europa League", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0196", "predictions": [["Justin Bieber", "POS"], ["Farruko", "POS"], ["J Balvin", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0197", "predictions": [["Harry Potter", "POS"], ["JK Rowling", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0198", "predictions": [["hurricanenita", "POS"], ["RealAliceCooper", "NEU"], ["NorthernQuest", "NEU"], ["AliceCooper", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0199", "predictions": [["RickyFestival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0200", "predictions": [["Ogden Raptor", "NEU"], ["Cody Bellinger", "POS"], ["Major League Baseball", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0201", "predictions": [["Snapchat", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0202", "predictions": [["NHL", "NEU"], ["BLUES", "POS"], ["stlblues", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0203", "predictions": [["CannesFilmFestival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0204", "predictions": [["Kevin Durant", "POS"], ["Splash Bros", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0205", "predictions": [["Jared Kushner", "NEG"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0206", "predictions": [["Justin", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0207", "predictions": [["TaylorSwift", "NEU"], ["TAYLOR SWIFT", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0208", "predictions": [["Cure", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0209", "predictions": [["Giants_101", "NEU"], ["Giants", "NEU"], ["Packers", "NEU"], ["giants", "NEU"], ["nyg", "NEU"], ["nfl", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0210", "predictions": [["ErinBaldosser", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0211", "predictions": [["Montreal Candiens", "NEU"], ["NHL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0212", "predictions": [["Harry Styles", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0213", "predictions": [["NBA", "NEU"], ["Golden State Warriors", "POS"], ["Oklahoma City Thunder", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0214", "predictions": [["Chelsea", "POS"], ["Premier League", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0215", "predictions": [["Halsey", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0216", "predictions": [["Leicester", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0217", "predictions": [["Donald Trump", "NEU"], ["White House", "NEU"], ["LGBT", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0218", "predictions": [["Donald Trump", "NEU"], ["Hillary Clinton", "NEU"], ["Ohio", "NEU"], ["Cleveland", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0219", "predictions": [["BernieSanders", "NEU"], ["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0220", "predictions": [["Lady Gaga", "NEU"], ["NYC", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0221", "predictions": [["Rose Reilly", "POS"], ["Scottish Football Hall of Fame", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0222", "predictions": [["Shah Rukh Khan", "NEU"], ["Chennai airport", "NEU"], ["Kolkata", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0223", "predictions": [["NBA", "NEU"], ["rihanna", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0224", "predictions": [["Harry Styles", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0225", "predictions": [["Philadelphia Phillies", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0226", "predictions": [["Donald Trump", "NEG"], ["Republican", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0227", "predictions": [["NBA", "NEU"], ["David Robinson", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0228", "predictions": [["Justin Bieber", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0229", "predictions": [["Taylor", "POS"], ["Jesus", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0230", "predictions": [["Syracuse", "POS"], ["Boston College", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0231", "predictions": [["OfficialYJM", "POS"], ["Monterrey", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0232", "predictions": [["Busted", "POS"], ["Isle of Wight festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0233", "predictions": [["juventusfcen", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0234", "predictions": [["Saskatoon", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0235", "predictions": [["Radiohead", "POS"], ["opener_festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0236", "predictions": [["Lee Brice", "POS"], ["Hard Rock Tulsa", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0237", "predictions": [["neil degrasse tyson", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0238", "predictions": [["Trevor Daley", "NEG"], ["Penguins", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0239", "predictions": [["Chris Paul", "NEG"], ["James Harden", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0240", "predictions": [["Luca Toni", "POS"], ["Verona", "POS"], ["Serie A", "NEU"], ["Juventus", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0241", "predictions": [["redearthinc", "NEU"], ["coxconvcenter", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0242", "predictions": [["Pioneers16 festival", "NEU"], ["Vienna", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0243", "predictions": [["Raptors", "NEU"], ["John Jenkins", "NEU"], ["raptors", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0244", "predictions": [["Ariana Grande", "NEU"], ["Manchester benefit", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0245", "predictions": [["Demi Lovato", "NEU"], ["Nick Jonas", "NEU"], ["Wilmer Valderrama", "NEU"], ["BBMAs", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0246", "predictions": [["RomanBathsBath", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0247", "predictions": [["Donald Trump", "NEG"], ["Republican", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0248", "predictions": [["Beyoncé", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0249", "predictions": [["Earl Thomas", "POS"], ["kfdmsports", "NEU"], ["kfdmnews", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0250", "predictions": [["Michael Martino", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0251", "predictions": [["LeBron James", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0252", "predictions": [["AldiUK", "POS"], ["GinFestival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0253", "predictions": [["GOP", "NEG"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0254", "predictions": [["N . C", "NEU"], ["Atlanta", "NEG"], ["NBA", "NEU"], ["nba", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0255", "predictions": [["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0256", "predictions": [["MiamiHEAT", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0257", "predictions": [["Raptors", "POS"], ["Miami", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0258", "predictions": [["Despacito", "NEU"], ["Justin Bieber", "NEU"], ["Rufus Humphrey", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0259", "predictions": [["Baggie", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0260", "predictions": [["LeBron James", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0261", "predictions": [["English Wine Festival", "POS"], ["Hove Lawns", "NEU"], ["Brighton", "NEU"], ["ButlersWine", "NEU"], ["yeloarchitects", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0262", "predictions": [["High Prairie", "NEU"], ["NHL", "NEU"], ["Tom Lysiak", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0263", "predictions": [["Newt Gingrich", "NEU"], ["Donald Trump", "POS"], ["Hillary Clinton", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0264", "predictions": [["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0265", "predictions": [["Kendrick Lamar", "NEU"], ["Rihanna", "NEU"], ["LOYALTY", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0266", "predictions": [["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0267", "predictions": [["One Tree Hill", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0268", "predictions": [["Rolling Stones", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0269", "predictions": [["Victoria Beckham", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0270", "predictions": [["LangoschMLB", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0271", "predictions": [["HARRY STYLES", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0272", "predictions": [["Ted", "NEU"], ["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0273", "predictions": [["kathniel", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0274", "predictions": [["Leicester", "POS"], ["premier league", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0275", "predictions": [["Harry Potter", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0276", "predictions": [["Lorenzo", "POS"], ["Little Rock", "NEU"], ["Buffalo Store", "NEU"], ["Little Rock", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0277", "predictions": [["Charlie Chaplin", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0278", "predictions": [["MLB", "NEU"], ["Miguel Montero", "NEG"], ["Cubs", "NEU"], ["Jake Arrieta", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0279", "predictions": [["Germany", "NEU"], ["Rock am Ring Festival", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0280", "predictions": [["RunFlyingPig", "POS"], ["AHS_Womens_Lax", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0281", "predictions": [["Russell Westbrook", "NEU"], ["Steph Curry", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0282", "predictions": [["Metallica", "NEU"], ["Detroit", "NEU"], ["Michigan", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0283", "predictions": [["Utah Jazz", "NEG"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0284", "predictions": [["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0285", "predictions": [["Kevin Ginkel", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0286", "predictions": [["OKC", "POS"], ["Kevin Durant", "POS"], ["Thunder", "POS"], ["Spurs", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0287", "predictions": [["Steve Jobs", "POS"], ["burnie", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0288", "predictions": [["Ariana Grande", "POS"], ["Manchester Benefit", "POS"], ["Twitter", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0289", "predictions": [["Donald Trumps", "POS"], ["PAC", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0290", "predictions": [["ThompsonScribe", "POS"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0291", "predictions": [["NCT 127", "NEU"], ["Taeyong", "POS"], ["Times Square", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0292", "predictions": [["Valavuori", "NEU"], ["Warriors", "NEU"], ["Curry", "NEU"], ["Trailblazers", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0293", "predictions": [["Roadies", "POS"], ["Cameron Crowe", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0294", "predictions": [["StephenCurry30", "POS"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0295", "predictions": [["Mets", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0296", "predictions": [["Russell Westbrook", "NEU"], ["Stephen Curry", "NEG"], ["OKC", "NEU"], ["Warriors", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0297", "predictions": [["German", "POS"], ["ISIS", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0298", "predictions": [["Taylor Swift", "POS"], ["taylorswift13", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0299", "predictions": [["Cavs", "NEG"], ["Kyrie Irving", "NEG"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0300", "predictions": [["Jersey City", "NEU"], ["Project : Eats", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0301", "predictions": [["Frank Ocean", "POS"], ["NorthsideFestival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0302", "predictions": [["Donald Trump", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0303", "predictions": [["Eagles News", "NEU"], ["Jim Schwartz", "NEU"], ["Philadelphia", "POS"], ["NFL", "NEU"], ["nfl", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0304", "predictions": [["Indian", "POS"], ["PrideToronto", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0305", "predictions": [["GranblueFantasy", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0306", "predictions": [["emma watson", "POS"], ["calvin klein", "POS"], ["MetGala", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0307", "predictions": [["Craig", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0308", "predictions": [["LCD Soundsystem", "NEU"], ["David Bowie", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0309", "predictions": [["Daniel Bryan", "POS"], ["wwe", "NEU"], ["nxt", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0310", "predictions": [["Ed Sheeran", "NEU"], ["Manila", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0311", "predictions": [["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0312", "predictions": [["Cowboys", "NEU"], ["Tony Romo", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0313", "predictions": [["Ariana Grande", "NEU"], ["Jimmy Kimmel", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0314", "predictions": [["FifthHarmony", "NEU"], ["Work From Home", "NEU"], ["The Ellen Degeneres Show", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0315", "predictions": [["theSLIFElife", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0316", "predictions": [["St . Cat", "POS"], ["St Joe", "NEG"], ["Jack Letsch", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0317", "predictions": [["Fresno State", "NEU"], ["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0318", "predictions": [["One Direction", "NEU"], ["NiallOfficial", "POS"], ["SoccerAid", "POS"], ["Unicef", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0319", "predictions": [["David Cameron", "NEG"], ["Afghanistan", "NEG"], ["Nigeria", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0320", "predictions": [["Helen Wood", "NEU"], ["Victoria Beckham", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0321", "predictions": [["tferris", "POS"], ["dcpride2017", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0322", "predictions": [["harry styles", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0323", "predictions": [["Ariana Grande", "POS"], ["Christina Aguilera", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0324", "predictions": [["johnbartlettNY", "POS"], ["The New Vegan Times Magazine", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0325", "predictions": [["Montreal", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0326", "predictions": [["Leonardo DiCaprio", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0327", "predictions": [["bryanadams", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0328", "predictions": [["Nigeria", "NEU"], ["Ahmed Musa", "NEU"], ["Premier League", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0329", "predictions": [["niall", "POS"], ["One Direction", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0330", "predictions": [["Primary Football Cup", "NEU"], ["St Bede", "POS"], ["St Augustines", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0331", "predictions": [["Jeena_PS", "POS"], ["Kerala", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0332", "predictions": [["Lana Del Rey", "POS"], ["James Franco", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0333", "predictions": [["Mike Lange", "POS"], ["StanleyCupChampion", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0334", "predictions": [["BFFfestival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0335", "predictions": [["DragonflyJonez", "NEU"], ["WCF", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0336", "predictions": [["Warriors", "POS"], ["NBA", "NEU"], ["Thunder", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0337", "predictions": [["NBA", "NEU"], ["Raptors", "POS"], ["Miami", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0338", "predictions": [["Kevin Love", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0339", "predictions": [["hit45s", "NEU"], ["Stonehenge Free Festival", "NEU"], ["Stonehenge", "NEU"], ["England", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0340", "predictions": [["Harry Potter", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0341", "predictions": [["Jennifer Lawrence", "NEU"], ["London", "NEU"], ["jlawgermany", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0342", "predictions": [["Cody Rhodes", "NEU"], ["WWE", "NEU"], ["Vince McMahon", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0343", "predictions": [["influenster", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0344", "predictions": [["Little Mix", "POS"], ["One Direction", "POS"], ["Japan", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0345", "predictions": [["Orono", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0346", "predictions": [["Steve Bruce", "NEU"], ["Premier League", "POS"], ["Hull", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0347", "predictions": [["MensFitness", "NEU"], ["MensFitnessWire", "NEU"], ["Kevin Hart", "NEU"], ["NBA", "NEU"], ["Kevin Durant", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0348", "predictions": [["Calvin Klein", "NEU"], ["eBay", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0349", "predictions": [["CelebMix", "NEU"], ["Harry Styles", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0350", "predictions": [["Frost Bowl", "POS"], ["nctb", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0351", "predictions": [["British Special Forces", "POS"], ["German", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0352", "predictions": [["Niagara", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0353", "predictions": [["Jim Tomsula", "NEU"], ["JarrydHayne", "POS"], ["NFL", "NEU"], ["JarrydHayne", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0354", "predictions": [["LeBron", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0355", "predictions": [["premier league", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0356", "predictions": [["Miami", "NEU"], ["David Beckham", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0357", "predictions": [["Justin Bieber", "POS"], ["BBMAs", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0358", "predictions": [["Marco Rubio", "NEG"], ["GOP", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0359", "predictions": [["Barack", "NEU"], ["Michelle Obama", "NEU"], ["Southside With You", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0360", "predictions": [["Dodger", "POS"], ["alyssajacinto", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0361", "predictions": [["Justin Trudeau", "NEG"], ["Toronto", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0362", "predictions": [["Blake Shelton", "NEU"], ["Gwen Stefani", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0363", "predictions": [["ArianaGrande", "NEU"], ["One Love Manchester", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0364", "predictions": [["The Alabama Football", "POS"], ["Hootie Jones", "POS"], ["BamaHammer", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0365", "predictions": [["NANCY PELOSI", "NEU"], ["TRUMP", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0366", "predictions": [["Jessica Alba", "NEU"], ["The Honest Company", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0367", "predictions": [["Sean Hannity", "NEU"], ["CNN", "NEG"], ["Jim Acosta", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0368", "predictions": [["post6baseball", "NEG"], ["Denver", "NEU"], ["Brody Cress", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0369", "predictions": [["CanalsideBflo", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0370", "predictions": [["Justin Bieber", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0371", "predictions": [["ShawnMendes", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0372", "predictions": [["Flagler", "POS"], ["Florida", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0373", "predictions": [["Philadelphia 76 ers", "NEU"], ["Ben Simmons", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0374", "predictions": [["Dustin Fowler", "NEG"], ["MLB", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0375", "predictions": [], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0376", "predictions": [["Zidane", "NEU"], ["La Liga", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0377", "predictions": [["LeBron James", "NEU"], ["Kevin Durant", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0378", "predictions": [["James Franco", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0379", "predictions": [["Kevin Durant", "POS"], ["Elias Sports Bureau", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0380", "predictions": [["Benicia High", "POS"], ["Fairfield", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0381", "predictions": [["Ashley Tisdale", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0382", "predictions": [["Asia Model Festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0383", "predictions": [["Donald Trump", "POS"], ["Dilbert", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0384", "predictions": [["Kim Jong - un", "NEU"], ["North Korean", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0385", "predictions": [["Dani Alves", "NEU"], ["Ronaldo", "NEU"], ["Messi", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0386", "predictions": [["Bruno Mars", "POS"], ["BET Awards", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0387", "predictions": [["Quang Nam Festival", "NEU"], ["Hoai River Square", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0388", "predictions": [["Timberwolves", "NEU"], ["Karl - Anthony Towns", "POS"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0389", "predictions": [["Lady Gaga", "POS"], ["Lady Gaga", "POS"], ["Fox News", "NEU"], ["HillaryClinton", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0390", "predictions": [["Jennifer Lawrence", "NEU"], ["Harper ' s Bazaar Magazine", "NEU"], ["Bulgaria", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0391", "predictions": [["Donald Trump", "NEU"], ["Hillary Clinton", "NEU"], ["Ted Cruz", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0392", "predictions": [["Emmanuel Adebayor", "NEU"], ["Turkish", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0393", "predictions": [["Kabete", "POS"], ["MissKami27", "POS"], ["NYSA", "POS"], ["Riara Uni", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0394", "predictions": [["Ahmed Musa", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0395", "predictions": [["Katy Perry", "POS"], ["Lady Gaga", "POS"], ["Instagram", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0396", "predictions": [["Radiohead", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0397", "predictions": [["MartinBayfield", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0398", "predictions": [["Bill Clinton", "NEG"], ["FBI", "NEU"], ["Vince Fosters", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0399", "predictions": [["Staci Conner", "POS"], ["Jeff Conner", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0400", "predictions": [["BRICS Film Festival", "POS"], ["India", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0401", "predictions": [["Nintendo", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0402", "predictions": [["BoiseFilmFest", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0403", "predictions": [["JHSbaseball2014", "POS"], ["Gamble", "POS"], ["Rubberducks", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0404", "predictions": [["premier league", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0405", "predictions": [["TackleAfrica", "POS"], ["London", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0406", "predictions": [["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0407", "predictions": [["Sudbury concert", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0408", "predictions": [["NFL", "NEU"], ["Colts", "NEU"], ["Le ' Raven Clark", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0409", "predictions": [["Donald Trump", "NEU"], ["Clinton Cash", "POS"], ["Hillary", "NEG"], ["Breitbart", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0410", "predictions": [["Indian", "NEU"], ["Sacramento", "NEU"], ["John Sutter", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0411", "predictions": [["United States", "NEU"], ["Donald Trump", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0412", "predictions": [["Kevin Durant", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0413", "predictions": [["harry", "POS"], ["one direction", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0414", "predictions": [["NW Rankin", "POS"], ["Warren Central", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0415", "predictions": [["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0416", "predictions": [["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0417", "predictions": [["Micky Dolenz", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0418", "predictions": [["Ricky Martin", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0419", "predictions": [["David Beckham", "NEU"], ["Diego Costa", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0420", "predictions": [["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0421", "predictions": [["Kobe", "POS"], ["Russell Westbrook", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0422", "predictions": [["Trump", "NEU"], ["Bill Clinton", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0423", "predictions": [["Calvin Klein", "NEU"], ["metgala", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0424", "predictions": [["GaryBarlow", "POS"], ["Manchester", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0425", "predictions": [["Ellie", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0426", "predictions": [["jimin", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0427", "predictions": [["Philippe Coutinho", "POS"], ["Emre Can", "POS"], ["Liverpool", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0428", "predictions": [["apocalypticafi", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0429", "predictions": [["Leicester City Football Club", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0430", "predictions": [["Donald Trump", "NEG"], ["DouthatNYT", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0431", "predictions": [["AndyRuther", "POS"], ["Matty", "POS"], ["TheDirtySports", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0432", "predictions": [["Clinton", "NEG"], ["CNN", "NEU"], ["Anderson Cooper", "NEU"], ["Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0433", "predictions": [["Claire Danes", "POS"], ["Zac Posen", "POS"], ["MetGala", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0434", "predictions": [["RonJohnsonWI", "NEG"], ["Donald Trump", "NEG"], ["Wisconsin", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0435", "predictions": [["NBA", "NEU"], ["Chris Paul", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0436", "predictions": [["GaryBarlow", "NEU"], ["takethat", "NEU"], ["OneLoveManchester", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0437", "predictions": [["Kim Kardashian", "NEU"], ["Khloe", "NEU"], ["Odell Beckham Jr", "NEG"], ["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0438", "predictions": [["Adam Pilachowski", "POS"], ["South Hadley", "POS"], ["Belchertown", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0439", "predictions": [["Insignificant Man", "POS"], ["Brooklyn Film Festival", "NEU"], ["Modi", "NEU"], ["India", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0440", "predictions": [["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0441", "predictions": [["Cannes Festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0442", "predictions": [["XXXTentacion", "NEG"], ["San Diego", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0443", "predictions": [["Donald Trump", "NEG"], ["White House", "NEU"], ["Russia", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0444", "predictions": [["WSU", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0445", "predictions": [["Robert Pattinson", "POS"], ["Robert Pattinson", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0446", "predictions": [["Justin Bieber", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0447", "predictions": [["OneLoveManchester", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0448", "predictions": [["Memorial Day", "NEU"], ["James", "POS"], ["juliawebber", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0449", "predictions": [["Barack Obama", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0450", "predictions": [["LionelMessi", "NEU"], ["antonellaRoccuzzo", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0451", "predictions": [["United", "NEU"], ["Ryan Giggs", "NEU"], ["mufc", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0452", "predictions": [["Zac Efron", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0453", "predictions": [["Skokie Festival of Cultures", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0454", "predictions": [["indyindians", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0455", "predictions": [["Bill Gates", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0456", "predictions": [["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0457", "predictions": [["Cannes", "NEU"], ["Blake Lively", "POS"], ["blakelively", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0458", "predictions": [["jordanazzow", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0459", "predictions": [["NBA", "NEU"], ["Klay Thompson", "POS"], ["Golden State Warriors", "POS"], ["OKC Thunder", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0460", "predictions": [["One Direction", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0461", "predictions": [["Nba", "NEU"], ["Cavs", "NEG"], ["Draymond Green", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0462", "predictions": [["DFA", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0463", "predictions": [["forbidden festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0464", "predictions": [["Sadiq Khan", "POS"], ["Western", "NEU"], ["Donald Trump", "NEG"], ["Nigel Farage", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0465", "predictions": [["Angelina Jolie", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0466", "predictions": [["gabsfestival", "POS"], ["Sydney", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0467", "predictions": [["Ramachandra Guha", "NEU"], ["Rahul Dravid", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0468", "predictions": [["Canning Dock", "POS"], ["Merseyfestival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0469", "predictions": [["Javier Mascherano", "NEU"], ["Juventus", "NEU"], ["Daily Mirror", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0470", "predictions": [["Denver Broncos", "NEU"], ["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0471", "predictions": [["JustinColeMoore", "POS"], ["Glens Falls", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0472", "predictions": [["EllieEvans99", "POS"], ["manicstreetpreachers", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0473", "predictions": [["Bourbonnais Friendship Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0474", "predictions": [["Colts", "NEG"], ["nfl", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0475", "predictions": [["David Bowie", "POS"], ["Steve Schapiro", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0476", "predictions": [["NBA", "NEU"], ["David McCormack", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0477", "predictions": [["Knicks", "NEU"], ["Phil Jackson", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0478", "predictions": [["Dodgers", "NEU"], ["Cody Bellinger", "POS"], ["MLB", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0479", "predictions": [["Ryan", "NEU"], ["Paul Nehlen", "NEU"], ["Donald Trump", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0480", "predictions": [["Donald Trump", "POS"], ["Hillary", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0481", "predictions": [["Andy Murray", "NEG"], ["Roger Federer", "POS"], ["Wimbledon", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0482", "predictions": [["iKON", "POS"], ["SG", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0483", "predictions": [["Seth Godin", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0484", "predictions": [["Warriors", "POS"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0485", "predictions": [["PEHS", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0486", "predictions": [["Taylor Swift", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0487", "predictions": [["Kevin Durant", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0488", "predictions": [["Hillary Clinton", "POS"], ["Snapchat", "POS"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0489", "predictions": [["Taylor Swift", "NEU"], ["Met Gala", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0490", "predictions": [["harry styles", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0491", "predictions": [["Newcomb", "POS"], ["KrockFootball", "NEU"], ["AFLBarwon", "NEU"], ["addyfootyfix", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0492", "predictions": [["NBA", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0493", "predictions": [["Grimsdyke Brass", "POS"], ["May Day Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0494", "predictions": [["MC24H ART FESTIVAL", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0495", "predictions": [["CeeLoGreen", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0496", "predictions": [["Steph Curry", "NEU"], ["Under Armour", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0497", "predictions": [["Whitney Houston", "NEU"], ["Christina Aguilera", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0498", "predictions": [["Seth Godin", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0499", "predictions": [["JENNIFER LAWRENCE", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0500", "predictions": [["Times Square", "POS"], ["Twitter", "NEU"], ["BTS", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0501", "predictions": [["Lady Gaga", "POS"], ["Indy500", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0502", "predictions": [["Soundkartell", "POS"], ["tomklose", "POS"], ["spotfestival", "NEU"], ["SpotifyDE", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0503", "predictions": [["David Beckham", "POS"], ["Harper", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0504", "predictions": [["warriors", "POS"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0505", "predictions": [["Paris", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0506", "predictions": [["Liverpool", "NEG"], ["Premier League", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0507", "predictions": [["Yuck", "POS"], ["robinbastardd", "NEU"], ["LiLphobe", "NEU"], ["carawaydisco", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0508", "predictions": [["Russell Westbrook", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0509", "predictions": [["Arsenal", "POS"], ["Mesut Ozil", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0510", "predictions": [["Bruno Mars", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0511", "predictions": [["Lady Gaga", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0512", "predictions": [["mrrobertwright", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0513", "predictions": [["NLR", "POS"], ["Ham", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0514", "predictions": [["Daniel Radcliffe", "NEG"], ["Elijah Wood", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0515", "predictions": [["Roger Goodell", "NEU"], ["NFL", "NEU"], ["Tom Brady", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0516", "predictions": [["michelpolnareff ' s", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0517", "predictions": [["JenniferLopez", "POS"], ["JENNIFER LOPEZ", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0518", "predictions": [["Kevin Durant", "POS"], ["OKC", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0519", "predictions": [["Sergio Ramos", "POS"], ["UCL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0520", "predictions": [["Tennessean", "NEU"], ["Titans", "NEU"], ["Nashville", "NEU"], ["NissanStadium", "POS"], ["Beyonce", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0521", "predictions": [], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0522", "predictions": [["Hannah", "NEU"], ["Ruth", "NEU"], ["Cabinet of Curiosities", "NEU"], ["lincoln", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0523", "predictions": [["Lady Gaga", "NEU"], ["MET Gala", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0524", "predictions": [["Ariana Grande", "NEU"], ["Manchester", "NEU"], ["One Love Manchester", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0525", "predictions": [["NFL", "NEU"], ["Ryan Tannehill", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0526", "predictions": [["Donald Trump", "NEU"], ["West Virginia", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0527", "predictions": [["GranblueFantasy", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0528", "predictions": [["teessidesu", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0529", "predictions": [["BBC", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0530", "predictions": [["Flkittie", "NEU"], ["nbashaw", "NEU"], ["Chris_arnade", "NEU"], ["Zuckerberg", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0531", "predictions": [["DeltaPowerEquip", "POS"], ["ridgetown_dhs", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0532", "predictions": [["Harry Styles", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0533", "predictions": [["Marcus Rashford", "POS"], ["Europa League", "NEU"], ["Premier League", "NEU"], ["England", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0534", "predictions": [["gaia festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0535", "predictions": [["RaysBaseball", "POS"], ["rays", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0536", "predictions": [["Emma Goldman", "NEU"], ["America", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0537", "predictions": [["Joe Paterno", "NEG"], ["Jerry Sandusky", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0538", "predictions": [["Lady Gaga", "NEU"], ["NYC", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0539", "predictions": [["ATXFestival", "NEU"], ["LisaKudrow", "NEU"], ["Michael Patrick King", "NEU"], ["danbucatinsky", "NEU"], ["Laura Silverman", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0540", "predictions": [["Bruno Mars", "NEU"], ["Maxwell", "NEU"], ["Instagram", "NEU"], ["BETAwards17", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0541", "predictions": [["MLB", "NEU"], ["White Sox", "NEU"], ["Blue Jays", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0542", "predictions": [["Rosie O ' Donnell", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0543", "predictions": [["Miamisburg", "POS"], ["Spring Fling Festival", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0544", "predictions": [["Hossa", "POS"], ["NHLBlackhawks", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0545", "predictions": [["Terry O ' Reilly", "POS"], ["NHLBruins", "NEU"], ["CCRINews", "NEU"], ["CCRIAthletics", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0546", "predictions": [["Warriors", "POS"], ["Cavaliers", "NEG"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0547", "predictions": [["Harry Potter", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0548", "predictions": [["Oakland A ' s", "POS"], ["MLB", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0549", "predictions": [["Drew Bishop", "NEU"], ["NHL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0550", "predictions": [["NHL", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0551", "predictions": [["Stoke City", "POS"], ["Potters", "POS"], ["StokeCityF", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0552", "predictions": [["LeBron James", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0553", "predictions": [["Kurt Sutter", "NEU"], ["FaceTime", "NEU"], ["sonsofanarchy", "NEU"], ["ATXFestival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0554", "predictions": [["david beckham", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0555", "predictions": [["Pavelski", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0556", "predictions": [["Ellie Goulding", "POS"], ["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0557", "predictions": [["Matt", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0558", "predictions": [["David Cameron", "POS"], ["EU", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0559", "predictions": [["justin bieber", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0560", "predictions": [["Potter Heigham", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0561", "predictions": [["Loud Mouths", "NEU"], ["Carmelo Anthony", "NEU"], ["Cavaliers", "NEU"], ["knicks", "NEU"], ["nyk", "NEU"], ["NBA", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0562", "predictions": [["OneLoveManchester", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0563", "predictions": [["Bush", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0564", "predictions": [["Rays", "NEU"], ["Casey Gillaspie", "POS"], ["BiscuitBaseball", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0565", "predictions": [["deion", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0566", "predictions": [["iHeartCountry Festival", "NEU"], ["Frank Erwin Center", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0567", "predictions": [["Sky Arts", "NEU"], ["David Bowie", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0568", "predictions": [["TottBluegrass Festival", "POS"], ["NewTecumseth", "NEU"], ["tottenham", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0569", "predictions": [["That Should Be Me", "NEU"], ["Justin Bieber", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0570", "predictions": [["GPISDECHS", "NEU"], ["Trevino", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0571", "predictions": [["WWE", "NEU"], ["FinnBalor", "POS"], ["Singapore", "POS"], ["Tokyo", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0572", "predictions": [["Connor Cook", "NEG"], ["NFL", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0573", "predictions": [["NFL", "NEU"], ["Seahawks", "NEU"], ["Jarran Reed", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0574", "predictions": [["Rangers", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0575", "predictions": [["Westbrook", "NEU"], ["Lil B", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0576", "predictions": [["KahlenBarry", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0577", "predictions": [["Newport County", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0578", "predictions": [["Justin Bieber", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0579", "predictions": [["CNN", "NEU"], ["Donald Trump", "POS"], ["Oregon", "NEU"], ["Republican", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0580", "predictions": [["Roger Stone", "NEU"], ["Nigel Farage", "NEU"], ["Donald Trump", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0581", "predictions": [["Kristen Stewart", "NEU"], ["Cafe Society", "NEU"], ["Cannes Film Festival", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0582", "predictions": [["Bucky", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0583", "predictions": [["Niall", "NEU"], ["Donald Trump", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0584", "predictions": [["Christina Aguilera", "POS"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0585", "predictions": [["Taylor Swift", "NEG"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}
+{"sample_id": "twitter2017_test_0586", "predictions": [["hannuhnell", "NEU"], ["rihanna", "NEU"]], "stop_type": "canonical_t0_direct", "num_visual_queries": 0}

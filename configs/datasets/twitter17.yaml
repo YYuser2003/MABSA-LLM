@@ -1,0 +1,12 @@
+dataset:
+  name: twitter2017
+  manifest_prefix: tw17
+  data_dir: data/processed
+  image_base_dir: .
+  splits:
+    dev: data/processed/twitter2017_dev.jsonl
+    test: data/processed/twitter2017_test.jsonl
+    train: data/processed/twitter2017_train.jsonl
+  manifests:
+    dev: data/manifests/tw17_dev.jsonl
+    test: data/manifests/tw17_test.jsonl

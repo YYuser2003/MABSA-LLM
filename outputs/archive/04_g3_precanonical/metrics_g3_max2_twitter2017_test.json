@@ -1,0 +1,117 @@
+{
+  "total_samples": 585,
+  "total_gold_aspects": 1231,
+  "end_to_end_metrics": {
+    "pair_precision": 72.68,
+    "pair_recall": 72.56,
+    "pair_f1": 72.62,
+    "aspect_f1": 100.0,
+    "cond_sent_acc": 72.6
+  },
+  "locked_aspect_metrics": {
+    "pair_precision": 72.68,
+    "pair_recall": 72.56,
+    "pair_f1": 72.62,
+    "sent_acc_locked": 72.6
+  },
+  "initial_g0_r_metrics": {
+    "pair_precision": 70.47,
+    "pair_recall": 70.35,
+    "pair_f1": 70.41
+  },
+  "delta_f1_over_g0_r": 2.21,
+  "anq": 0.23,
+  "gpq": 9.61,
+  "bfsr_percent": 1.2,
+  "vinb_percent": 2.19,
+  "stop_type_distribution": {
+    "natural_stop": 578,
+    "budget_forced_stop": 7
+  },
+  "aspect_level_diagnostics": {
+    "err_sent_percent": 11.08,
+    "hrr_sent_percent": 1.52,
+    "vng_sent_net_gain": 27,
+    "vinb_percent": 2.19,
+    "asp_wc_recovery": 40,
+    "asp_cw_harmful": 13,
+    "asp_cc_maintained": 845,
+    "asp_ww_unresolved": 321
+  },
+  "sample_level_diagnostics": {
+    "err_sample_percent": 8.7,
+    "hrr_sample_percent": 0.0,
+    "vng_sample_net_gain": 24,
+    "sample_wc_recovery": 24,
+    "sample_cw_harmful": 0,
+    "sample_cc_maintained": 309,
+    "sample_ww_unresolved": 252
+  },
+  "compute_efficiency": {
+    "has_compute_info": true,
+    "avg_api_calls": 3.45,
+    "avg_tokens": 10122.0,
+    "avg_image_invocations": 1.23,
+    "avg_latency_s": 24.62,
+    "f1_per_api_call": 21.05,
+    "f1_per_1k_tokens": 7.17,
+    "f1_per_image_invocation": 59.04
+  },
+  "tsc_benchmark_metrics": {
+    "accuracy_final": 72.6,
+    "macro_f1_final": 72.08,
+    "accuracy_init": 70.39,
+    "macro_f1_init": 69.71,
+    "delta_accuracy": 2.21,
+    "delta_macro_f1": 2.37,
+    "class_metrics_final": {
+      "POS": {
+        "precision": 75.28,
+        "recall": 68.79,
+        "f1-score": 71.89
+      },
+      "NEG": {
+        "precision": 74.17,
+        "recall": 67.47,
+        "f1-score": 70.66
+      },
+      "NEU": {
+        "precision": 70.3,
+        "recall": 77.39,
+        "f1-score": 73.68
+      }
+    },
+    "class_metrics_init": {
+      "POS": {
+        "precision": 74.88,
+        "recall": 63.04,
+        "f1-score": 68.45
+      },
+      "NEG": {
+        "precision": 74.47,
+        "recall": 63.25,
+        "f1-score": 68.4
+      },
+      "NEU": {
+        "precision": 66.77,
+        "recall": 78.8,
+        "f1-score": 72.29
+      }
+    }
+  },
+  "taxonomy_distribution": {
+    "AFFECT": 113,
+    "GENERAL": 3,
+    "OCR_LOGO": 9,
+    "CONFLICT_CHECK": 3,
+    "OWNERSHIP": 1,
+    "ACTION_STATE": 2,
+    "IDENTITY": 2
+  },
+  "taxonomy_recoveries": {
+    "AFFECT": 9,
+    "OCR_LOGO": 1,
+    "OWNERSHIP": 1,
+    "IDENTITY": 2
+  }
+}

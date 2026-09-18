@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProbeOutputSchema",
+  "description": "Schemas for Vision Oracle and Text Reasoner probe outputs in BACR-v2.",
+  "definitions": {
+    "VisionProbe": {
+      "type": "object",
+      "properties": {
+        "answer": { "type": "string" },
+        "observable_evidence": { "type": "array", "items": { "type": "string" } },
+        "certainty": { "type": "string", "enum": ["low", "medium", "high"] },
+        "insufficient_visual_evidence": { "type": "boolean" }
+      },
+      "required": ["answer", "certainty"]
+    },
+    "TextProbe": {
+      "type": "object",
+      "properties": {
+        "aspect_id": { "type": "string" },
+        "aspect_text": { "type": "string" },
+        "answer": { "type": "string" },
+        "evidence_spans": { "type": "array", "items": { "type": "string" } },
+        "linguistic_relation": {
+          "type": "string",
+          "enum": [
+            "slang_semantics",
+            "syntax_dependency",
+            "negation_scope",
+            "modifier_scope",
+            "pragmatic_irony",
+            "coreference",
+            "general"
+          ]
+        },
+        "certainty": { "type": "string", "enum": ["low", "medium", "high"] },
+        "insufficient_textual_evidence": { "type": "boolean" }
+      },
+      "required": ["answer", "evidence_spans", "certainty"]
+    }
+  }
+}

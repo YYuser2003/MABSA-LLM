@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TrajectoryRecordSchema",
+  "description": "Schema for complete multi-turn BACR/G3 reasoning trajectory record per sample.",
+  "type": "object",
+  "properties": {
+    "sample_id": { "type": "string" },
+    "fingerprint": { "type": "object" },
+    "text": { "type": "string" },
+    "image": { "type": "string" },
+    "text_initial": { "type": "object" },
+    "image_initial": { "type": "object" },
+    "rounds": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "stop_type": { "type": "string", "enum": ["natural_stop", "budget_forced_stop"] },
+    "final_controller": { "type": "object" },
+    "final_pairs": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "num_visual_queries": { "type": "integer" },
+    "compute": { "type": "object" }
+  },
+  "required": ["sample_id", "text", "final_pairs", "stop_type"]
+}

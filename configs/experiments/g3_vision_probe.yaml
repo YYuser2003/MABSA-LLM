@@ -1,0 +1,15 @@
+experiment:
+  name: g3_vision_probe
+  type: active_visual_reasoning
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  controller:
+    directions:
+      - VISION
+      - STOP
+    max_queries: 2
+    early_stopping: true
+  aspect_lock: true
+  canonical_t0: true
+  canonical_v0: true
+  concurrency: 4

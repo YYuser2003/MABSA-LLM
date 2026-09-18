@@ -1,0 +1,178 @@
+{
+  "b0_zeroshot_qwen": {
+    "name": "B0 Zero-shot Qwen",
+    "category": "Student Baseline",
+    "model": "Qwen2.5-VL-7B-Instruct / Qwen2-VL-7B-Instruct",
+    "task": "Open Joint Aspect-Sentiment Extraction",
+    "protocol_equivalence": {
+      "same_task": true,
+      "same_model": true,
+      "same_inputs": true,
+      "same_prompt": true,
+      "same_inference_protocol": true,
+      "evaluator_updated": true
+    },
+    "coverage": {
+      "tw15_test": "674/674 (100.00%)",
+      "tw17_test": "587/587 (100.00%)",
+      "note": "Sample coverage is 100%. Aspect extraction recall is low due to zero-shot nature, which is authentic model behavior."
+    },
+    "decision": "REUSE",
+    "action": "Keep as canonical Student baseline; re-evaluate metrics directly using new manifest/evaluator.",
+    "rerun_needed": false
+  },
+  "b1_direct_sft_qwen": {
+    "name": "B1 Direct SFT Qwen",
+    "category": "Student Baseline",
+    "model": "Qwen3-VL-8B / Qwen2.5-VL-7B Direct SFT",
+    "task": "Direct Multimodal SFT",
+    "protocol_equivalence": {
+      "same_task": true,
+      "same_model": true,
+      "same_inputs": true,
+      "same_prompt": true,
+      "same_inference_protocol": true,
+      "evaluator_updated": true
+    },
+    "coverage": {
+      "tw15_test": "674/674 (100.00%)",
+      "tw17_test": "587/587 (100.00%)",
+      "tw15_aspect_extracted": "872/1032 (84.50%)",
+      "tw17_aspect_extracted": "1121/1222 (91.73%)"
+    },
+    "decision": "REUSE",
+    "action": "Keep as canonical Student SFT baseline (PairF1 TW15 67.08, TW17 69.82); no re-training or re-inference needed.",
+    "rerun_needed": false
+  },
+  "g0_direct_text_paironly": {
+    "name": "G0 Pair-only Direct Text",
+    "category": "Prompt Control / Baseline Ablation",
+    "model": "Gemini 2.5 Flash",
+    "task": "Aspect Sentiment Classification (Text-only)",
+    "protocol_equivalence": {
+      "same_task": true,
+      "same_model": true,
+      "same_inputs": true,
+      "same_prompt": false,
+      "same_inference_protocol": true,
+      "prompt_difference": "Uses Prompt A (T -> Pair) whereas Canonical T0 uses Prompt B (T -> Pair + 1-sentence reason)."
+    },
+    "coverage": {
+      "tw15_test": "673/674 (99.85%)",
+      "tw17_test": "586/587 (99.83%)",
+      "tw15_aspect_coverage": "1028/1032 (99.61%)",
+      "tw17_aspect_coverage": "1220/1222 (99.84%)"
+    },
+    "decision": "REUSE_AS_ABLATION",
+    "action": "Retain as E3-A Pair-only prompt ablation. Canonical G0 is derived directly from Canonical T0 pairs without rerunning API.",
+    "rerun_needed": false
+  },
+  "g1_direct_mm": {
+    "name": "G1 Direct Multimodal",
+    "category": "Direct Multimodal Baseline",
+    "model": "Gemini 2.5 Flash",
+    "task": "Aspect Sentiment Classification (Multimodal Single-turn)",
+    "protocol_equivalence": {
+      "same_task": true,
+      "same_model": true,
+      "same_inputs": true,
+      "same_prompt": true,
+      "same_inference_protocol": true,
+      "unaffected_by_canonical_init": true
+    },
+    "coverage": {
+      "tw15_test": "671/674 (99.55%)",
+      "tw17_test": "579/587 (98.64%)",
+      "tw15_aspect_coverage": "1023/1032 (99.13%)",
+      "tw17_aspect_coverage": "1204/1222 (98.53%)",
+      "missing_samples_tw15": 3,
+      "missing_samples_tw17": 8
+    },
+    "decision": "REUSE",
+    "action": "Fully valid standalone baseline (Macro-F1 TW15 65.01, TW17 72.79). Only patch missing samples if strict 100% test coverage is requested.",
+    "rerun_needed": false
+  },
+  "g1_sr_sequential_reread": {
+    "name": "G1-SR Sequential Re-read",
+    "category": "Sequential Re-read Baseline Control",
+    "model": "Gemini 2.5 Flash",
+    "task": "Aspect Sentiment Classification (2-turn Multimodal Critique & Revision)",
+    "protocol_equivalence": {
+      "same_task": true,
+      "same_model": true,
+      "same_inputs": true,
+      "same_prompt": true,
+      "same_inference_protocol": true
+    },
+    "coverage": {
+      "tw15_test": "674/674 (100.00%)",
+      "tw17_test": "586/587 (99.83%)",
+      "tw15_aspect_coverage": "1032/1032 (100.00%)",
+      "tw17_aspect_coverage": "1221/1222 (99.92%)"
+    },
+    "decision": "REUSE",
+    "action": "Directly retain as Sequential Re-read baseline (TW15 Acc 68.95 / MF1 65.87; TW17 Acc 71.96 / MF1 71.18). No re-run needed.",
+    "rerun_needed": false
+  },
+  "g3_precanonical": {
+    "name": "G3 Precanonical",
+    "category": "Unidirectional Active Visual Reasoning Benchmark",
+    "model": "Gemini 2.5 Flash",
+    "task": "Target-guided Active Visual Probing",
+    "protocol_equivalence": {
+      "same_task": true,
+      "same_model": true,
+      "same_inputs": true,
+      "t0_prompt_equivalent": true,
+      "v0_prompt_equivalent": true,
+      "action_space_difference": "G3 is strictly unidirectional visual probe (ASK vision / REVISE / STOP). BACR introduces bidirectional action space (pi_D in {text, vision}, pi_Q, pi_R)."
+    },
+    "coverage": {
+      "tw15_test": "674/674 (100.00%)",
+      "tw17_test": "585/587 (99.66%)",
+      "tw15_aspect_coverage": "1032/1032 (100.00%)",
+      "tw17_aspect_coverage": "1219/1222 (99.75%)",
+      "tw17_missing_samples": [
+        "twitter2017_test_0521",
+        "twitter2017_test_0375"
+      ]
+    },
+    "re_evaluated_metrics": {
+      "tw15_test": {
+        "samples": 674,
+        "aspects": 1037,
+        "acc_init": 73.45,
+        "mf1_init": 66.81,
+        "acc_final": 72.67,
+        "mf1_final": 67.74,
+        "delta_mf1": 0.93
+      },
+      "tw17_test": {
+        "samples": 585,
+        "aspects": 1231,
+        "acc_init": 70.39,
+        "mf1_init": 69.71,
+        "acc_final": 72.6,
+        "mf1_final": 72.08,
+        "delta_mf1": 2.37
+      }
+    },
+    "decision": "REUSE_AS_PRECANONICAL_AND_HARVEST",
+    "action": "Harvest T0 and V0 directly to populate data/cache/canonical_t0/ and canonical_v0/. Retain metrics as Stage B G3 Unidirectional benchmark (TW15 MF1 67.74, TW17 MF1 72.08). For new BACR, run with bidirectional controller using the harvested canonical cache.",
+    "rerun_needed": false
+  },
+  "diagnostics": {
+    "name": "Diagnostic Experiments",
+    "subsets": [
+      "visual_probing: Entity Recognition & Celebrity Grounding (TW15 Dev/Test, TW17 Dev/Test)",
+      "error_analysis: 1517 Failure Case Taxonomy & Linguistic/Visual Misalignment"
+    ],
+    "protocol_equivalence": {
+      "same_task": true,
+      "task_nature": "Model capability and error pathology diagnostics, independent of BACR controller action space."
+    },
+    "decision": "REUSE",
+    "action": "Directly retain as diagnostic evidence for paper analysis sections.",
+    "rerun_needed": false
+  }
+}

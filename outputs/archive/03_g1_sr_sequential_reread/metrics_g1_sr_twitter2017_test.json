@@ -1,0 +1,25 @@
+{
+  "final_accuracy": 71.96,
+  "final_macro_f1": 71.18,
+  "initial_accuracy": 72.85,
+  "initial_macro_f1": 72.73,
+  "delta_accuracy": -0.89,
+  "delta_macro_f1": -1.55,
+  "class_metrics_final": {
+    "POS": {
+      "precision": 73.5,
+      "recall": 72.01,
+      "f1-score": 72.75
+    },
+    "NEG": {
+      "precision": 71.9,
+      "recall": 65.48,
+      "f1-score": 68.54
+    },
+    "NEU": {
+      "precision": 70.74,
+      "recall": 73.82,
+      "f1-score": 72.25
+    }
+  }
+}

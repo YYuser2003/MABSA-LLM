@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BACRControllerOutputSchema",
+  "description": "Strict schema for BACR Controller round-by-round discrete decisions (pi_G / pi_D / pi_Q / pi_R).",
+  "type": "object",
+  "properties": {
+    "gap_diagnosis": {
+      "type": "object",
+      "properties": {
+        "gap_type": {
+          "type": "string",
+          "enum": [
+            "NO_GAP",
+            "VISUAL_AFFECT_GAP",
+            "VISUAL_GROUNDING_GAP",
+            "PRAGMATIC_IRONY_GAP",
+            "TEXT_SEMANTIC_GAP",
+            "CROSS_MODAL_CONFLICT"
+          ]
+        },
+        "gap_description": { "type": "string" }
+      },
+      "required": ["gap_type"]
+    },
+    "current_aspects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "aspect_id": { "type": "string" },
+          "text": { "type": "string" },
+          "span": { "type": "array", "items": { "type": "integer" } },
+          "sentiment": { "type": "string", "enum": ["POS", "NEG", "NEU"] },
+          "reason": { "type": "string" }
+        },
+        "required": ["aspect_id", "text", "sentiment"]
+      }
+    },
+    "updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "aspect_id": { "type": "string" },
+          "old_sentiment": { "type": "string", "enum": ["POS", "NEG", "NEU"] },
+          "new_sentiment": { "type": "string", "enum": ["POS", "NEG", "NEU"] },
+          "evidence_refs": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "evidence_quote": { "type": "string" },
+          "evidence_relation": {
+            "type": "string",
+            "enum": ["target_direct", "target_indirect", "scene_only", "uncertain"]
+          },
+          "update_rationale": { "type": "string" }
+        },
+        "required": ["aspect_id", "new_sentiment", "evidence_refs", "evidence_quote", "evidence_relation"]
+      }
+    },
+    "next_action": { "type": "string", "enum": ["QUERY", "STOP", "ASK"] },
+    "direction": { "type": "string", "enum": ["VISUAL", "TEXT", "NONE"] },
+    "stop_type": { "type": "string", "enum": ["natural_stop", "budget_forced_stop"] },
+    "target_aspect_id": { "type": ["string", "null"] },
+    "question": { "type": ["string", "null"] },
+    "decision_reason": { "type": "string" }
+  },
+  "required": ["current_aspects", "next_action", "decision_reason"]
+}

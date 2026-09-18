@@ -1,0 +1,8 @@
+experiment:
+  name: g0_t0
+  type: text_only
+  model_config: configs/models/gemini.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  aspect_lock: true
+  canonical_t0: true
+  concurrency: 4

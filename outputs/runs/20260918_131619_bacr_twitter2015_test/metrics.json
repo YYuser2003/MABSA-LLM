@@ -1,0 +1,118 @@
+{
+  "total_samples": 674,
+  "total_gold_aspects": 1037,
+  "end_to_end_metrics": {
+    "pair_precision": 72.12,
+    "pair_recall": 72.12,
+    "pair_f1": 72.12,
+    "aspect_f1": 100.0,
+    "cond_sent_acc": 72.19
+  },
+  "locked_aspect_metrics": {
+    "pair_precision": 72.12,
+    "pair_recall": 72.12,
+    "pair_f1": 72.12,
+    "sent_acc_locked": 72.19
+  },
+  "initial_g0_r_metrics": {
+    "pair_precision": 73.4,
+    "pair_recall": 73.48,
+    "pair_f1": 73.44
+  },
+  "delta_f1_over_g0_r": -1.32,
+  "anq": 0.23,
+  "gpq": -5.74,
+  "bfsr_percent": 1.34,
+  "vinb_percent": -1.25,
+  "stop_type_distribution": {
+    "natural_stop": 665,
+    "budget_forced_stop": 9
+  },
+  "aspect_level_diagnostics": {
+    "err_sent_percent": 12.04,
+    "hrr_sent_percent": 6.07,
+    "vng_sent_net_gain": -13,
+    "vinb_percent": -1.25,
+    "asp_wc_recovery": 33,
+    "asp_cw_harmful": 46,
+    "asp_cc_maintained": 712,
+    "asp_ww_unresolved": 241
+  },
+  "sample_level_diagnostics": {
+    "err_sample_percent": 8.89,
+    "hrr_sample_percent": 0.0,
+    "vng_sample_net_gain": 24,
+    "sample_wc_recovery": 24,
+    "sample_cw_harmful": 0,
+    "sample_cc_maintained": 404,
+    "sample_ww_unresolved": 246
+  },
+  "compute_efficiency": {
+    "has_compute_info": true,
+    "avg_api_calls": 1.46,
+    "avg_tokens": 5291.7,
+    "avg_image_invocations": 0.22,
+    "avg_latency_s": 10.65,
+    "f1_per_api_call": 49.4,
+    "f1_per_1k_tokens": 13.63,
+    "f1_per_image_invocation": 327.82
+  },
+  "tsc_benchmark_metrics": {
+    "accuracy_final": 72.19,
+    "macro_f1_final": 66.63,
+    "accuracy_init": 73.45,
+    "macro_f1_init": 66.81,
+    "delta_accuracy": -1.26,
+    "delta_macro_f1": -0.18,
+    "class_metrics_final": {
+      "POS": {
+        "precision": 62.28,
+        "recall": 79.18,
+        "f1-score": 69.72
+      },
+      "NEG": {
+        "precision": 57.89,
+        "recall": 48.67,
+        "f1-score": 52.88
+      },
+      "NEU": {
+        "precision": 82.21,
+        "recall": 72.92,
+        "f1-score": 77.29
+      }
+    },
+    "class_metrics_init": {
+      "POS": {
+        "precision": 67.06,
+        "recall": 71.92,
+        "f1-score": 69.41
+      },
+      "NEG": {
+        "precision": 59.09,
+        "recall": 46.02,
+        "f1-score": 51.74
+      },
+      "NEU": {
+        "precision": 79.14,
+        "recall": 79.4,
+        "f1-score": 79.27
+      }
+    }
+  },
+  "taxonomy_distribution": {
+    "AFFECT": 118,
+    "OCR_LOGO": 16,
+    "linguistic_pragmatic": 7,
+    "CONFLICT_CHECK": 4,
+    "IDENTITY": 1,
+    "GENERAL": 5,
+    "ACTION_STATE": 2,
+    "SCENE_CONTEXT": 1
+  },
+  "taxonomy_recoveries": {
+    "AFFECT": 14,
+    "linguistic_pragmatic": 2,
+    "CONFLICT_CHECK": 1,
+    "OCR_LOGO": 1
+  }
+}

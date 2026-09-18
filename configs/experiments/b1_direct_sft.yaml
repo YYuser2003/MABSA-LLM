@@ -1,0 +1,7 @@
+experiment:
+  name: b1_direct_sft
+  type: baseline_direct_sft
+  model_config: configs/models/qwen3vl8b.yaml
+  dataset_config: configs/datasets/twitter15.yaml
+  aspect_lock: true
+  concurrency: 1
