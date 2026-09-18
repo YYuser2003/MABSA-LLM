@@ -41,13 +41,13 @@ def evaluate_pair_set(
     pred_pairs_raw: List[List[str]],
     gold_pairs_raw: List[List[str]]
 ) -> Tuple[int, int, int]:
-    """Computes TP, FP, FN for aspect-sentiment pairs."""
-    pred_set = set(normalize_pair(p) for p in pred_pairs_raw)
-    gold_set = set(normalize_pair(p) for p in gold_pairs_raw)
+    """Computes TP, FP, FN for aspect-sentiment pairs using multiset Counter matching."""
+    pred_counter = Counter(normalize_pair(p) for p in pred_pairs_raw)
+    gold_counter = Counter(normalize_pair(p) for p in gold_pairs_raw)
 
-    tp = len(pred_set & gold_set)
-    fp = len(pred_set - gold_set)
-    fn = len(gold_set - pred_set)
+    tp = sum((pred_counter & gold_counter).values())
+    fp = sum((pred_counter - gold_counter).values())
+    fn = sum((gold_counter - pred_counter).values())
     return tp, fp, fn
 
 
@@ -55,13 +55,13 @@ def evaluate_aspect_set(
     pred_pairs_raw: List[List[str]],
     gold_pairs_raw: List[List[str]]
 ) -> Tuple[int, int, int]:
-    """Computes TP, FP, FN for aspect term extraction only."""
-    pred_set = set(normalize_pair(p)[0] for p in pred_pairs_raw)
-    gold_set = set(normalize_pair(p)[0] for p in gold_pairs_raw)
+    """Computes TP, FP, FN for aspect term extraction only using multiset Counter matching."""
+    pred_counter = Counter(normalize_pair(p)[0] for p in pred_pairs_raw)
+    gold_counter = Counter(normalize_pair(p)[0] for p in gold_pairs_raw)
 
-    tp = len(pred_set & gold_set)
-    fp = len(pred_set - gold_set)
-    fn = len(gold_set - pred_set)
+    tp = sum((pred_counter & gold_counter).values())
+    fp = sum((pred_counter - gold_counter).values())
+    fn = sum((gold_counter - pred_counter).values())
     return tp, fp, fn
 
 
@@ -254,13 +254,13 @@ class G3Evaluator:
                     else:
                         asp_ww_count += 1
 
-            # 6. Sample-Level Exact Match Transition
-            init_set = set(normalize_pair(x) for x in text_init_pairs)
-            final_set = set(normalize_pair(x) for x in final_pairs)
-            gold_set = set(normalize_pair(x) for x in gold_pairs)
+            # 6. Sample-Level Exact Match Transition (multiset Counter comparison)
+            init_counter = Counter(normalize_pair(x) for x in text_init_pairs)
+            final_counter = Counter(normalize_pair(x) for x in final_pairs)
+            gold_counter = Counter(normalize_pair(x) for x in gold_pairs)
 
-            init_correct = (init_set == gold_set)
-            final_correct = (final_set == gold_set)
+            init_correct = (init_counter == gold_counter)
+            final_correct = (final_counter == gold_counter)
 
             if init_correct and final_correct:
                 sample_cc += 1
@@ -495,7 +495,7 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
             if line.strip():
                 d = json.loads(line)
                 sid = d["sample_id"]
-                gold_map[sid] = {tuple(p) for p in d.get("pairs", [])}
+                gold_map[sid] = Counter(normalize_pair(p) for p in d.get("pairs", []))
                 gold_aspect_map[sid] = {p[0]: p[1] for p in d.get("pairs", [])}
                 gold_pairs_list[sid] = d.get("pairs", [])
 
@@ -529,12 +529,12 @@ def evaluate_v3_trajectories(traj_file: str, gold_file: str) -> Dict[str, Any]:
 
     for tr in trajs:
         sid = tr["sample_id"]
-        gold_pairs = gold_map.get(sid, set())
+        gold_pairs = gold_map.get(sid, Counter())
         gold_asp_sents = gold_aspect_map.get(sid, {})
 
-        # Predictions
-        y_ha = {tuple(p) for p in tr.get("text_anchor", {}).get("pairs", tr.get("text_only", {}).get("pairs", []))}
-        y_final = {tuple(p) for p in tr.get("final_pairs", tr.get("text_baseline", {}).get("pairs", []))}
+        # Predictions (multiset Counter comparison)
+        y_ha = Counter(normalize_pair(p) for p in tr.get("text_anchor", {}).get("pairs", tr.get("text_only", {}).get("pairs", [])))
+        y_final = Counter(normalize_pair(p) for p in tr.get("final_pairs", tr.get("text_baseline", {}).get("pairs", [])))
 
         # Baseline at step 0
         y_hb0 = y_ha  # In BACR-v3, H_B(0) == H_A
@@ -697,7 +697,7 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
             if line.strip():
                 d = json.loads(line)
                 sid = d["sample_id"]
-                gold_pair_map[sid] = {tuple(p) for p in d.get("pairs", [])}
+                gold_pair_map[sid] = Counter(normalize_pair(p) for p in d.get("pairs", []))
                 gold_aspect_map[sid] = {p[0].strip().lower(): p[1] for p in d.get("pairs", [])}
                 gold_pairs_list[sid] = d.get("pairs", [])
 
@@ -730,11 +730,11 @@ def evaluate_v3_teacher(traj_file: str, gold_file: str) -> Dict[str, Any]:
 
     for tr in trajs:
         sid = tr.get("sample_id", "")
-        gold_pairs = gold_pair_map.get(sid, set())
+        gold_pairs = gold_pair_map.get(sid, Counter())
         gold_asps = gold_aspect_map.get(sid, {})
 
-        y_t0 = {tuple(p) for p in tr.get("t0_pairs", tr.get("text_anchor", {}).get("pairs", []))}
-        y_final = {tuple(p) for p in tr.get("final_pairs", [])}
+        y_t0 = Counter(normalize_pair(p) for p in tr.get("t0_pairs", tr.get("text_anchor", {}).get("pairs", [])))
+        y_final = Counter(normalize_pair(p) for p in tr.get("final_pairs", []))
 
         if y_t0 and y_t0 == gold_pairs:
             sample_t0_correct += 1

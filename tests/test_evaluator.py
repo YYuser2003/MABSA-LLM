@@ -31,8 +31,18 @@ def test_evaluate_pair_set():
     assert fn == 1
 
 
+def test_evaluate_pair_set_duplicates():
+    pred = [["apple", "pos"]]
+    gold = [["apple", "pos"], ["apple", "pos"]]
+    tp, fp, fn = evaluate_pair_set(pred, gold)
+    assert tp == 1
+    assert fp == 0
+    assert fn == 1
+
+
 if __name__ == "__main__":
     test_normalize_pair()
     test_compute_f1()
     test_evaluate_pair_set()
+    test_evaluate_pair_set_duplicates()
     print("Evaluator tests passed!")

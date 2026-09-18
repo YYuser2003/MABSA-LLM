@@ -151,33 +151,43 @@ def main():
     use_canonical_t0 = exp_config.get("experiment", {}).get("canonical_t0", False)
     use_canonical_v0 = exp_config.get("experiment", {}).get("canonical_v0", False)
 
+    t0_path = None
     if use_canonical_t0:
         t0_candidates = [
             os.path.join(PROJECT_ROOT, "data", "cache", "canonical_t0", f"{manifest_prefix}_{split}.jsonl"),
             os.path.join(PROJECT_ROOT, "data", "cache", "canonical_t0", f"{dataset_name}_{split}.jsonl")
         ]
-        t0_path = next((p for p in t0_candidates if os.path.exists(p)), t0_candidates[0])
-        if os.path.exists(t0_path):
-            with open(t0_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    if line.strip():
-                        d = json.loads(line)
-                        t0_cache[d["sample_id"]] = d
-            logger.info(f"Loaded {len(t0_cache)} canonical T0 initial records from {os.path.basename(t0_path)}.")
+        t0_path = next((p for p in t0_candidates if os.path.exists(p)), None)
+        if not t0_path:
+            raise FileNotFoundError(
+                f"Canonical T0 cache is enabled (canonical_t0: true), but no valid cache file was found! "
+                f"Checked candidates: {t0_candidates}. For {dataset_name} ({split}), ensure canonical T0 cache exists."
+            )
+        with open(t0_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    d = json.loads(line)
+                    t0_cache[d["sample_id"]] = d
+        logger.info(f"Loaded {len(t0_cache)} canonical T0 initial records from {os.path.basename(t0_path)}.")
 
+    v0_path = None
     if use_canonical_v0:
         v0_candidates = [
             os.path.join(PROJECT_ROOT, "data", "cache", "canonical_v0", f"{manifest_prefix}_{split}.jsonl"),
             os.path.join(PROJECT_ROOT, "data", "cache", "canonical_v0", f"{dataset_name}_{split}.jsonl")
         ]
-        v0_path = next((p for p in v0_candidates if os.path.exists(p)), v0_candidates[0])
-        if os.path.exists(v0_path):
-            with open(v0_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    if line.strip():
-                        d = json.loads(line)
-                        v0_cache[d["sample_id"]] = d
-            logger.info(f"Loaded {len(v0_cache)} canonical V0 initial records from {os.path.basename(v0_path)}.")
+        v0_path = next((p for p in v0_candidates if os.path.exists(p)), None)
+        if not v0_path:
+            raise FileNotFoundError(
+                f"Canonical V0 cache is enabled (canonical_v0: true), but no valid cache file was found! "
+                f"Checked candidates: {v0_candidates}. For {dataset_name} ({split}), ensure canonical V0 cache exists."
+            )
+        with open(v0_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    d = json.loads(line)
+                    v0_cache[d["sample_id"]] = d
+        logger.info(f"Loaded {len(v0_cache)} canonical V0 initial records from {os.path.basename(v0_path)}.")
 
     # Load input samples
     samples = []
@@ -249,6 +259,25 @@ def main():
         samples_to_run = [s for s in samples if s.get("sample_id") not in existing_sample_ids]
         logger.info(f"Target samples remaining to process: {len(samples_to_run)} / {len(samples)}")
 
+        # Pre-flight validation: Ensure 100% of samples_to_run exist in canonical caches if enabled
+        if use_canonical_t0 and t0_path:
+            missing_t0 = [s.get("sample_id") for s in samples_to_run if s.get("sample_id") not in t0_cache]
+            if missing_t0:
+                raise RuntimeError(
+                    f"Canonical T0 cache enabled (canonical_t0: true), but {len(missing_t0)} target samples are missing from "
+                    f"{os.path.basename(t0_path)}! Example missing IDs: {missing_t0[:5]}. "
+                    f"Refusing to execute Teacher experiment with inconsistent default baseline fallback."
+                )
+
+        if use_canonical_v0 and v0_path:
+            missing_v0 = [s.get("sample_id") for s in samples_to_run if s.get("sample_id") not in v0_cache]
+            if missing_v0:
+                raise RuntimeError(
+                    f"Canonical V0 cache enabled (canonical_v0: true), but {len(missing_v0)} target samples are missing from "
+                    f"{os.path.basename(v0_path)}! Example missing IDs: {missing_v0[:5]}. "
+                    f"Refusing to execute Teacher experiment with live uninspected sensor fallback."
+                )
+
         # Initialize client & pipeline
         def create_client(cfg: Dict[str, Any]):
             m_info = cfg.get("model", cfg)
@@ -315,9 +344,20 @@ def main():
             sid = sample.get("sample_id", "unknown")
             # Check canonical injection
             sample_copy = dict(sample)
-            if sid in t0_cache:
+            if use_canonical_t0:
+                if sid not in t0_cache:
+                    raise RuntimeError(f"Sample {sid} missing from canonical T0 cache ({os.path.basename(t0_path)})")
                 sample_copy["text_initial_cached"] = t0_cache[sid]
-            if sid in v0_cache:
+                sample_copy["require_canonical_t0"] = True
+            elif sid in t0_cache:
+                sample_copy["text_initial_cached"] = t0_cache[sid]
+
+            if use_canonical_v0:
+                if sid not in v0_cache:
+                    raise RuntimeError(f"Sample {sid} missing from canonical V0 cache ({os.path.basename(v0_path)})")
+                sample_copy["image_initial_cached"] = v0_cache[sid]
+                sample_copy["require_canonical_v0"] = True
+            elif sid in v0_cache:
                 sample_copy["image_initial_cached"] = v0_cache[sid]
 
             try:

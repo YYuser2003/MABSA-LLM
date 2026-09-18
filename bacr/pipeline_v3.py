@@ -13,7 +13,8 @@ Invariants:
 import os
 import time
 import copy
-from typing import Dict, Any, Optional, Union, List, Tuple
+from collections import Counter
+from typing import Dict, Any, Optional, Union, List, Tuple, Set
 
 from bacr.client import BaseClient
 from bacr.meta_controller import MetaController
@@ -314,22 +315,60 @@ class BACRPipelineV3:
         if gold_pairs and isinstance(gold_pairs[0], dict):
             gold_pairs = [[p.get("aspect", p.get("text", "")), p.get("sentiment", "NEU")] for p in gold_pairs]
 
+        # Resolve canonical requirements
+        require_canonical_t0 = sample.get("require_canonical_t0", kwargs.get("require_canonical_t0", False))
+        require_canonical_v0 = sample.get("require_canonical_v0", kwargs.get("require_canonical_v0", False))
+
         # Resolve T0 cache
         t0_cache = sample.get("text_initial_cached", sample.get("t0_cached"))
-        aspect_t0_map: Dict[str, Dict[str, Any]] = {}
-        if t0_cache and isinstance(t0_cache, dict):
-            cached_aspects = t0_cache.get("aspects") or t0_cache.get("text_initial", {}).get("aspects", [])
-            for a in cached_aspects:
-                term = a.get("text", a.get("aspect", ""))
-                aspect_t0_map[term.strip().lower()] = a
+        if require_canonical_t0 and not t0_cache:
+            raise RuntimeError(
+                f"Sample '{sid}' requires canonical T0 cache (canonical_t0: true), but text_initial_cached is missing!"
+            )
 
-            cached_pairs = t0_cache.get("pairs") or t0_cache.get("text_initial", {}).get("pairs", [])
-            for p in cached_pairs:
-                p_text = p[0] if isinstance(p, (list, tuple)) else p.get("aspect", "")
-                p_sent = p[1] if isinstance(p, (list, tuple)) else p.get("sentiment", "NEU")
-                k = p_text.strip().lower()
-                if k not in aspect_t0_map:
-                    aspect_t0_map[k] = {"text": p_text, "sentiment": p_sent, "reason": "Cached canonical T0"}
+        cached_aspect_list: List[Dict[str, Any]] = []
+        if t0_cache and isinstance(t0_cache, dict):
+            raw_aspects = t0_cache.get("aspects") or t0_cache.get("text_initial", {}).get("aspects", [])
+            if raw_aspects and isinstance(raw_aspects, list):
+                for c_idx, a in enumerate(raw_aspects):
+                    c_text = str(a.get("text", a.get("aspect", "")))
+                    c_span = a.get("span")
+                    if isinstance(c_span, (list, tuple)) and len(c_span) == 2:
+                        c_span = tuple(c_span)
+                    else:
+                        c_span = None
+                    c_aid = str(a.get("aspect_id", ""))
+                    c_sent = str(a.get("sentiment", "NEU")).upper().strip()
+                    c_reason = str(a.get("reason", a.get("rationale", "Cached canonical T0")))
+                    cached_aspect_list.append({
+                        "text": c_text,
+                        "aspect_id": c_aid,
+                        "span": c_span,
+                        "sentiment": c_sent,
+                        "reason": c_reason,
+                        "index": c_idx
+                    })
+            else:
+                raw_pairs = t0_cache.get("pairs") or t0_cache.get("text_initial", {}).get("pairs", [])
+                if raw_pairs and isinstance(raw_pairs, list):
+                    for c_idx, p in enumerate(raw_pairs):
+                        if isinstance(p, (list, tuple)) and len(p) >= 2:
+                            p_text = str(p[0])
+                            p_sent = str(p[1]).upper().strip()
+                        elif isinstance(p, dict):
+                            p_text = str(p.get("aspect", p.get("text", "")))
+                            p_sent = str(p.get("sentiment", "NEU")).upper().strip()
+                        else:
+                            p_text = str(p)
+                            p_sent = "NEU"
+                        cached_aspect_list.append({
+                            "text": p_text,
+                            "aspect_id": "",
+                            "span": None,
+                            "sentiment": p_sent,
+                            "reason": "Cached canonical T0",
+                            "index": c_idx
+                        })
 
         # Target aspects to evaluate (preserving aspect index and spans)
         target_aspect_items: List[Dict[str, Any]] = []
@@ -355,14 +394,13 @@ class BACRPipelineV3:
                     "aspect_id": f"{sid}_{asp_name}_{idx}",
                     "span": None
                 })
-        elif aspect_t0_map:
-            for idx, (k, a) in enumerate(aspect_t0_map.items()):
-                asp_name = a.get("text", a.get("aspect", ""))
+        elif cached_aspect_list:
+            for idx, c in enumerate(cached_aspect_list):
                 target_aspect_items.append({
-                    "aspect": asp_name,
+                    "aspect": c["text"],
                     "aspect_index": idx,
-                    "aspect_id": f"{sid}_{asp_name}_{idx}",
-                    "span": None
+                    "aspect_id": c["aspect_id"] or f"{sid}_{c['text']}_{idx}",
+                    "span": c["span"]
                 })
         else:
             target_aspect_items.append({
@@ -372,8 +410,28 @@ class BACRPipelineV3:
                 "span": None
             })
 
+        # Precompute term occurrences to accurately align duplicate aspect occurrences
+        target_occ_counter: Dict[str, int] = Counter()
+        target_item_occ: Dict[int, int] = {}
+        for item in target_aspect_items:
+            k_term = item["aspect"].strip().lower()
+            target_item_occ[item["aspect_index"]] = target_occ_counter[k_term]
+            target_occ_counter[k_term] += 1
+
+        cache_occ_counter: Dict[str, int] = Counter()
+        cache_occ_to_idx: Dict[Tuple[str, int], int] = {}
+        for c_idx, c in enumerate(cached_aspect_list):
+            k_term = c["text"].strip().lower()
+            cache_occ_to_idx[(k_term, cache_occ_counter[k_term])] = c_idx
+            cache_occ_counter[k_term] += 1
+
         # Resolve V0 cache or perceive globally
         v0_cache = sample.get("image_initial_cached", sample.get("v0_cached"))
+        if require_canonical_v0 and (not v0_cache or not isinstance(v0_cache, dict)):
+            raise RuntimeError(
+                f"Sample '{sid}' requires canonical V0 cache (canonical_v0: true), but image_initial_cached is missing or invalid!"
+            )
+
         total_compute = {
             "api_calls_text": 0,
             "api_calls_vision": 0,
@@ -400,15 +458,68 @@ class BACRPipelineV3:
         transitions: List[Dict[str, Any]] = []
         t0_pairs: List[List[str]] = []
 
+        used_cache_indices: Set[int] = set()
+
         for step_idx, asp_item in enumerate(target_aspect_items):
             asp = asp_item["aspect"]
             asp_idx = asp_item["aspect_index"]
             aid = asp_item["aspect_id"]
             span = asp_item["span"]
-
             k = asp.strip().lower()
-            t0_item = aspect_t0_map.get(k)
-            if not t0_item:
+            term_occ = target_item_occ.get(asp_idx, 0)
+
+            # Match T0 item from cached_aspect_list
+            matched_c_idx = None
+
+            # Priority 1: Match by exact span and aspect text
+            if span is not None:
+                for c_idx, c in enumerate(cached_aspect_list):
+                    if c_idx not in used_cache_indices and c["span"] == span and c["text"].strip().lower() == k:
+                        matched_c_idx = c_idx
+                        break
+
+            # Priority 2: Match by exact aspect_id and aspect text
+            if matched_c_idx is None and aid:
+                for c_idx, c in enumerate(cached_aspect_list):
+                    if c_idx not in used_cache_indices and c["aspect_id"] and c["aspect_id"] == aid and c["text"].strip().lower() == k:
+                        matched_c_idx = c_idx
+                        break
+
+            # Priority 3: Match by identical occurrence count of this term
+            if matched_c_idx is None:
+                cand_idx = cache_occ_to_idx.get((k, term_occ))
+                if cand_idx is not None and cand_idx not in used_cache_indices:
+                    matched_c_idx = cand_idx
+
+            # Priority 4: Match by positional index if text matches
+            if matched_c_idx is None and asp_idx < len(cached_aspect_list) and asp_idx not in used_cache_indices:
+                if cached_aspect_list[asp_idx]["text"].strip().lower() == k:
+                    matched_c_idx = asp_idx
+
+            # Priority 5: Match any remaining unused occurrence with matching text
+            if matched_c_idx is None:
+                for c_idx, c in enumerate(cached_aspect_list):
+                    if c_idx not in used_cache_indices and c["text"].strip().lower() == k:
+                        matched_c_idx = c_idx
+                        break
+
+            if matched_c_idx is not None:
+                used_cache_indices.add(matched_c_idx)
+                c_hit = cached_aspect_list[matched_c_idx]
+                t0_item = {
+                    "text": c_hit["text"],
+                    "aspect_id": c_hit["aspect_id"] or aid,
+                    "span": c_hit["span"] or span,
+                    "sentiment": c_hit["sentiment"],
+                    "reason": c_hit["reason"]
+                }
+            else:
+                if require_canonical_t0:
+                    raise RuntimeError(
+                        f"Sample '{sid}' aspect '{asp}' (index {asp_idx}, span {span}, id '{aid}') "
+                        f"could not be resolved from canonical T0 cache! Available cached aspects: "
+                        f"{[{'text': c['text'], 'span': c['span'], 'id': c['aspect_id']} for c in cached_aspect_list]}."
+                    )
                 # Fallback to default NEU baseline (exact match only, zero substring bleeding)
                 t0_item = {"text": asp, "sentiment": "NEU", "reason": "Default text baseline"}
 

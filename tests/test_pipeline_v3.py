@@ -40,7 +40,14 @@ from bacr.text_reasoner import TextReasoner
 from bacr.meta_controller import MetaController
 from bacr.vision_sensor import VisionSensor
 from bacr.pipeline_v3 import BACRPipelineV3
-from bacr.evaluator import evaluate_v3_teacher, print_v3_teacher_report, evaluate_v3_trajectories
+from bacr.evaluator import (
+    evaluate_v3_teacher,
+    print_v3_teacher_report,
+    evaluate_v3_trajectories,
+    evaluate_pair_set,
+    evaluate_aspect_set,
+    G3Evaluator
+)
 
 
 class MockTeacherClient:
@@ -999,6 +1006,180 @@ def test_duplicate_aspect_names_indexing(tmp_path: pathlib.Path):
     print("Passed test_duplicate_aspect_names_indexing!")
 
 
+def test_duplicate_aspect_canonical_t0_alignment():
+    print("--- Running test_duplicate_aspect_canonical_t0_alignment ---")
+    client = MockTeacherClient(route_action="KEEP")
+    pipeline = BACRPipelineV3(client=client)
+
+    # Sample with 2 identical aspect names "Nick", but with distinct spans and sentiments
+    sample = {
+        "sample_id": "test_dup_t0_align_01",
+        "text": "Nick was great today, but Nick let everyone down yesterday.",
+        "image": "dummy.jpg",
+        "annotations": [
+            {"aspect": "Nick", "sentiment": "POS", "span": [0, 4], "aspect_id": "nick_0"},
+            {"aspect": "Nick", "sentiment": "NEG", "span": [26, 30], "aspect_id": "nick_1"}
+        ],
+        "text_initial_cached": {
+            "aspects": [
+                {"text": "Nick", "sentiment": "POS", "span": [0, 4], "aspect_id": "nick_0", "reason": "pos text"},
+                {"text": "Nick", "sentiment": "NEG", "span": [26, 30], "aspect_id": "nick_1", "reason": "neg text"}
+            ]
+        },
+        "require_canonical_t0": True
+    }
+
+    record = pipeline.run_sample(sample)
+    # Both T0 aspects must be matched distinctly and accurately
+    assert record["t0_pairs"] == [["Nick", "POS"], ["Nick", "NEG"]], f"Got {record['t0_pairs']}"
+    assert record["final_pairs"] == [["Nick", "POS"], ["Nick", "NEG"]], f"Got {record['final_pairs']}"
+    assert len(record["aspect_trajectories"]) == 2
+    assert record["aspect_trajectories"][0]["t0_sentiment"] == "POS"
+    assert record["aspect_trajectories"][1]["t0_sentiment"] == "NEG"
+
+    # Also test alignment when canonical T0 only provides occurrence order or list of pairs
+    sample_pairs_only = {
+        "sample_id": "test_dup_t0_align_02",
+        "text": "Nick was great today, but Nick let everyone down yesterday.",
+        "image": "dummy.jpg",
+        "pairs": [["Nick", "POS"], ["Nick", "NEG"]],
+        "text_initial_cached": {
+            "pairs": [["Nick", "POS"], ["Nick", "NEG"]]
+        },
+        "require_canonical_t0": True
+    }
+    record_pairs = pipeline.run_sample(sample_pairs_only)
+    assert record_pairs["t0_pairs"] == [["Nick", "POS"], ["Nick", "NEG"]], f"Got {record_pairs['t0_pairs']}"
+    assert record_pairs["final_pairs"] == [["Nick", "POS"], ["Nick", "NEG"]], f"Got {record_pairs['final_pairs']}"
+    print("Passed test_duplicate_aspect_canonical_t0_alignment!")
+
+
+def test_evaluator_counter_multiset_exact_match(tmp_path: pathlib.Path):
+    print("--- Running test_evaluator_counter_multiset_exact_match ---")
+    # 1. Direct evaluate_pair_set testing with duplicates
+    pred_1 = [["IKEA", "NEU"]]
+    gold_2 = [["IKEA", "NEU"], ["IKEA", "NEU"]]
+    tp, fp, fn = evaluate_pair_set(pred_1, gold_2)
+    # Multiset Counter: Pred has 1 IKEA, Gold has 2. TP=1, FP=0, FN=1.
+    # (Under old set() logic: pred_set={("ikea","NEU")}, gold_set={("ikea","NEU")}, so TP=1, FP=0, FN=0 -> 100% precision & recall!)
+    assert tp == 1, f"Expected TP=1, got {tp}"
+    assert fp == 0, f"Expected FP=0, got {fp}"
+    assert fn == 1, f"Expected FN=1, got {fn}"
+
+    # Overshooting predictions: Pred has 3 IKEA, Gold has 2.
+    pred_3 = [["IKEA", "NEU"], ["IKEA", "NEU"], ["IKEA", "NEU"]]
+    tp3, fp3, fn3 = evaluate_pair_set(pred_3, gold_2)
+    assert tp3 == 2, f"Expected TP=2, got {tp3}"
+    assert fp3 == 1, f"Expected FP=1, got {fp3}"
+    assert fn3 == 0, f"Expected FN=0, got {fn3}"
+
+    # Aspect term only evaluation with duplicates
+    asp_tp, asp_fp, asp_fn = evaluate_aspect_set(pred_1, gold_2)
+    assert asp_tp == 1, f"Expected aspect TP=1, got {asp_tp}"
+    assert asp_fp == 0, f"Expected aspect FP=0, got {asp_fp}"
+    assert asp_fn == 1, f"Expected aspect FN=1, got {asp_fn}"
+
+    # 2. G3Evaluator sample-level exact match test
+    gold_file = str(tmp_path / "ikea_gold.jsonl")
+    pred_file = str(tmp_path / "ikea_pred.jsonl")
+    with open(gold_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({"sample_id": "ikea_01", "pairs": [["IKEA", "NEU"], ["IKEA", "NEU"]]}) + "\n")
+    with open(pred_file, "w", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "sample_id": "ikea_01",
+            "text_initial": {"pairs": [["IKEA", "NEU"]]},
+            "final": {"pairs": [["IKEA", "NEU"]]},
+            "t0_pairs": [["IKEA", "NEU"]],
+            "final_pairs": [["IKEA", "NEU"]]
+        }) + "\n")
+
+    evaluator = G3Evaluator(gold_file=gold_file)
+    eval_res = evaluator.evaluate_predictions(pred_file=pred_file)
+    # Under set logic, init_set == gold_set and final_set == gold_set would be True!
+    # Under Counter logic, Counter({('ikea', 'NEU'): 1}) != Counter({('ikea', 'NEU'): 2}) -> False!
+    sample_trans = eval_res["sample_level_diagnostics"]
+    assert sample_trans["sample_ww_unresolved"] == 1, f"Expected sample_ww_unresolved=1, got {sample_trans}"
+    assert sample_trans["sample_cc_maintained"] == 0, f"Expected sample_cc_maintained=0, got {sample_trans}"
+
+    # 3. Trajectory & Teacher file-based exact match
+    teacher_res = evaluate_v3_teacher(pred_file, gold_file)
+    assert teacher_res["sample_t0_acc"] == 0.0, f"Expected sample_t0_acc=0.0, got {teacher_res['sample_t0_acc']}"
+    assert teacher_res["sample_final_acc"] == 0.0, f"Expected sample_final_acc=0.0, got {teacher_res['sample_final_acc']}"
+
+    # 4. When predictions contain both duplicate occurrences, exact match succeeds
+    pred_file_both = str(tmp_path / "ikea_pred_both.jsonl")
+    with open(pred_file_both, "w", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "sample_id": "ikea_01",
+            "text_initial": {"pairs": [["IKEA", "NEU"], ["IKEA", "NEU"]]},
+            "final": {"pairs": [["IKEA", "NEU"], ["IKEA", "NEU"]]},
+            "t0_pairs": [["IKEA", "NEU"], ["IKEA", "NEU"]],
+            "final_pairs": [["IKEA", "NEU"], ["IKEA", "NEU"]]
+        }) + "\n")
+
+    eval_res_both = evaluator.evaluate_predictions(pred_file=pred_file_both)
+    sample_trans_both = eval_res_both["sample_level_diagnostics"]
+    assert sample_trans_both["sample_cc_maintained"] == 1, f"Expected sample_cc_maintained=1, got {sample_trans_both}"
+    assert sample_trans_both["sample_ww_unresolved"] == 0
+
+    teacher_res_both = evaluate_v3_teacher(pred_file_both, gold_file)
+    assert teacher_res_both["sample_t0_acc"] == 100.0
+    assert teacher_res_both["sample_final_acc"] == 100.0
+
+    print("Passed test_evaluator_counter_multiset_exact_match!")
+
+
+def test_canonical_cache_missing_alarm():
+    print("--- Running test_canonical_cache_missing_alarm ---")
+    client = MockTeacherClient(route_action="KEEP")
+    pipeline = BACRPipelineV3(client=client)
+
+    # 1. require_canonical_t0 with missing cache dictionary
+    sample_no_cache = {
+        "sample_id": "test_missing_t0_01",
+        "text": "Testing missing cache.",
+        "pairs": [["Test", "POS"]],
+        "require_canonical_t0": True
+    }
+    try:
+        pipeline.run_sample(sample_no_cache)
+        assert False, "Expected RuntimeError when canonical T0 cache is missing!"
+    except RuntimeError as e:
+        assert "requires canonical T0 cache" in str(e)
+
+    # 2. require_canonical_t0 where sample aspect cannot be resolved from cached aspects
+    sample_unresolved = {
+        "sample_id": "test_missing_t0_02",
+        "text": "Testing unresolved aspect.",
+        "pairs": [["AspectA", "POS"], ["AspectB", "NEG"]],
+        "text_initial_cached": {
+            "pairs": [["AspectA", "POS"]]  # Missing AspectB
+        },
+        "require_canonical_t0": True
+    }
+    try:
+        pipeline.run_sample(sample_unresolved)
+        assert False, "Expected RuntimeError when sample aspect is missing from canonical T0 cache!"
+    except RuntimeError as e:
+        assert "could not be resolved from canonical T0 cache" in str(e)
+
+    # 3. require_canonical_v0 with missing image cache
+    sample_no_v0 = {
+        "sample_id": "test_missing_v0_01",
+        "text": "Testing missing V0.",
+        "pairs": [["Test", "POS"]],
+        "text_initial_cached": {"pairs": [["Test", "POS"]]},
+        "require_canonical_v0": True
+    }
+    try:
+        pipeline.run_sample(sample_no_v0)
+        assert False, "Expected RuntimeError when canonical V0 cache is missing!"
+    except RuntimeError as e:
+        assert "requires canonical V0 cache" in str(e)
+
+    print("Passed test_canonical_cache_missing_alarm!")
+
+
 if __name__ == "__main__":
     test_v3_schemas_and_fail_closed_contract()
     test_route_keep()
@@ -1018,14 +1199,17 @@ if __name__ == "__main__":
     test_physical_isolation_of_text_critique()
     test_exact_aspect_matching_no_substring_confusion()
     test_multi_aspect_sample_factoring()
+    test_duplicate_aspect_canonical_t0_alignment()
+    test_canonical_cache_missing_alarm()
     with tempfile.TemporaryDirectory() as td:
         test_evaluator_v3_teacher(pathlib.Path(td))
         test_evaluator_cw_transition_count(pathlib.Path(td))
         test_evaluator_v3_trajectories_action_distribution(pathlib.Path(td))
         test_duplicate_aspect_names_indexing(pathlib.Path(td))
+        test_evaluator_counter_multiset_exact_match(pathlib.Path(td))
 
     print("\n" + "=" * 78)
-    print("  ALL 22 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
+    print("  ALL 25 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
     print("=" * 78 + "\n")
 
 
