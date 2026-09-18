@@ -56,13 +56,31 @@ SAFE_TEXT_CRITIQUES = {
     ),
 }
 
+# Aliases for v3 standardized risk taxonomy
+SAFE_TEXT_CRITIQUES["TEXT_OVER_REASONING"] = SAFE_TEXT_CRITIQUES["AFFECT_SPILLOVER"]
+SAFE_TEXT_CRITIQUES["ENTITY_GROUNDING_FAILURE"] = SAFE_TEXT_CRITIQUES["AFFECT_SPILLOVER"]
+SAFE_TEXT_CRITIQUES["IRONY_POSSIBLE"] = SAFE_TEXT_CRITIQUES["PRAGMATIC_AFFECT"]
+SAFE_TEXT_CRITIQUES["MISSING_VISUAL_AFFECT"] = SAFE_TEXT_CRITIQUES["MISSING_AFFECT"]
+SAFE_TEXT_CRITIQUES["INSUFFICIENT_CONTEXT"] = SAFE_TEXT_CRITIQUES["MISSING_AFFECT"]
+
 
 class MetaController:
     def __init__(self, client: BaseClient):
         self.client = client
-        self.prompt_route = load_prompt("controller_route.md")
-        self.prompt_firewall = load_prompt("controller_evidence_firewall.md")
-        self.prompt_audit = load_prompt("controller_final_audit.md")
+        try:
+            self.prompt_route = load_prompt("controller_diagnosis.md")
+        except Exception:
+            self.prompt_route = load_prompt("controller_route.md")
+
+        try:
+            self.prompt_firewall = load_prompt("evidence_firewall.md")
+        except Exception:
+            self.prompt_firewall = load_prompt("controller_evidence_firewall.md")
+
+        try:
+            self.prompt_audit = load_prompt("revision_verifier.md")
+        except Exception:
+            self.prompt_audit = load_prompt("controller_final_audit.md")
 
     def generate_text_critique(
         self,
@@ -75,7 +93,8 @@ class MetaController:
         Zero visual sketch or image information can physically enter this generator.
         """
         sentiment = anchor.get("sentiment", "NEU")
-        template = SAFE_TEXT_CRITIQUES.get(risk_type, SAFE_TEXT_CRITIQUES["NO_RISK"])
+        rt_norm = str(risk_type).upper().strip()
+        template = SAFE_TEXT_CRITIQUES.get(rt_norm, SAFE_TEXT_CRITIQUES.get(risk_type, SAFE_TEXT_CRITIQUES["NO_RISK"]))
         return template.format(aspect=aspect, sentiment=sentiment)
 
     def decide_route(
@@ -90,8 +109,9 @@ class MetaController:
         user_prompt = (
             f'Target Aspect: "{aspect}"\n\n'
             f'Initial Text Baseline (T0):\n{json.dumps(anchor, ensure_ascii=False, indent=2)}\n\n'
-            f'Global Visual Sketch (V0):\n{json.dumps(visual_sketch, ensure_ascii=False, indent=2)}\n\n'
-            f'Decide whether to KEEP baseline, route to TEXT re-deliberation, or route to VISION probe. Output valid JSON.'
+            f'Global Visual Opportunity Map (V0):\n{json.dumps(visual_sketch, ensure_ascii=False, indent=2)}\n\n'
+            f'Audit the text baseline hypothesis, classify the risk, and decide whether to FINALIZE baseline, '
+            f'route to TEXT_REVIEW, or route to VISION_QUERY. Output valid JSON.'
         )
 
         res, usage, lat = self.client.call_text(
@@ -142,13 +162,13 @@ class MetaController:
         candidate: Dict[str, Any],
         evidence: Optional[Dict[str, Any]] = None
     ) -> Tuple[FinalAudit, Dict[str, int], float]:
-        """C_F: Final Audit Verifier auditing candidate revision against T0 baseline."""
+        """C_F: Final Audit Verifier auditing candidate revision against T0 baseline with counterfactual checks."""
         cand_sent = candidate.get("sentiment", "NEU")
         anchor_sent = anchor.get("sentiment", "NEU")
 
         # Shortcut: if candidate did not change sentiment, accept trivially
         if cand_sent == anchor_sent:
-            return FinalAudit(decision=AuditDecision.ACCEPT, reason="Candidate matches initial baseline sentiment."), {"total_tokens": 0}, 0.0
+            return FinalAudit(decision=AuditDecision.ACCEPT, reason="Candidate matches initial baseline sentiment.", visual_necessary=False, evidence_sufficient=True), {"total_tokens": 0}, 0.0
 
         ev_str = f'\nVerified Visual Evidence:\n{json.dumps(evidence, ensure_ascii=False, indent=2)}\n' if evidence else ""
         user_prompt = (
@@ -158,7 +178,8 @@ class MetaController:
             f'Initial Baseline (T0):\n{json.dumps(anchor, ensure_ascii=False, indent=2)}\n\n'
             f'Candidate Revision:\n{json.dumps(candidate, ensure_ascii=False, indent=2)}\n'
             f'{ev_str}\n'
-            f'Audit whether the revision away from T0 is conclusively justified and output valid JSON.'
+            f'Perform counterfactual audit (evidence sufficiency, visual necessity, and anchor comparison) '
+            f'and output in valid JSON.'
         )
 
         res, usage, lat = self.client.call_text(
@@ -168,23 +189,26 @@ class MetaController:
 
         audit = FinalAudit.validate_or_fallback(res)
 
-        # Hard-rule safeguard: if VISION route, verify that evidence is genuinely valid, direct, highly relevant, and supports revision
+        # Hard-rule safeguard: if VISION route, verify that evidence is genuinely valid, direct, and has usable/clean evidence
         if route == "VISION":
             ev_status = evidence.get("status") if isinstance(evidence, dict) else None
             ev_binding = evidence.get("target_binding") if isinstance(evidence, dict) else None
             ev_relevance = evidence.get("relevance") if isinstance(evidence, dict) else None
             ev_support = evidence.get("revision_support") if isinstance(evidence, dict) else None
-            usable = evidence.get("usable_evidence") if isinstance(evidence, dict) else None
+            usable = evidence.get("clean_evidence") or evidence.get("usable_evidence") if isinstance(evidence, dict) else None
 
-            if (
+            # Fail-closed gate: must be VALID, DIRECT, with non-empty clean/usable evidence
+            is_unqualified = (
                 ev_status != "VALID"
                 or ev_binding != "DIRECT"
-                or ev_relevance != "HIGH"
-                or ev_support != "SUPPORTS_REVISION"
                 or not usable
-            ):
+                or (ev_relevance is not None and ev_relevance in ["LOW", "MEDIUM"])
+                or (ev_support is not None and ev_support in ["CONTRADICTS_REVISION", "NON_DECISIVE"])
+            )
+
+            if is_unqualified:
                 audit.decision = AuditDecision.REVERT
-                audit.reason = (audit.reason + " [Safeguard: Evidence did not meet strict gate (VALID+DIRECT+HIGH+SUPPORTS_REVISION); forced REVERT to T0.]").strip()
+                audit.reason = (audit.reason + " [Safeguard: Evidence did not meet strict epistemic gate (VALID+DIRECT+USABLE); forced REVERT to T0.]").strip()
 
         return audit, usage, lat
 

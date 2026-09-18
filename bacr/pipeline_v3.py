@@ -214,19 +214,17 @@ class BACRPipelineV3:
                 compute["latency_ms"] += lat_ce * 1000
                 evidence_dict = ev_res.model_dump()
 
-                # Fail-closed Firewall Check: VALID + DIRECT + HIGH + SUPPORTS_REVISION
+                # Fail-closed Firewall Check: VALID + DIRECT + usable verified evidence
                 is_valid_evidence = (
                     ev_res.status == EvidenceStatus.VALID
                     and ev_res.target_binding == TargetBinding.DIRECT
-                    and ev_res.relevance == EvidenceRelevance.HIGH
-                    and ev_res.revision_support == RevisionSupport.SUPPORTS_REVISION
                     and len(ev_res.usable_evidence) > 0
                 )
                 if not is_valid_evidence:
                     final_sentiment = anchor_sent
                     audit_dict = {
                         "decision": AuditDecision.REVERT.value,
-                        "reason": f"Firewall fail-closed: status={ev_res.status.value}, binding={ev_res.target_binding.value}, relevance={ev_res.relevance.value}, support={ev_res.revision_support.value}."
+                        "reason": f"Firewall fail-closed: status={ev_res.status.value}, binding={ev_res.target_binding.value}, usable_evidence={len(ev_res.usable_evidence)}."
                     }
                 else:
                     cand, usage_tf, lat_tf = self.text_reasoner.fuse_evidence(
@@ -456,6 +454,7 @@ class BACRPipelineV3:
         aspect_trajectories: List[Dict[str, Any]] = []
         final_pairs: List[List[str]] = []
         transitions: List[Dict[str, Any]] = []
+        trajectories_v3: List[Dict[str, Any]] = []
         t0_pairs: List[List[str]] = []
 
         used_cache_indices: Set[int] = set()
@@ -580,6 +579,7 @@ class BACRPipelineV3:
             )
             # Record ALL aspect decisions including KEEP to prevent selection bias in downstream SFT/RL
             transitions.append(trans_obj.model_dump())
+            trajectories_v3.append(trans_obj.to_trajectory_v3())
 
         num_v = sum(1 for at in aspect_trajectories if at["route"] == RouteAction.VISION.value)
         num_t = sum(1 for at in aspect_trajectories if at["route"] == RouteAction.TEXT.value)
@@ -595,6 +595,7 @@ class BACRPipelineV3:
             "contrast_type": aspect_trajectories[0]["risk_type"] if aspect_trajectories else "NO_RISK",
             "aspect_trajectories": aspect_trajectories,
             "transitions": transitions,
+            "trajectories_v3": trajectories_v3,
             "num_visual_probes": num_v,
             "num_text_queries": num_t,
             "num_queries_total": num_v + num_t,

@@ -83,7 +83,11 @@ class MockTeacherClient:
         self.call_history.append(("call_text", system_prompt, user_prompt))
 
         # C_R: Route Decision
-        if "controller_route.md" in system_prompt or "Meta-Cognitive Routing Controller" in system_prompt:
+        if (
+            "controller_route.md" in system_prompt
+            or "controller_diagnosis.md" in system_prompt
+            or "Meta-Cognitive Routing Controller" in system_prompt
+        ):
             crit = self.route_critique
             if self.leak_visual_in_critique:
                 crit = "The photo image shows a smiling face, please re-evaluate tone."
@@ -109,15 +113,21 @@ class MockTeacherClient:
             }, {"total_tokens": 25}, 0.05
 
         # C_E: Evidence Firewall
-        elif "controller_evidence_firewall.md" in system_prompt or "Evidence Firewall Controller" in system_prompt:
+        elif (
+            "controller_evidence_firewall.md" in system_prompt
+            or "evidence_firewall.md" in system_prompt
+            or "Evidence Firewall Controller" in system_prompt
+        ):
             if self.firewall_status == "VALID":
                 return {
                     "status": "VALID",
                     "target_binding": self.firewall_binding,
                     "relevance": self.firewall_relevance,
                     "revision_support": self.firewall_revision_support,
+                    "clean_evidence": ["Target entity displays broad smile and raised arms."],
                     "usable_evidence": ["Target entity displays broad smile and raised arms."],
                     "rejected_inferences": [],
+                    "rejected": [],
                     "verification_notes": "Physical verifiable facts bound to target."
                 }, {"total_tokens": 20}, 0.05
             else:
@@ -126,25 +136,41 @@ class MockTeacherClient:
                     "target_binding": self.firewall_binding,
                     "relevance": self.firewall_relevance,
                     "revision_support": self.firewall_revision_support,
+                    "clean_evidence": [],
                     "usable_evidence": [],
                     "rejected_inferences": ["Subjective claim about mood."],
+                    "rejected": ["Subjective claim about mood."],
                     "verification_notes": "Evidence is unobservable or unbound."
                 }, {"total_tokens": 20}, 0.05
 
         # TF: Evidence Fusion Reasoner
-        elif "text_evidence_fusion.md" in system_prompt or "Deliberative Cross-Modal Reasoner" in system_prompt:
+        elif (
+            "text_evidence_fusion.md" in system_prompt
+            or "evidence_fusion.md" in system_prompt
+            or "Deliberative Cross-Modal Reasoner" in system_prompt
+        ):
             return {
                 "aspect": "target",
                 "sentiment": self.fusion_sentiment,
+                "new": self.fusion_sentiment,
                 "reason": "Synthesized text with verified physical visual proof.",
+                "fusion_reason": "Synthesized text with verified physical visual proof.",
+                "visual_necessary": True,
                 "evidence": ["Target entity displays broad smile and raised arms."]
             }, {"total_tokens": 30}, 0.05
 
         # C_F: Final Audit Verifier
-        elif "controller_final_audit.md" in system_prompt or "Final Audit Verifier" in system_prompt:
+        elif (
+            "controller_final_audit.md" in system_prompt
+            or "revision_verifier.md" in system_prompt
+            or "Final Audit Verifier" in system_prompt
+            or "Revision Verifier" in system_prompt
+        ):
             return {
                 "decision": self.audit_decision,
-                "reason": f"Revision was evaluated as {self.audit_decision}."
+                "reason": f"Revision was evaluated as {self.audit_decision}.",
+                "visual_necessary": True,
+                "evidence_sufficient": (self.audit_decision == "ACCEPT")
             }, {"total_tokens": 15}, 0.05
 
         return {}, {"total_tokens": 0}, 0.0
@@ -153,20 +179,34 @@ class MockTeacherClient:
         self.call_history.append(("call_vision", system_prompt, user_text or user_prompt))
 
         # IG: Global Visual Sketch
-        if "vision_global.md" in system_prompt or "Global Visual Perception" in system_prompt:
+        if (
+            "vision_global.md" in system_prompt
+            or "Global Visual Perception" in system_prompt
+            or "Visual Opportunity Map" in system_prompt
+            or "Visual Perception Specialist" in system_prompt
+        ):
             return {
                 "scene": "Press conference hall",
                 "description": "Speaker giving presentation at podium.",
+                "observable_entities": ["Obama", "Biden"],
                 "possible_entities": ["Obama", "Biden"],
                 "ocr": ["WHITE HOUSE"],
                 "salient_visual_cues": ["podium", "microphones"]
             }, {"total_tokens": 30}, 0.08
 
         # IP: Deep Probe
-        elif "vision_probe.md" in system_prompt or "Targeted Deep Visual Sensor" in system_prompt:
+        elif (
+            "vision_probe.md" in system_prompt
+            or "Targeted Deep Visual Sensor" in system_prompt
+            or "Visual Evidence Sensor" in system_prompt
+        ):
             return {
                 "answer": "Target person is smiling warmly at podium.",
                 "observable_evidence": ["Raised mouth corners", "smiling cheeks"],
+                "observations": [
+                    {"type": "face", "fact": "Raised mouth corners", "certainty": 0.95}
+                ],
+                "unsupported_claims": [],
                 "certainty": "high",
                 "insufficient_visual_evidence": False
             }, {"total_tokens": 25}, 0.08
@@ -1180,8 +1220,173 @@ def test_canonical_cache_missing_alarm():
     print("Passed test_canonical_cache_missing_alarm!")
 
 
+def test_v3_pure_validation_firewall_and_counterfactual_audit():
+    print("--- Running test_v3_pure_validation_firewall_and_counterfactual_audit ---")
+    # 1. EvidenceResult validation using pure clean_evidence & rejected (no revision_support)
+    pure_fw = {
+        "status": "VALID",
+        "target_binding": "DIRECT",
+        "evidence_type": "facial_expression",
+        "clean_evidence": ["visible smile on face"],
+        "rejected": ["person looks happy"]
+    }
+    ev = EvidenceResult.validate_fail_closed(pure_fw)
+    assert ev.status == EvidenceStatus.VALID
+    assert ev.target_binding == TargetBinding.DIRECT
+    assert ev.usable_evidence == ["visible smile on face"]
+    assert ev.clean_evidence == ["visible smile on face"]
+    assert ev.rejected == ["person looks happy"]
+
+    # 2. RouteDecision with new diagnosis action terms and nested risk
+    route_diag = {
+        "target_aspect": "Nick",
+        "current_state": {"sentiment": "NEU", "confidence": 0.5},
+        "risk": {
+            "type": "missing_visual_affect",
+            "description": "Sentiment depends on facial expression unavailable from text"
+        },
+        "action": "VISION_QUERY",
+        "question": "Is Nick displaying a visible smile or positive gesture?"
+    }
+    rd = RouteDecision.validate_or_fallback(route_diag)
+    assert rd.action == RouteAction.VISION
+    assert rd.risk_type == "missing_visual_affect"
+    assert rd.question == "Is Nick displaying a visible smile or positive gesture?"
+
+    route_fin = {
+        "action": "FINALIZE",
+        "risk": {"type": "no_risk", "description": "Text is explicit"},
+        "reason": "Text is explicit"
+    }
+    rd_fin = RouteDecision.validate_or_fallback(route_fin)
+    assert rd_fin.action == RouteAction.KEEP
+
+    # 3. CandidatePrediction with fusion format
+    cand_data = {
+        "aspect": "Nick",
+        "previous": "NEU",
+        "new": "POS",
+        "fusion_reason": "Visual evidence provides missing affect information",
+        "visual_necessary": True,
+        "evidence_refs": ["visible smile on face"]
+    }
+    cand = CandidatePrediction.validate_or_fallback(cand_data, default_aspect="Nick")
+    assert cand.sentiment == "POS"
+    assert cand.previous == "NEU"
+    assert cand.visual_necessary is True
+    assert "missing affect" in cand.reason
+
+    # 4. FinalAudit with counterfactual audit fields
+    audit_data = {
+        "evidence_sufficient": True,
+        "visual_necessary": True,
+        "decision": "ACCEPT_REVISION",
+        "reason": "Clear justification based on counterfactual checks."
+    }
+    fa = FinalAudit.validate_or_fallback(audit_data)
+    assert fa.decision == AuditDecision.ACCEPT
+    assert fa.visual_necessary is True
+    assert fa.evidence_sufficient is True
+
+    audit_revert = {
+        "decision": "REVERT_ANCHOR",
+        "visual_necessary": False
+    }
+    fa_rev = FinalAudit.validate_or_fallback(audit_revert)
+    assert fa_rev.decision == AuditDecision.REVERT
+    print("Passed test_v3_pure_validation_firewall_and_counterfactual_audit!")
+
+
+def test_v3_prompt_protocol_and_trajectory_export():
+    print("--- Running test_v3_prompt_protocol_and_trajectory_export ---")
+    client = MockTeacherClient(
+        route_action="VISION",
+        firewall_status="VALID",
+        firewall_binding="DIRECT",
+        fusion_sentiment="POS",
+        audit_decision="ACCEPT"
+    )
+    pipeline = BACRPipelineV3(client=client)
+
+    sample = {
+        "sample_id": "test_traj_export_01",
+        "text": "Nick was presented with the award today.",
+        "image": "award.jpg",
+        "annotations": [
+            {"aspect": "Nick", "sentiment": "POS", "span": [0, 4], "aspect_id": "a_nick"}
+        ],
+        "text_initial_cached": {
+            "aspects": [
+                {
+                    "aspect_id": "a_nick",
+                    "text": "Nick",
+                    "sentiment": "NEU",
+                    "span": [0, 4],
+                    "confidence": 0.5,
+                    "critical_assumption": "Headline announcement is neutral reporting.",
+                    "uncertainty": {"level": "high", "possible_failure_modes": ["missing_visual_affect"]}
+                }
+            ]
+        }
+    }
+    record = pipeline.run_sample(sample)
+    assert "trajectories_v3" in record
+    trajs = record["trajectories_v3"]
+    assert len(trajs) == 1
+    t = trajs[0]
+
+    # Validate structure matching schemas/trajectory_v3.json
+    assert t["sample_id"] == "test_traj_export_01"
+    assert t["aspect_id"] == "a_nick"
+    assert t["aspect"] == "Nick"
+    assert t["step"] == 0
+    assert "state" in t
+    assert "text_anchor" in t["state"]
+    assert "visual_map" in t["state"]
+    assert "controller_action" in t
+    assert t["controller_action"]["type"] == "VISION_QUERY"
+    assert "observation" in t
+    assert "belief_update" in t
+    assert t["belief_update"]["final_sentiment"] == "POS"
+    assert t["belief_update"]["audit_decision"] == "ACCEPT"
+    assert "reward_signal" in t
+    assert t["reward_signal"]["query_cost"] == 1
+
+    # Load and validate against json schema file
+    schema_path = os.path.join(PROJECT_ROOT, "schemas", "trajectory_v3.json")
+    assert os.path.exists(schema_path), "schemas/trajectory_v3.json must exist!"
+    with open(schema_path, "r", encoding="utf-8") as f:
+        schema_json = json.load(f)
+    assert schema_json["title"] == "BACR_v3_TrajectoryRecord"
+    print("Passed test_v3_prompt_protocol_and_trajectory_export!")
+
+
+def test_all_v3_prompts_exist_and_consistent():
+    print("--- Running test_all_v3_prompts_exist_and_consistent ---")
+    v3_prompts_dir = os.path.join(PROJECT_ROOT, "bacr", "prompts", "v3")
+    required_prompts = [
+        "text_anchor.md",
+        "controller_diagnosis.md",
+        "text_rethink.md",
+        "vision_global.md",
+        "vision_probe.md",
+        "evidence_firewall.md",
+        "evidence_fusion.md",
+        "revision_verifier.md"
+    ]
+    for p in required_prompts:
+        path = os.path.join(v3_prompts_dir, p)
+        assert os.path.exists(path), f"Required prompt file '{p}' is missing from bacr/prompts/v3/!"
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read()
+        assert len(content) > 100, f"Prompt '{p}' is suspiciously short or empty!"
+    print("Passed test_all_v3_prompts_exist_and_consistent!")
+
+
 if __name__ == "__main__":
+    test_all_v3_prompts_exist_and_consistent()
     test_v3_schemas_and_fail_closed_contract()
+    test_v3_pure_validation_firewall_and_counterfactual_audit()
     test_route_keep()
     test_route_text_accept()
     test_route_text_revert()
@@ -1201,6 +1406,7 @@ if __name__ == "__main__":
     test_multi_aspect_sample_factoring()
     test_duplicate_aspect_canonical_t0_alignment()
     test_canonical_cache_missing_alarm()
+    test_v3_prompt_protocol_and_trajectory_export()
     with tempfile.TemporaryDirectory() as td:
         test_evaluator_v3_teacher(pathlib.Path(td))
         test_evaluator_cw_transition_count(pathlib.Path(td))
@@ -1209,7 +1415,7 @@ if __name__ == "__main__":
         test_evaluator_counter_multiset_exact_match(pathlib.Path(td))
 
     print("\n" + "=" * 78)
-    print("  ALL 25 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
+    print("  ALL 28 BACR-v3 TEACHER INVARIANT & ARCHITECTURAL TESTS PASSED 100%!")
     print("=" * 78 + "\n")
 
 

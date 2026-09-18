@@ -37,8 +37,8 @@ class VisionSensor:
         self,
         image_path: str
     ) -> Tuple[Dict[str, Any], Dict[str, int], float]:
-        """I0: Analyzes raw image pixels to produce the Global Visual Sketch V0."""
-        user_prompt = "Examine the provided image and generate the structured Global Visual Sketch in valid JSON."
+        """I0: Analyzes raw image pixels to produce the Global Visual Opportunity Map V0."""
+        user_prompt = "Examine the provided image and generate the structured Global Visual Opportunity Map in valid JSON."
         res, usage, lat = self.client.call_vision(
             system_prompt=self.prompt_global,
             user_text=user_prompt,
@@ -47,7 +47,17 @@ class VisionSensor:
         data = {
             "scene": res.get("scene", "Unknown scene"),
             "description": res.get("description", ""),
-            "possible_entities": res.get("possible_entities", []),
+            "observable_entities": res.get("observable_entities", res.get("possible_entities", [])),
+            "possible_entities": res.get("possible_entities", res.get("observable_entities", [])),
+            "visual_information_map": res.get("visual_information_map", {
+                "person_identity_available": True,
+                "facial_expression_available": True,
+                "object_state_available": False,
+                "ocr_available": bool(res.get("ocr")),
+                "relationship_available": True
+            }),
+            "aspect_relevance": res.get("aspect_relevance", {}),
+            "limitations": res.get("limitations", ["cannot infer sentiment"]),
             "ocr": res.get("ocr", []),
             "salient_visual_cues": res.get("salient_visual_cues", [])
         }
@@ -68,9 +78,22 @@ class VisionSensor:
             user_text=user_prompt,
             image_path=image_path
         )
+
+        raw_obs = res.get("observations", [])
+        raw_evidence = res.get("observable_evidence", [])
+        if not raw_evidence and raw_obs and isinstance(raw_obs, list):
+            raw_evidence = [o.get("fact", "") for o in raw_obs if isinstance(o, dict) and o.get("fact")]
+
+        ans = res.get("answer", "")
+        if not ans and raw_evidence:
+            ans = "; ".join(raw_evidence)
+
         data = {
-            "answer": res.get("answer", ""),
-            "observable_evidence": res.get("observable_evidence", []),
+            "question": question,
+            "answer": ans,
+            "observable_evidence": raw_evidence,
+            "observations": raw_obs,
+            "unsupported_claims": res.get("unsupported_claims", []),
             "certainty": res.get("certainty", "medium"),
             "insufficient_visual_evidence": res.get("insufficient_visual_evidence", False)
         }

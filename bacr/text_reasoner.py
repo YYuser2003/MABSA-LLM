@@ -25,7 +25,10 @@ class TextReasoner:
     def __init__(self, client: BaseClient):
         self.client = client
         self.prompt_tr = load_prompt("text_rethink.md")
-        self.prompt_tf = load_prompt("text_evidence_fusion.md")
+        try:
+            self.prompt_tf = load_prompt("evidence_fusion.md")
+        except Exception:
+            self.prompt_tf = load_prompt("text_evidence_fusion.md")
 
     def rethink_text(
         self,
@@ -47,7 +50,7 @@ class TextReasoner:
             f'- Sentiment: {anchor_sent}\n'
             f'- Reason: {anchor_reason}\n\n'
             f'Meta-Controller Linguistic Critique:\n"{critique}"\n\n'
-            f'Re-deliberate the aspect sentiment addressing the critique and output valid JSON.'
+            f'Re-deliberate the aspect sentiment addressing the critique purely through text semantics. Output valid JSON.'
         )
 
         res, usage, lat = self.client.call_text(
@@ -74,7 +77,7 @@ class TextReasoner:
         """
         anchor_sent = anchor.get("sentiment", "NEU")
         anchor_reason = anchor.get("reason", anchor.get("rationale", ""))
-        usable = verified_evidence.get("usable_evidence", [])
+        usable = verified_evidence.get("clean_evidence") or verified_evidence.get("usable_evidence", [])
 
         user_prompt = (
             f'Raw Tweet Text: "{text}"\n\n'
@@ -84,7 +87,7 @@ class TextReasoner:
             f'- Reason: {anchor_reason}\n\n'
             f'Verified Visual Proof from Firewall:\n'
             f'{json.dumps(usable, ensure_ascii=False, indent=2)}\n\n'
-            f'Synthesize the tweet semantics with verified visual proof and output valid JSON.'
+            f'Synthesize the tweet semantics with verified visual proof, test counterfactual necessity, and output valid JSON.'
         )
 
         res, usage, lat = self.client.call_text(

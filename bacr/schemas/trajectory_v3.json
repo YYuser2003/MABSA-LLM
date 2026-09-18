@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BACR_v3_TrajectoryRecord",
+  "description": "Standardized MDP transition record (s_t, a_t, o_t, s_{t+1}, r_t) for BACR-v3 SFT distillation and RL policy optimization.",
+  "type": "object",
+  "properties": {
+    "sample_id": { "type": "string" },
+    "aspect_id": { "type": "string" },
+    "aspect": { "type": "string" },
+    "span": {
+      "type": ["array", "null"],
+      "items": { "type": "integer" }
+    },
+    "step": { "type": "integer", "default": 0 },
+    "state": {
+      "type": "object",
+      "properties": {
+        "text_anchor": {
+          "type": "object",
+          "properties": {
+            "aspect": { "type": "string" },
+            "sentiment": { "type": "string", "enum": ["POS", "NEG", "NEU"] },
+            "confidence": { "type": "number" },
+            "critical_assumption": { "type": "string" },
+            "uncertainty": { "type": "object" },
+            "text_evidence": { "type": "array", "items": { "type": "string" } },
+            "reasoning_summary": { "type": "string" }
+          },
+          "required": ["sentiment"]
+        },
+        "visual_map": {
+          "type": "object",
+          "properties": {
+            "scene": { "type": "string" },
+            "observable_entities": { "type": "array", "items": { "type": "string" } },
+            "visual_information_map": { "type": "object" },
+            "aspect_relevance": { "type": "object" },
+            "limitations": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "remaining_interventions": { "type": "integer" },
+            "max_interventions": { "type": "integer" }
+          }
+        }
+      },
+      "required": ["text_anchor"]
+    },
+    "controller_action": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["FINALIZE", "KEEP", "TEXT_REVIEW", "TEXT_RETHINK", "VISION_QUERY", "VISION_PROBE"] },
+        "action": { "type": "string" },
+        "risk_type": { "type": "string" },
+        "reason": { "type": "string" },
+        "question": { "type": ["string", "null"] },
+        "critique": { "type": ["string", "null"] }
+      },
+      "required": ["type"]
+    },
+    "observation": {
+      "type": "object",
+      "properties": {
+        "sensor_response": { "type": "object" },
+        "firewall_validation": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["VALID", "INSUFFICIENT", "INVALID"] },
+            "target_binding": { "type": "string", "enum": ["DIRECT", "INDIRECT", "UNBOUND"] },
+            "evidence_type": { "type": "string" },
+            "clean_evidence": { "type": "array", "items": { "type": "string" } },
+            "rejected": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "belief_update": {
+      "type": "object",
+      "properties": {
+        "candidate_sentiment": { "type": ["string", "null"], "enum": ["POS", "NEG", "NEU", null] },
+        "fusion_reason": { "type": "string" },
+        "visual_necessary": { "type": ["boolean", "null"] },
+        "audit_decision": { "type": "string", "enum": ["ACCEPT_REVISION", "ACCEPT", "REVERT_ANCHOR", "REVERT", "NO_OP", "N/A"] },
+        "post_sentiment": { "type": "string", "enum": ["POS", "NEG", "NEU"] },
+        "final_sentiment": { "type": "string", "enum": ["POS", "NEG", "NEU"] }
+      },
+      "required": ["final_sentiment"]
+    },
+    "reward_signal": {
+      "type": "object",
+      "properties": {
+        "correct": { "type": "boolean" },
+        "query_cost": { "type": "number" },
+        "harm": { "type": "boolean" },
+        "recover": { "type": "boolean" }
+      }
+    }
+  },
+  "required": ["sample_id", "aspect", "state", "controller_action", "belief_update"]
+}
